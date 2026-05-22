@@ -9,8 +9,13 @@ export type LoadedPgn = {
 export function loadPgn(pgn: string): LoadedPgn {
   const chess = new Chess();
   chess.loadPgn(pgn, { strict: false });
+  const rawHeaders = chess.header() as Record<string, string | null>;
+  const headers: Record<string, string> = {};
+  for (const [k, v] of Object.entries(rawHeaders)) {
+    if (v != null) headers[k] = v;
+  }
   return {
-    headers: chess.header(),
+    headers,
     moves: chess.history({ verbose: true }),
     finalFen: chess.fen(),
   };
