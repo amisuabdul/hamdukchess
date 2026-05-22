@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Chessboard } from "react-chessboard";
-import type { Square, PieceSymbol, Color } from "chess.js";
+import { Chess, type Square, type PieceSymbol, type Color } from "chess.js";
+import { useNavigate } from "@tanstack/react-router";
 import { useChessGame } from "@/hooks/useChessGame";
 import { useStockfish } from "@/hooks/useStockfish";
 import { sounds } from "@/lib/chess-sounds";
@@ -14,6 +15,7 @@ type Mode = "human" | "engine";
 export function ChessApp() {
   const game = useChessGame();
   const { requestMove } = useStockfish();
+  const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("human");
   const [orientation, setOrientation] = useState<"white" | "black">("white");
   const [selected, setSelected] = useState<Square | null>(null);
@@ -191,6 +193,14 @@ export function ChessApp() {
     if (game.gameOver) return;
     game.resign(mode === "engine" ? "w" : game.turn);
   };
+  const handleOpenInAnalysis = () => {
+    const chess = new Chess();
+    for (const m of game.history) {
+      chess.move({ from: m.from, to: m.to, promotion: m.promotion });
+    }
+    sessionStorage.setItem("analysis:pgn", chess.pgn());
+    navigate({ to: "/analysis" });
+  };
 
   const turnLabel = game.gameOver
     ? "Game over"
@@ -275,6 +285,13 @@ export function ChessApp() {
               Resign
             </button>
           </div>
+
+          <button
+            onClick={handleOpenInAnalysis}
+            className="py-2 px-3 text-sm font-medium bg-panel text-zinc-900 rounded ring-1 ring-black/10 hover:bg-zinc-100 transition-colors cursor-pointer"
+          >
+            Open in Analysis →
+          </button>
 
           <p className="text-xs text-zinc-400 leading-normal max-w-[32ch] text-pretty">
             {mode === "engine"

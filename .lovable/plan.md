@@ -1,66 +1,64 @@
-## MVP scope (core gameplay only)
+# Analysis board + AI coach
 
-Build a single-page chess app at `/` with the **Studio Archive** design (light zinc/stone palette, Public Sans, panel-card aesthetic).
+Add a dedicated `/analysis` route with a read-only board, move list, PGN/FEN import/export, keyboard navigation, and an AI-powered "Explain this position" panel powered by Lovable AI (Gemini).
 
-### Features included
-- Interactive chessboard with click + drag-and-drop pieces
-- Legal move validation via `chess.js` (handles castling, en passant, promotion, check/checkmate/stalemate)
-- Highlight: selected square, legal target squares, last move, king-in-check
-- Move list sidebar (algebraic notation, scrollable, paired by turn, current move highlighted)
-- Captured pieces panel with material advantage
-- Turn indicator + game status (check, checkmate, stalemate, draw)
-- Controls: New Game, Undo, Flip Board, Resign
-- Mode toggle: **vs Human** (local hot-seat) / **vs Engine** (Stockfish in a Web Worker)
-- Promotion dialog (Q/R/B/N picker)
-- Move sound on play/capture (Web Audio, no asset deps)
-- Pawn promotion + post-game banner
+## User flow
 
-### Out of scope (deferred for later phases)
-Auth, online multiplayer, tournaments, puzzles, ratings, chat, themes beyond default, PGN/FEN import/export, evaluation bar, analysis review, mobile gestures beyond basic responsive. (Per "Core gameplay only" choice.)
+1. From `/`, click **Open in Analysis** in the sidebar → current game's PGN is handed off via `sessionStorage` and loaded into the analysis board.
+2. On `/analysis`, the user can:
+   - Step through moves (click move in list, press ←/→ for prev/next, ↑/↓ for start/end).
+   - Import a PGN (paste or upload `.pgn`) or a FEN string.
+   - Export the current game as `.pgn` or copy the current FEN.
+   - Flip the board, reset to start.
+3. In the right sidebar, an **AI Coach** panel:
+   - Shows the current position's FEN and side to move.
+   - Button **Explain this position** → calls a server function that asks Gemini for a plain-language assessment (material, threats, plans for both sides, candidate moves).
+   - Button **Recap whole game** → sends the full PGN and gets a 4–6 sentence narrative recap with key turning points.
+   - Responses render as markdown, cached per FEN/PGN in component state so re-clicking the same position doesn't re-bill.
 
-### Technical approach
+## Files to create
 
-**Dependencies to add**
-- `chess.js` — legal move engine, FEN/PGN, game state
-- `react-chessboard` — accessible drag/drop board (skinnable to match Studio Archive palette via custom square/piece styles)
-- Stockfish via CDN-loaded Web Worker (`stockfish.js` from `lila-stockfish-web` or `stockfish` npm `wasm` build) — runs entirely client-side, no backend
+- `src/routes/analysis.tsx` — route with `head()` SEO + renders `<AnalysisApp />`.
+- `src/components/chess/AnalysisApp.tsx` — board + toolbar + move list + AI panel layout.
+- `src/components/chess/ReplayMoveList.tsx` — clickable SAN move list with current-ply highlight.
+- `src/components/chess/AnalysisToolbar.tsx` — Import PGN, Import FEN, Export PGN, Copy FEN, Flip, Reset.
+- `src/components/chess/PgnImportDialog.tsx` — paste + file upload, validates via chess.js.
+- `src/components/chess/FenImportDialog.tsx` — paste FEN, validates.
+- `src/components/chess/AiCoachPanel.tsx` — explain/recap buttons, markdown output, loading + error states.
+- `src/hooks/useReplay.ts` — holds headers/moves/ply, derives current `Chess` and FEN.
+- `src/hooks/useKeyboardNav.ts` — global arrow-key handler scoped to analysis page.
+- `src/lib/pgn.ts` — `loadPgn(pgn)`, `exportPgn(headers, moves)` wrappers on chess.js.
+- `src/lib/fen.ts` — `validateFen(fen)`, `startFen` constant.
+- `src/lib/coach.functions.ts` — `explainPosition({ fen })` and `recapGame({ pgn })` server functions calling Lovable AI Gateway with `google/gemini-3-flash-preview`.
 
-**File structure**
-```
-src/
-  routes/
-    index.tsx                 — replaces placeholder; renders ChessApp
-  components/chess/
-    ChessApp.tsx              — top-level layout (nav + main + sidebar)
-    BoardPanel.tsx            — board + player strips + clocks (clocks visual-only in MVP)
-    MoveList.tsx              — notation sidebar
-    CapturedPieces.tsx        — material panel
-    Controls.tsx              — New/Undo/Flip/Resign buttons
-    PromotionDialog.tsx       — piece picker modal
-    GameStatusBanner.tsx      — checkmate/draw overlay
-  hooks/
-    useChessGame.ts           — wraps chess.js, exposes move/undo/reset/state
-    useStockfish.ts           — Web Worker wrapper, requests best move on opponent turn
-  lib/
-    chess-sounds.ts           — Web Audio tone generator for move/capture/check
-```
+## Files to modify
 
-**State model** — single `useChessGame` hook holding a `Chess` instance + history. All UI subscribes to its derived state (FEN, turn, legal moves for selected square, captured lists, status). No backend, no persistence in MVP.
+- `src/components/chess/ChessApp.tsx` — add **Open in Analysis** button; on click write current PGN to `sessionStorage["analysis:pgn"]` and navigate to `/analysis`.
+- `src/routes/__root.tsx` — add nav link to `/analysis` (only if a nav exists).
+- `package.json` — add `react-markdown` dependency for rendering AI output.
 
-**Design tokens** — port the prototype's palette into `src/styles.css` verbatim:
-- `--background: #f4f4f5` (zinc-100 surface)
-- `--card: #fafafa` (panel)
-- `--foreground: #18181b` (zinc-900)
-- `--muted-foreground: zinc-500`
-- Public Sans loaded from Google Fonts in `__root.tsx` head
-- Board light/dark squares: zinc-100 / zinc-300 (matches the muted archival feel — not the default Lichess green)
-- Ring/border using `black/5` overlays as in prototype
-- Page metadata (`head()` in index route): title "Grandmaster — Chess", description, og tags
+## AI integration (server-side)
 
-### Layout match (composition is locked from prototype)
-- Top nav h-12: brand label left, time-control segment, mode toggle right
-- Main: max-w-1440, board centered (max-w-720) with opponent strip above + player strip below; right sidebar w-80 with Notation card (h-520) + 2x2 control grid
-- All ring-1 ring-black/5, rounded-lg, panel surfaces — no shadows beyond `shadow-sm`
+`src/lib/coach.functions.ts` exposes two `createServerFn({ method: "POST" })` handlers, each validating input with zod (FEN regex bound, PGN max length ~50KB):
 
-### Verification
-After build: load `/`, click a pawn, confirm legal target dots appear, play a move, confirm move list updates, switch to vs Engine and confirm Stockfish replies within ~1s.
+- `explainPosition` → system prompt: "You are a chess coach. Given a FEN, return a concise plain-language assessment: material balance, immediate threats, strategic plans for both sides, and 2–3 candidate moves with short justification. Use markdown. ≤200 words." User message: the FEN.
+- `recapGame` → system prompt: "You are a chess commentator. Given a PGN, produce a 4–6 sentence narrative recap highlighting the opening, key turning points (by move number), and why the game ended as it did. Use markdown." User message: the PGN.
+
+Both call `https://ai.gateway.lovable.dev/v1/chat/completions` with `Authorization: Bearer ${process.env.LOVABLE_API_KEY}`, `stream: false` (non-streaming keeps the client simple for the first cut), return `{ markdown: string }`. 429 → `{ error: "Rate limited, try again in a moment." }`; 402 → `{ error: "AI credits exhausted. Add funds in Settings → Workspace → Usage." }`. Errors surface as a toast in `AiCoachPanel`.
+
+Called from the client via `useServerFn(explainPosition)` inside an event handler — not a loader — so the public route doesn't need auth and SSR doesn't 401.
+
+## Verification
+
+- `/` → play a few moves → **Open in Analysis** → board loads at final position with full move list.
+- Click move 3 → board jumps to ply 3. Press → / ← → advances/rewinds. ↑ / ↓ → start/end.
+- Paste Immortal Game PGN → loads cleanly. Paste invalid PGN → toast, prior state preserved.
+- Paste a known FEN (e.g. Kasparov–Topalov 1999 mid-game) → board reflects it.
+- Export PGN → downloads `.pgn` file readable in chess.com/lichess.
+- Click **Explain this position** → markdown response appears in <8s; re-clicking same position returns cached result instantly.
+- Click **Recap whole game** → narrative recap renders.
+- Force a 429 (rapid clicks) → user-friendly toast, not a raw error.
+
+## Out of scope
+
+Stockfish eval bar, multi-PV engine lines, variation trees / annotations, cloud-saved studies, streaming AI responses — all candidates for follow-up phases.
