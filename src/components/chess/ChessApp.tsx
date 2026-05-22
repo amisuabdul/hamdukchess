@@ -286,6 +286,13 @@ export function ChessApp() {
             </button>
           </div>
 
+          <button
+            onClick={handleOpenInAnalysis}
+            className="py-2 px-3 text-sm font-medium bg-panel text-zinc-900 rounded ring-1 ring-black/10 hover:bg-zinc-100 transition-colors cursor-pointer"
+          >
+            Open in Analysis →
+          </button>
+
           <p className="text-xs text-zinc-400 leading-normal max-w-[32ch] text-pretty">
             {mode === "engine"
               ? "Playing Stockfish at skill level 8. The engine moves after a brief delay."
