@@ -2,6 +2,15 @@
 @source "../src";
 @import "tw-animate-css";
 
+@theme {
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --color-panel: #fafafa;
+  --color-surface: #f4f4f5;
+  --color-board-light: #e7e5e4;
+  --color-board-dark: #a8a29e;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /*
