@@ -15,6 +15,7 @@ type Mode = "human" | "engine";
 export function ChessApp() {
   const game = useChessGame();
   const { requestMove } = useStockfish();
+  const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("human");
   const [orientation, setOrientation] = useState<"white" | "black">("white");
   const [selected, setSelected] = useState<Square | null>(null);
