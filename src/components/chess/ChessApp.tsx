@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Chessboard } from "react-chessboard";
-import type { Square, PieceSymbol, Color } from "chess.js";
+import { Chess, type Square, type PieceSymbol, type Color } from "chess.js";
+import { useNavigate } from "@tanstack/react-router";
 import { useChessGame } from "@/hooks/useChessGame";
 import { useStockfish } from "@/hooks/useStockfish";
 import { sounds } from "@/lib/chess-sounds";
