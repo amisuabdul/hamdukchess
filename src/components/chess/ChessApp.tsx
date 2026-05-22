@@ -193,6 +193,14 @@ export function ChessApp() {
     if (game.gameOver) return;
     game.resign(mode === "engine" ? "w" : game.turn);
   };
+  const handleOpenInAnalysis = () => {
+    const chess = new Chess();
+    for (const m of game.history) {
+      chess.move({ from: m.from, to: m.to, promotion: m.promotion });
+    }
+    sessionStorage.setItem("analysis:pgn", chess.pgn());
+    navigate({ to: "/analysis" });
+  };
 
   const turnLabel = game.gameOver
     ? "Game over"
