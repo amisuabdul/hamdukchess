@@ -219,7 +219,15 @@ export function ChessApp() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <a href="/puzzles" className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors">
+            Puzzles
+          </a>
+          <a href="/analysis" className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors">
+            Analysis
+          </a>
+          <div className="h-4 w-px bg-zinc-950/5" />
           <div className="flex bg-zinc-200/50 p-0.5 rounded-md">
+
             <button
               onClick={() => setMode("human")}
               className={
