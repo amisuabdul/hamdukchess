@@ -9,6 +9,7 @@ import { MoveList } from "./MoveList";
 import { CapturedStrip } from "./CapturedPieces";
 import { PromotionDialog } from "./PromotionDialog";
 import { GameStatusBanner } from "./GameStatusBanner";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type Mode = "human" | "engine";
 
@@ -225,6 +226,7 @@ export function ChessApp() {
           <a href="/analysis" className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors">
             Analysis
           </a>
+          <ThemeToggle />
           <div className="h-4 w-px bg-zinc-950/5" />
           <div className="flex bg-zinc-200/50 p-0.5 rounded-md">
 

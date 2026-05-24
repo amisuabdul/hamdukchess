@@ -10,6 +10,7 @@ import { PgnImportDialog } from "./PgnImportDialog";
 import { FenImportDialog } from "./FenImportDialog";
 import { AiCoachPanel } from "./AiCoachPanel";
 import { downloadPgn, exportPgn } from "@/lib/pgn";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function AnalysisApp() {
   const replay = useReplay();
@@ -117,12 +118,15 @@ export function AnalysisApp() {
             Ply {replay.ply} / {replay.moves.length}
           </span>
         </div>
-        <Link
-          to="/"
-          className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900"
-        >
-          ← Back to board
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            to="/"
+            className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900"
+          >
+            ← Back to board
+          </Link>
+          <ThemeToggle />
+        </div>
       </nav>
 
       <main className="max-w-[1440px] mx-auto px-6 md:px-12 py-8 md:py-12 flex flex-col lg:flex-row gap-8 md:gap-12 items-start">
