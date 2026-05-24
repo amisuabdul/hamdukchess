@@ -14,13 +14,197 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      games: {
+        Row: {
+          black_id: string
+          created_at: string
+          end_reason: string | null
+          ended_at: string | null
+          fen: string
+          id: string
+          last_move_at: string
+          pgn: string
+          ply: number
+          result: string | null
+          status: string
+          time_control: string
+          white_id: string
+          winner_id: string | null
+        }
+        Insert: {
+          black_id: string
+          created_at?: string
+          end_reason?: string | null
+          ended_at?: string | null
+          fen?: string
+          id?: string
+          last_move_at?: string
+          pgn?: string
+          ply?: number
+          result?: string | null
+          status?: string
+          time_control: string
+          white_id: string
+          winner_id?: string | null
+        }
+        Update: {
+          black_id?: string
+          created_at?: string
+          end_reason?: string | null
+          ended_at?: string | null
+          fen?: string
+          id?: string
+          last_move_at?: string
+          pgn?: string
+          ply?: number
+          result?: string | null
+          status?: string
+          time_control?: string
+          white_id?: string
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "games_black_id_fkey"
+            columns: ["black_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "games_white_id_fkey"
+            columns: ["white_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "games_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      matchmaking_queue: {
+        Row: {
+          joined_at: string
+          rating: number
+          time_control: string
+          user_id: string
+        }
+        Insert: {
+          joined_at?: string
+          rating: number
+          time_control: string
+          user_id: string
+        }
+        Update: {
+          joined_at?: string
+          rating?: number
+          time_control?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      moves: {
+        Row: {
+          by_user: string
+          created_at: string
+          fen: string
+          game_id: string
+          id: number
+          ply: number
+          san: string
+          uci: string
+        }
+        Insert: {
+          by_user: string
+          created_at?: string
+          fen: string
+          game_id: string
+          id?: number
+          ply: number
+          san: string
+          uci: string
+        }
+        Update: {
+          by_user?: string
+          created_at?: string
+          fen?: string
+          game_id?: string
+          id?: number
+          ply?: number
+          san?: string
+          uci?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "moves_by_user_fkey"
+            columns: ["by_user"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "moves_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          country: string | null
+          created_at: string
+          draws: number
+          games_played: number
+          id: string
+          losses: number
+          rating: number
+          username: string
+          wins: number
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          draws?: number
+          games_played?: number
+          id: string
+          losses?: number
+          rating?: number
+          username: string
+          wins?: number
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          draws?: number
+          games_played?: number
+          id?: string
+          losses?: number
+          rating?: number
+          username?: string
+          wins?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      apply_elo: {
+        Args: { p_black: string; p_result: string; p_white: string }
+        Returns: undefined
+      }
+      find_or_join_match: {
+        Args: { p_rating_window?: number; p_time_control: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
