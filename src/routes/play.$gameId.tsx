@@ -101,24 +101,25 @@ function PlayPage() {
   const opponent = isWhite ? profiles[game.black_id] : profiles[game.white_id];
   const me = profiles[user.id];
 
-  async function handleDrop({ sourceSquare, targetSquare, piece }: { sourceSquare: string; targetSquare: string | null; piece: { pieceType: string } }) {
+  function handleDrop({ sourceSquare, targetSquare, piece }: { sourceSquare: string; targetSquare: string | null; piece: { pieceType: string } }): boolean {
     if (!myTurn || !targetSquare || submitting) return false;
     const from = sourceSquare as Square;
     const to = targetSquare as Square;
-    // promotion auto-q
+    // Locally validate first so the board doesn't snap back unnecessarily.
+    const probe = new Chess(chess!.fen());
     const isPromo = piece.pieceType.toLowerCase().endsWith("p") &&
       ((myColor === "w" && to[1] === "8") || (myColor === "b" && to[1] === "1"));
+    let legal;
+    try { legal = probe.move({ from, to, promotion: "q" }); } catch { return false; }
+    if (!legal) return false;
     const uci = `${from}${to}${isPromo ? "q" : ""}`;
     setSubmitting(true);
-    try {
-      await submit({ data: { gameId, uci } });
-      return true;
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Illegal move");
-      return false;
-    } finally {
-      setSubmitting(false);
-    }
+    void submit({ data: { gameId, uci } })
+      .catch((e: unknown) => {
+        toast.error(e instanceof Error ? e.message : "Move rejected");
+      })
+      .finally(() => setSubmitting(false));
+    return true;
   }
 
   async function handleResign() {

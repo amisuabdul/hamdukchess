@@ -88,19 +88,22 @@ export const submitMove = createServerFn({ method: "POST" })
       endReason = "draw";
     }
 
-    const update: Record<string, unknown> = {
+    const baseUpdate = {
       fen: newFen,
       pgn: newPgn,
       ply: newPly,
       last_move_at: new Date().toISOString(),
       status,
     };
-    if (status === "completed") {
-      update.result = result;
-      update.winner_id = winnerId;
-      update.end_reason = endReason;
-      update.ended_at = new Date().toISOString();
-    }
+    const update = status === "completed"
+      ? {
+          ...baseUpdate,
+          result,
+          winner_id: winnerId,
+          end_reason: endReason,
+          ended_at: new Date().toISOString(),
+        }
+      : baseUpdate;
 
     const { error: uErr } = await supabase.from("games").update(update).eq("id", game.id);
     if (uErr) throw new Error(uErr.message);
