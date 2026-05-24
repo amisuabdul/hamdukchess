@@ -10,6 +10,7 @@ import { PgnImportDialog } from "./PgnImportDialog";
 import { FenImportDialog } from "./FenImportDialog";
 import { AiCoachPanel } from "./AiCoachPanel";
 import { downloadPgn, exportPgn } from "@/lib/pgn";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function AnalysisApp() {
   const replay = useReplay();
