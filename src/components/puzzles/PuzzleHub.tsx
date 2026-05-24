@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { PuzzleBoard } from "./PuzzleBoard";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   PUZZLES,
   PUZZLE_THEMES,
@@ -71,6 +72,7 @@ export function PuzzleHub() {
         <div className="flex items-center gap-4">
           <Link to="/analysis" className="text-xs font-medium text-zinc-500 hover:text-zinc-900">Analysis</Link>
           <Link to="/" className="text-xs font-medium text-zinc-500 hover:text-zinc-900">Play</Link>
+          <ThemeToggle />
         </div>
       </nav>
 
