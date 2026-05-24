@@ -220,11 +220,17 @@ export function ChessApp() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <a href="/lobby" className="text-xs font-semibold uppercase tracking-wider text-primary hover:underline">
+            Play Online
+          </a>
           <a href="/puzzles" className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors">
             Puzzles
           </a>
           <a href="/analysis" className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors">
             Analysis
+          </a>
+          <a href="/leaderboard" className="text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition-colors">
+            Leaderboard
           </a>
           <ThemeToggle />
           <div className="h-4 w-px bg-zinc-950/5" />
