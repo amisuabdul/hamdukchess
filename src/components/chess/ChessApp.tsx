@@ -20,10 +20,12 @@ export function ChessApp() {
   const { requestMove } = useStockfish();
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("human");
+  const [personaId, setPersonaId] = useState<string>(DEFAULT_PERSONA_ID);
   const [orientation, setOrientation] = useState<"white" | "black">("white");
   const [selected, setSelected] = useState<Square | null>(null);
   const [pendingPromo, setPendingPromo] = useState<{ from: Square; to: Square } | null>(null);
   const engineThinking = useRef(false);
+  const persona = getPersona(personaId);
 
   // Engine plays as black when mode === "engine"
   const engineColor: Color = "b";
