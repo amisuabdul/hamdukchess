@@ -10,6 +10,8 @@ import { CapturedStrip } from "./CapturedPieces";
 import { PromotionDialog } from "./PromotionDialog";
 import { GameStatusBanner } from "./GameStatusBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PersonaPicker } from "./PersonaPicker";
+import { DEFAULT_PERSONA_ID, getPersona } from "@/lib/bot-personas";
 
 type Mode = "human" | "engine";
 
