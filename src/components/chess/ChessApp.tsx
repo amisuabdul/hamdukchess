@@ -10,6 +10,8 @@ import { CapturedStrip } from "./CapturedPieces";
 import { PromotionDialog } from "./PromotionDialog";
 import { GameStatusBanner } from "./GameStatusBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PersonaPicker } from "./PersonaPicker";
+import { DEFAULT_PERSONA_ID, getPersona } from "@/lib/bot-personas";
 
 type Mode = "human" | "engine";
 
@@ -18,10 +20,12 @@ export function ChessApp() {
   const { requestMove } = useStockfish();
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("human");
+  const [personaId, setPersonaId] = useState<string>(DEFAULT_PERSONA_ID);
   const [orientation, setOrientation] = useState<"white" | "black">("white");
   const [selected, setSelected] = useState<Square | null>(null);
   const [pendingPromo, setPendingPromo] = useState<{ from: Square; to: Square } | null>(null);
   const engineThinking = useRef(false);
+  const persona = getPersona(personaId);
 
   // Engine plays as black when mode === "engine"
   const engineColor: Color = "b";
@@ -63,12 +67,24 @@ export function ChessApp() {
     if (engineThinking.current) return;
     engineThinking.current = true;
     const timer = setTimeout(() => {
-      requestMove(game.fen, 8, 600, (uci) => {
+      requestMove(game.fen, persona.skill, persona.movetimeMs, (uci) => {
         engineThinking.current = false;
         if (!uci || uci === "(none)") return;
-        const from = uci.slice(0, 2) as Square;
-        const to = uci.slice(2, 4) as Square;
-        const promo = (uci[4] as PieceSymbol | undefined) ?? undefined;
+        // Blunder injection: with persona.blunderChance, pick a random legal move
+        let chosen = uci;
+        if (Math.random() < persona.blunderChance) {
+          try {
+            const c = new Chess(game.fen);
+            const moves = c.moves({ verbose: true });
+            if (moves.length > 0) {
+              const m = moves[Math.floor(Math.random() * moves.length)];
+              chosen = `${m.from}${m.to}${m.promotion ?? ""}`;
+            }
+          } catch { /* fall through to engine move */ }
+        }
+        const from = chosen.slice(0, 2) as Square;
+        const to = chosen.slice(2, 4) as Square;
+        const promo = (chosen[4] as PieceSymbol | undefined) ?? undefined;
         playWithSound(from, to, promo);
       });
     }, 250);
@@ -76,7 +92,7 @@ export function ChessApp() {
       clearTimeout(timer);
       engineThinking.current = false;
     };
-  }, [mode, game.turn, game.fen, game.gameOver, requestMove, playWithSound]);
+  }, [mode, game.turn, game.fen, game.gameOver, requestMove, playWithSound, persona]);
 
   const legalTargets = useMemo<Square[]>(
     () => (selected ? game.legalMovesFor(selected) : []),
@@ -262,8 +278,8 @@ export function ChessApp() {
         <div className="flex-1 flex flex-col items-center w-full">
           <div className="w-full max-w-[720px] space-y-6">
             <PlayerStrip
-              name={mode === "engine" ? "Stockfish" : "Black"}
-              sub={mode === "engine" ? "Engine · Skill 8" : "Player 2"}
+              name={mode === "engine" ? persona.name : "Black"}
+              sub={mode === "engine" ? `${persona.hometown} · ${persona.rating}` : "Player 2"}
               active={game.turn === "b" && !game.gameOver}
               variant="opponent"
               captured={<CapturedStrip color="w" pieces={game.captured.w} advantage={Math.max(0, -game.advantage)} />}
@@ -309,9 +325,19 @@ export function ChessApp() {
             Open in Analysis →
           </button>
 
+          {mode === "engine" && (
+            <div className="rounded-md bg-panel ring-1 ring-black/5 p-3">
+              <PersonaPicker
+                value={personaId}
+                onChange={(id) => { setPersonaId(id); game.reset(); setSelected(null); setPendingPromo(null); }}
+              />
+              <p className="mt-2 text-[11px] text-zinc-500 italic leading-snug">{persona.trait}</p>
+            </div>
+          )}
+
           <p className="text-xs text-zinc-400 leading-normal max-w-[32ch] text-pretty">
             {mode === "engine"
-              ? "Playing Stockfish at skill level 8. The engine moves after a brief delay."
+              ? `Facing ${persona.name} from ${persona.hometown}. Skill ${persona.skill}/20.`
               : "Hot-seat mode. Two players share the board — flip after each move if needed."}
           </p>
         </aside>
