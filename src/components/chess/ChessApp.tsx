@@ -325,13 +325,6 @@ export function ChessApp() {
             Open in Analysis →
           </button>
 
-          <button
-            onClick={handleOpenInAnalysis}
-            className="py-2 px-3 text-sm font-medium bg-panel text-zinc-900 rounded ring-1 ring-black/10 hover:bg-zinc-100 transition-colors cursor-pointer"
-          >
-            Open in Analysis →
-          </button>
-
           {mode === "engine" && (
             <div className="rounded-md bg-panel ring-1 ring-black/5 p-3">
               <PersonaPicker
