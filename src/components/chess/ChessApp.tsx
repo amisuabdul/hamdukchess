@@ -325,9 +325,26 @@ export function ChessApp() {
             Open in Analysis →
           </button>
 
+          <button
+            onClick={handleOpenInAnalysis}
+            className="py-2 px-3 text-sm font-medium bg-panel text-zinc-900 rounded ring-1 ring-black/10 hover:bg-zinc-100 transition-colors cursor-pointer"
+          >
+            Open in Analysis →
+          </button>
+
+          {mode === "engine" && (
+            <div className="rounded-md bg-panel ring-1 ring-black/5 p-3">
+              <PersonaPicker
+                value={personaId}
+                onChange={(id) => { setPersonaId(id); game.reset(); setSelected(null); setPendingPromo(null); }}
+              />
+              <p className="mt-2 text-[11px] text-zinc-500 italic leading-snug">{persona.trait}</p>
+            </div>
+          )}
+
           <p className="text-xs text-zinc-400 leading-normal max-w-[32ch] text-pretty">
             {mode === "engine"
-              ? "Playing Stockfish at skill level 8. The engine moves after a brief delay."
+              ? `Facing ${persona.name} from ${persona.hometown}. Skill ${persona.skill}/20.`
               : "Hot-seat mode. Two players share the board — flip after each move if needed."}
           </p>
         </aside>
