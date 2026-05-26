@@ -58,7 +58,11 @@ function LeaderboardPage() {
                   <td className="px-4 py-3">
                     <span className={`font-bold ${i < 3 ? "text-accent" : "text-muted-foreground"}`}>{i + 1}</span>
                   </td>
-                  <td className="px-4 py-3 font-medium">{p.username}</td>
+                  <td className="px-4 py-3 font-medium">
+                    <Link to="/profile/$username" params={{ username: p.username }} className="hover:underline">
+                      {p.username}
+                    </Link>
+                  </td>
                   <td className="px-4 py-3 text-right font-mono font-bold text-primary">{p.rating}</td>
                   <td className="px-4 py-3 text-right text-muted-foreground hidden sm:table-cell">{p.games_played}</td>
                   <td className="px-4 py-3 text-right font-mono text-xs text-muted-foreground hidden sm:table-cell">{p.wins}/{p.losses}/{p.draws}</td>
