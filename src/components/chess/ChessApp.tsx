@@ -67,12 +67,24 @@ export function ChessApp() {
     if (engineThinking.current) return;
     engineThinking.current = true;
     const timer = setTimeout(() => {
-      requestMove(game.fen, 8, 600, (uci) => {
+      requestMove(game.fen, persona.skill, persona.movetimeMs, (uci) => {
         engineThinking.current = false;
         if (!uci || uci === "(none)") return;
-        const from = uci.slice(0, 2) as Square;
-        const to = uci.slice(2, 4) as Square;
-        const promo = (uci[4] as PieceSymbol | undefined) ?? undefined;
+        // Blunder injection: with persona.blunderChance, pick a random legal move
+        let chosen = uci;
+        if (Math.random() < persona.blunderChance) {
+          try {
+            const c = new Chess(game.fen);
+            const moves = c.moves({ verbose: true });
+            if (moves.length > 0) {
+              const m = moves[Math.floor(Math.random() * moves.length)];
+              chosen = `${m.from}${m.to}${m.promotion ?? ""}`;
+            }
+          } catch { /* fall through to engine move */ }
+        }
+        const from = chosen.slice(0, 2) as Square;
+        const to = chosen.slice(2, 4) as Square;
+        const promo = (chosen[4] as PieceSymbol | undefined) ?? undefined;
         playWithSound(from, to, promo);
       });
     }, 250);
@@ -80,7 +92,7 @@ export function ChessApp() {
       clearTimeout(timer);
       engineThinking.current = false;
     };
-  }, [mode, game.turn, game.fen, game.gameOver, requestMove, playWithSound]);
+  }, [mode, game.turn, game.fen, game.gameOver, requestMove, playWithSound, persona]);
 
   const legalTargets = useMemo<Square[]>(
     () => (selected ? game.legalMovesFor(selected) : []),
