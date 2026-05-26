@@ -278,8 +278,8 @@ export function ChessApp() {
         <div className="flex-1 flex flex-col items-center w-full">
           <div className="w-full max-w-[720px] space-y-6">
             <PlayerStrip
-              name={mode === "engine" ? "Stockfish" : "Black"}
-              sub={mode === "engine" ? "Engine · Skill 8" : "Player 2"}
+              name={mode === "engine" ? persona.name : "Black"}
+              sub={mode === "engine" ? `${persona.hometown} · ${persona.rating}` : "Player 2"}
               active={game.turn === "b" && !game.gameOver}
               variant="opponent"
               captured={<CapturedStrip color="w" pieces={game.captured.w} advantage={Math.max(0, -game.advantage)} />}
