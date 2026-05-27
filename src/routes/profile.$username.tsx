@@ -194,3 +194,87 @@ function OutcomeBadge({ outcome, color }: { outcome: "win" | "loss" | "draw" | "
     </span>
   );
 }
+
+function SocialActions({ targetId, targetUsername }: { targetId: string; targetUsername: string }) {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  const fetchRelation = useServerFn(getRelation);
+  const followFn = useServerFn(followUser);
+  const unfollowFn = useServerFn(unfollowUser);
+  const sendReqFn = useServerFn(sendFriendRequest);
+  const respondFn = useServerFn(respondFriendRequest);
+  const removeFn = useServerFn(removeFriend);
+
+  const isSelf = user?.id === targetId;
+  const { data } = useQuery({
+    queryKey: ["relation", targetId],
+    queryFn: () => fetchRelation({ data: { userId: targetId } }),
+    enabled: !!user && !isSelf,
+  });
+
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["relation", targetId] });
+
+  const follow = useMutation({ mutationFn: () => followFn({ data: { userId: targetId } }), onSuccess: invalidate });
+  const unfollow = useMutation({ mutationFn: () => unfollowFn({ data: { userId: targetId } }), onSuccess: invalidate });
+  const sendReq = useMutation({ mutationFn: () => sendReqFn({ data: { userId: targetId } }), onSuccess: invalidate });
+  const remove = useMutation({ mutationFn: () => removeFn({ data: { userId: targetId } }), onSuccess: invalidate });
+  const accept = useMutation({
+    mutationFn: () => respondFn({ data: { requestId: data!.friend!.id, accept: true } }),
+    onSuccess: invalidate,
+  });
+  const decline = useMutation({
+    mutationFn: () => respondFn({ data: { requestId: data!.friend!.id, accept: false } }),
+    onSuccess: invalidate,
+  });
+
+  if (isSelf || !user) return null;
+
+  const f = data?.friend;
+  const isFriend = f?.status === "accepted";
+  const incoming = f?.status === "pending" && !f.iAmRequester;
+  const outgoing = f?.status === "pending" && f.iAmRequester;
+
+  return (
+    <div className="mt-5 flex flex-wrap gap-2">
+      {data?.isFollowing ? (
+        <button onClick={() => unfollow.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+          <UserCheck className="h-4 w-4" /> Following
+        </button>
+      ) : (
+        <button onClick={() => follow.mutate()} className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
+          <UserPlus className="h-4 w-4" /> Follow
+        </button>
+      )}
+
+      {isFriend && (
+        <button onClick={() => remove.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+          <UserMinus className="h-4 w-4" /> Unfriend
+        </button>
+      )}
+      {!f && (
+        <button onClick={() => sendReq.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+          <UserPlus className="h-4 w-4" /> Add friend
+        </button>
+      )}
+      {outgoing && (
+        <span className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-border px-3 py-1.5 text-sm text-muted-foreground">
+          Friend request sent
+        </span>
+      )}
+      {incoming && (
+        <>
+          <button onClick={() => accept.mutate()} className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700">
+            <Check className="h-4 w-4" /> Accept
+          </button>
+          <button onClick={() => decline.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+            <X className="h-4 w-4" /> Decline
+          </button>
+        </>
+      )}
+
+      <Link to="/messages" search={{ with: targetUsername }} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+        <MessageSquare className="h-4 w-4" /> Message
+      </Link>
+    </div>
+  );
+}
