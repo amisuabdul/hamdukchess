@@ -1,9 +1,18 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Trophy, Calendar, Flag } from "lucide-react";
+import { Trophy, Calendar, Flag, UserPlus, UserCheck, UserMinus, MessageSquare, Check, X } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
+import { useAuth } from "@/lib/auth";
 import { getProfileByUsername } from "@/lib/profile.functions";
+import {
+  followUser,
+  unfollowUser,
+  sendFriendRequest,
+  respondFriendRequest,
+  removeFriend,
+  getRelation,
+} from "@/lib/social.functions";
 
 export const Route = createFileRoute("/profile/$username")({
   head: ({ params }) => ({
@@ -102,6 +111,8 @@ function ProfilePage() {
               </div>
             </div>
           </div>
+
+          <SocialActions targetId={p.id} targetUsername={p.username} />
 
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Stat label="Games" value={p.games_played} />

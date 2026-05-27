@@ -16,6 +16,12 @@ export function Navbar() {
         <Link to="/puzzles" className="rounded-md px-2 py-1.5 text-muted-foreground hover:bg-accent hover:text-foreground" activeProps={{ className: "text-primary" }}>Puzzles</Link>
         <Link to="/analysis" className="rounded-md px-2 py-1.5 text-muted-foreground hover:bg-accent hover:text-foreground" activeProps={{ className: "text-primary" }}>Analysis</Link>
         <Link to="/leaderboard" className="rounded-md px-2 py-1.5 text-muted-foreground hover:bg-accent hover:text-foreground" activeProps={{ className: "text-primary" }}>Leaderboard</Link>
+        {user && (
+          <>
+            <Link to="/feed" className="rounded-md px-2 py-1.5 text-muted-foreground hover:bg-accent hover:text-foreground" activeProps={{ className: "text-primary" }}>Feed</Link>
+            <Link to="/messages" className="rounded-md px-2 py-1.5 text-muted-foreground hover:bg-accent hover:text-foreground" activeProps={{ className: "text-primary" }}>Messages</Link>
+          </>
+        )}
         <ThemeToggle />
         {user ? (
           <button
