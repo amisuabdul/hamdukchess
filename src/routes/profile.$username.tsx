@@ -1,9 +1,18 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Trophy, Calendar, Flag } from "lucide-react";
+import { Trophy, Calendar, Flag, UserPlus, UserCheck, UserMinus, MessageSquare, Check, X } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
+import { useAuth } from "@/lib/auth";
 import { getProfileByUsername } from "@/lib/profile.functions";
+import {
+  followUser,
+  unfollowUser,
+  sendFriendRequest,
+  respondFriendRequest,
+  removeFriend,
+  getRelation,
+} from "@/lib/social.functions";
 
 export const Route = createFileRoute("/profile/$username")({
   head: ({ params }) => ({
@@ -103,6 +112,8 @@ function ProfilePage() {
             </div>
           </div>
 
+          <SocialActions targetId={p.id} targetUsername={p.username} />
+
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Stat label="Games" value={p.games_played} />
             <Stat label="Wins" value={p.wins} accent="text-emerald-600" />
@@ -181,5 +192,89 @@ function OutcomeBadge({ outcome, color }: { outcome: "win" | "loss" | "draw" | "
       {label}
       <span className="font-normal text-[10px] opacity-70">· {color === "white" ? "♔" : "♚"}</span>
     </span>
+  );
+}
+
+function SocialActions({ targetId, targetUsername }: { targetId: string; targetUsername: string }) {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  const fetchRelation = useServerFn(getRelation);
+  const followFn = useServerFn(followUser);
+  const unfollowFn = useServerFn(unfollowUser);
+  const sendReqFn = useServerFn(sendFriendRequest);
+  const respondFn = useServerFn(respondFriendRequest);
+  const removeFn = useServerFn(removeFriend);
+
+  const isSelf = user?.id === targetId;
+  const { data } = useQuery({
+    queryKey: ["relation", targetId],
+    queryFn: () => fetchRelation({ data: { userId: targetId } }),
+    enabled: !!user && !isSelf,
+  });
+
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["relation", targetId] });
+
+  const follow = useMutation({ mutationFn: () => followFn({ data: { userId: targetId } }), onSuccess: invalidate });
+  const unfollow = useMutation({ mutationFn: () => unfollowFn({ data: { userId: targetId } }), onSuccess: invalidate });
+  const sendReq = useMutation({ mutationFn: () => sendReqFn({ data: { userId: targetId } }), onSuccess: invalidate });
+  const remove = useMutation({ mutationFn: () => removeFn({ data: { userId: targetId } }), onSuccess: invalidate });
+  const accept = useMutation({
+    mutationFn: () => respondFn({ data: { requestId: data!.friend!.id, accept: true } }),
+    onSuccess: invalidate,
+  });
+  const decline = useMutation({
+    mutationFn: () => respondFn({ data: { requestId: data!.friend!.id, accept: false } }),
+    onSuccess: invalidate,
+  });
+
+  if (isSelf || !user) return null;
+
+  const f = data?.friend;
+  const isFriend = f?.status === "accepted";
+  const incoming = f?.status === "pending" && !f.iAmRequester;
+  const outgoing = f?.status === "pending" && f.iAmRequester;
+
+  return (
+    <div className="mt-5 flex flex-wrap gap-2">
+      {data?.isFollowing ? (
+        <button onClick={() => unfollow.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+          <UserCheck className="h-4 w-4" /> Following
+        </button>
+      ) : (
+        <button onClick={() => follow.mutate()} className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
+          <UserPlus className="h-4 w-4" /> Follow
+        </button>
+      )}
+
+      {isFriend && (
+        <button onClick={() => remove.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+          <UserMinus className="h-4 w-4" /> Unfriend
+        </button>
+      )}
+      {!f && (
+        <button onClick={() => sendReq.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+          <UserPlus className="h-4 w-4" /> Add friend
+        </button>
+      )}
+      {outgoing && (
+        <span className="inline-flex items-center gap-1.5 rounded-md border border-dashed border-border px-3 py-1.5 text-sm text-muted-foreground">
+          Friend request sent
+        </span>
+      )}
+      {incoming && (
+        <>
+          <button onClick={() => accept.mutate()} className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700">
+            <Check className="h-4 w-4" /> Accept
+          </button>
+          <button onClick={() => decline.mutate()} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+            <X className="h-4 w-4" /> Decline
+          </button>
+        </>
+      )}
+
+      <Link to="/messages" search={{ with: targetUsername }} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent">
+        <MessageSquare className="h-4 w-4" /> Message
+      </Link>
+    </div>
   );
 }
