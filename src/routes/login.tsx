@@ -91,6 +91,15 @@ function LoginPage() {
             Continue with Google
           </button>
 
+          <button
+            type="button"
+            onClick={handleGuest}
+            disabled={loading}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/40 bg-primary/5 px-4 py-2.5 text-sm font-semibold text-primary hover:bg-primary/10 disabled:opacity-50"
+          >
+            ⚡ Play as Guest <span className="text-xs font-normal text-muted-foreground">— no signup</span>
+          </button>
+
           <div className="my-6 flex items-center gap-3 text-xs uppercase text-muted-foreground">
             <div className="h-px flex-1 bg-border" />or<div className="h-px flex-1 bg-border" />
           </div>
