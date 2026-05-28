@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { Toaster } from "sonner";
 import { initTheme } from "@/lib/theme";
+import { BottomNav } from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 
 import appCss from "../styles.css?url";
@@ -152,7 +153,8 @@ function AuthAwareShell() {
   return (
     <>
       <Outlet />
-      <Toaster position="bottom-right" richColors closeButton theme="system" />
+      <BottomNav />
+      <Toaster position="top-right" richColors closeButton theme="system" />
     </>
   );
 }

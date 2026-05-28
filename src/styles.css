@@ -221,4 +221,43 @@
     font-family: var(--font-serif);
     letter-spacing: -0.01em;
   }
+
+  /* Honor prefers-reduced-motion globally — no exceptions. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Mobile bottom-nav safe-area padding */
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * Board themes — applied via [data-board-theme="..."] on a board wrapper.
+ * Default tokens (Classic) live on :root above.
+ * ────────────────────────────────────────────────────────────────────────── */
+[data-board-theme="classic"] {
+  --board-light: oklch(0.88 0.045 80);     /* #f0d9b5 */
+  --board-dark:  oklch(0.62 0.075 60);     /* #b58863 */
+}
+[data-board-theme="midnight"] {
+  --board-light: oklch(0.52 0.04 250);     /* steel blue */
+  --board-dark:  oklch(0.28 0.04 265);     /* charcoal blue */
+}
+[data-board-theme="savanna"] {
+  --board-light: oklch(0.86 0.10 85);      /* warm gold */
+  --board-dark:  oklch(0.50 0.09 55);      /* sienna brown */
+}
+[data-board-theme="emerald"] {
+  --board-light: oklch(0.94 0.02 100);     /* ivory */
+  --board-dark:  oklch(0.48 0.12 155);     /* deep emerald */
+}
+[data-board-theme="lagos-night"] {
+  /* Gold-tier exclusive */
+  --board-light: oklch(0.78 0.16 75);      /* gold */
+  --board-dark:  oklch(0.18 0.01 285);     /* black */
 }
