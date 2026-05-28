@@ -63,8 +63,9 @@ export async function upgradeGuestAccount(email: string, password: string, usern
   const { data: sessionData } = await supabase.auth.getSession();
   const uid = sessionData.session?.user.id;
   if (uid) {
-    const patch: Record<string, unknown> = { is_guest: false };
-    if (username) patch.username = username;
-    await supabase.from("profiles").update(patch).eq("id", uid);
+    await supabase
+      .from("profiles")
+      .update(username ? { is_guest: false, username } : { is_guest: false })
+      .eq("id", uid);
   }
 }
