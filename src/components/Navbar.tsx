@@ -4,7 +4,7 @@ import { useAuth, signOut } from "@/lib/auth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function Navbar() {
-  const { user } = useAuth();
+  const { user, isGuest } = useAuth();
   const navigate = useNavigate();
   return (
     <nav className="flex items-center justify-between border-b border-border bg-background/80 px-4 py-3 backdrop-blur sm:px-6">
@@ -24,13 +24,18 @@ export function Navbar() {
         )}
         <ThemeToggle />
         {user ? (
-          <button
-            onClick={async () => { await signOut(); navigate({ to: "/" }); }}
-            className="inline-flex items-center gap-1.5 rounded-md bg-secondary px-3 py-1.5 text-secondary-foreground hover:bg-secondary/80"
-            title="Sign out"
-          >
-            <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Sign out</span>
-          </button>
+          <>
+            {isGuest && (
+              <span className="hidden rounded-full bg-accent/20 px-2 py-0.5 text-xs font-semibold text-accent sm:inline">Guest</span>
+            )}
+            <button
+              onClick={async () => { await signOut(); navigate({ to: "/" }); }}
+              className="inline-flex items-center gap-1.5 rounded-md bg-secondary px-3 py-1.5 text-secondary-foreground hover:bg-secondary/80"
+              title="Sign out"
+            >
+              <LogOut className="h-4 w-4" /> <span className="hidden sm:inline">Sign out</span>
+            </button>
+          </>
         ) : (
           <Link to="/login" className="inline-flex items-center rounded-md bg-primary px-3 py-1.5 font-semibold text-primary-foreground hover:bg-primary/90">Sign in</Link>
         )}
