@@ -1,15 +1,17 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 const MODEL = "google/gemini-3-flash-preview";
 
 const FenSchema = z.object({
-  fen: z.string().min(10).max(120),
+  fen: z.string().min(10).max(100),
 });
 
+// Tightened from 50k → 8k chars (~ a full 200-move PGN with annotations is well under this).
 const PgnSchema = z.object({
-  pgn: z.string().min(1).max(50_000),
+  pgn: z.string().min(1).max(8_000),
 });
 
 type AiResult = { markdown: string; error?: undefined } | { markdown?: undefined; error: string };
@@ -48,6 +50,7 @@ async function callGateway(systemPrompt: string, userContent: string): Promise<A
 }
 
 export const explainPosition = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => FenSchema.parse(input))
   .handler(async ({ data }) => {
     return callGateway(
@@ -57,6 +60,7 @@ export const explainPosition = createServerFn({ method: "POST" })
   });
 
 export const recapGame = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => PgnSchema.parse(input))
   .handler(async ({ data }) => {
     return callGateway(
