@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { signInAsGuest } from "@/lib/auth";
 import { lovable } from "@/integrations/lovable/index";
 
 export const Route = createFileRoute("/login")({
@@ -57,6 +58,19 @@ function LoginPage() {
     }
     if (result.redirected) return;
     navigate({ to: "/lobby" });
+  }
+
+  async function handleGuest() {
+    setLoading(true);
+    try {
+      await signInAsGuest();
+      toast.success("Playing as guest. Your progress will be saved to this device.");
+      navigate({ to: "/lobby" });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not start guest session");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
