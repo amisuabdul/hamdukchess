@@ -312,8 +312,11 @@ export type Database = {
           draws: number
           games_played: number
           id: string
+          is_guest: boolean
+          last_active_at: string
           losses: number
           rating: number
+          subscription_tier: Database["public"]["Enums"]["subscription_tier_enum"]
           username: string
           wins: number
         }
@@ -323,8 +326,11 @@ export type Database = {
           draws?: number
           games_played?: number
           id: string
+          is_guest?: boolean
+          last_active_at?: string
           losses?: number
           rating?: number
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
           username: string
           wins?: number
         }
@@ -334,8 +340,11 @@ export type Database = {
           draws?: number
           games_played?: number
           id?: string
+          is_guest?: boolean
+          last_active_at?: string
           losses?: number
           rating?: number
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
           username?: string
           wins?: number
         }
@@ -357,6 +366,7 @@ export type Database = {
     }
     Enums: {
       friend_status_enum: "pending" | "accepted" | "blocked"
+      subscription_tier_enum: "free" | "plus" | "gold"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -485,6 +495,7 @@ export const Constants = {
   public: {
     Enums: {
       friend_status_enum: ["pending", "accepted", "blocked"],
+      subscription_tier_enum: ["free", "plus", "gold"],
     },
   },
 } as const
