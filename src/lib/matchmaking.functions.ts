@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { Chess } from "chess.js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const TimeControl = z.enum(["3+0", "5+0", "10+0", "15+10"]);
 
@@ -35,8 +36,10 @@ export const submitMove = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    const { supabase, userId } = context;
-    const { data: game, error: gErr } = await supabase
+    const { userId } = context;
+    // Read + write game state with service-role client. Direct UPDATE on games
+    // is no longer allowed via RLS — all mutations must go through here.
+    const { data: game, error: gErr } = await supabaseAdmin
       .from("games")
       .select("id, white_id, black_id, fen, pgn, ply, status")
       .eq("id", data.gameId)
@@ -105,10 +108,10 @@ export const submitMove = createServerFn({ method: "POST" })
         }
       : baseUpdate;
 
-    const { error: uErr } = await supabase.from("games").update(update).eq("id", game.id);
+    const { error: uErr } = await supabaseAdmin.from("games").update(update).eq("id", game.id);
     if (uErr) throw new Error(uErr.message);
 
-    const { error: mErr } = await supabase.from("moves").insert({
+    const { error: mErr } = await supabaseAdmin.from("moves").insert({
       game_id: game.id,
       ply: newPly,
       uci: data.uci,
@@ -119,7 +122,7 @@ export const submitMove = createServerFn({ method: "POST" })
     if (mErr) throw new Error(mErr.message);
 
     if (status === "completed" && result) {
-      await supabase.rpc("apply_elo", {
+      await supabaseAdmin.rpc("apply_elo", {
         p_white: game.white_id,
         p_black: game.black_id,
         p_result: result,
