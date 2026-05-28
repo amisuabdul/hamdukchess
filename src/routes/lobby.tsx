@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2, Swords, Trophy, X } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
+import { GuestUpgradeBanner } from "@/components/GuestUpgradeBanner";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { findOrJoinMatch, cancelQueue } from "@/lib/matchmaking.functions";
@@ -95,6 +96,7 @@ function LobbyPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <GuestUpgradeBanner />
         <header className="mb-8">
           <h1 className="font-serif text-4xl font-bold tracking-tight">Lobby</h1>
           <p className="mt-1 text-muted-foreground">Pick a time control and we'll match you with a player of similar rating.</p>
