@@ -23,5 +23,5 @@ export function haptic(kind: HapticKind) {
   if (reducedMotion()) return;
   const v = (navigator as Navigator & { vibrate?: (p: number | number[]) => boolean }).vibrate;
   if (typeof v !== "function") return;
-  try { v.call(navigator, PATTERNS[kind]); } catch { /* ignore */ }
+  try { v.call(navigator, PATTERNS[kind] as number & number[]); } catch { /* ignore */ }
 }
