@@ -136,8 +136,8 @@ export const resignGame = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ gameId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    const { supabase, userId } = context;
-    const { data: game, error } = await supabase
+    const { userId } = context;
+    const { data: game, error } = await supabaseAdmin
       .from("games")
       .select("id, white_id, black_id, status")
       .eq("id", data.gameId)
@@ -150,7 +150,7 @@ export const resignGame = createServerFn({ method: "POST" })
     const result = isWhite ? "black" : "white";
     const winnerId = isWhite ? game.black_id : game.white_id;
 
-    const { error: uErr } = await supabase
+    const { error: uErr } = await supabaseAdmin
       .from("games")
       .update({
         status: "completed",
@@ -162,7 +162,7 @@ export const resignGame = createServerFn({ method: "POST" })
       .eq("id", data.gameId);
     if (uErr) throw new Error(uErr.message);
 
-    await supabase.rpc("apply_elo", {
+    await supabaseAdmin.rpc("apply_elo", {
       p_white: game.white_id,
       p_black: game.black_id,
       p_result: result,
