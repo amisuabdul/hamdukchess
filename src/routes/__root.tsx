@@ -11,6 +11,7 @@ import {
 import { Toaster } from "sonner";
 import { initTheme } from "@/lib/theme";
 import { BottomNav } from "@/components/BottomNav";
+import { Sidebar } from "@/components/Sidebar";
 import { supabase } from "@/integrations/supabase/client";
 
 import appCss from "../styles.css?url";
