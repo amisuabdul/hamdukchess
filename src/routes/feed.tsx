@@ -3,7 +3,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Users, Trophy, Swords, UserPlus } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
 import { useAuth } from "@/lib/auth";
 import { getMyFeed, getMyFriends } from "@/lib/social.functions";
 
@@ -27,7 +26,7 @@ function FeedPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+
       <main className="mx-auto grid max-w-5xl gap-6 px-4 py-8 sm:px-6 md:grid-cols-[1fr_320px]">
         <Activity />
         <Friends />

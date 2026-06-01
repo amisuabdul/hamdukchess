@@ -11,6 +11,7 @@ import {
 import { Toaster } from "sonner";
 import { initTheme } from "@/lib/theme";
 import { BottomNav } from "@/components/BottomNav";
+import { Sidebar } from "@/components/Sidebar";
 import { supabase } from "@/integrations/supabase/client";
 
 import appCss from "../styles.css?url";
@@ -151,10 +152,13 @@ function AuthAwareShell() {
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
   return (
-    <>
-      <Outlet />
+    <div className="flex min-h-screen bg-background">
+      <Sidebar />
+      <div className="flex-1 min-w-0 pb-16 md:pb-0">
+        <Outlet />
+      </div>
       <BottomNav />
       <Toaster position="top-right" richColors closeButton theme="system" />
-    </>
+    </div>
   );
 }
