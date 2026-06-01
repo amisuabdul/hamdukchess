@@ -152,10 +152,13 @@ function AuthAwareShell() {
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
   return (
-    <>
-      <Outlet />
+    <div className="flex min-h-screen bg-background">
+      <Sidebar />
+      <div className="flex-1 min-w-0 pb-16 md:pb-0">
+        <Outlet />
+      </div>
       <BottomNav />
       <Toaster position="top-right" richColors closeButton theme="system" />
-    </>
+    </div>
   );
 }
