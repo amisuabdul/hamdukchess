@@ -7,6 +7,7 @@ import {
   Rss,
   MessageSquare,
   Swords,
+  Sparkles,
   LogOut,
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
