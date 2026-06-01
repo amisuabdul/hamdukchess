@@ -305,6 +305,42 @@ export type Database = {
           },
         ]
       }
+      payment_events: {
+        Row: {
+          amount: number | null
+          created_at: string
+          currency: string | null
+          event: string
+          id: string
+          plan_code: string | null
+          raw: Json
+          reference: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          event: string
+          id?: string
+          plan_code?: string | null
+          raw: Json
+          reference?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          event?: string
+          id?: string
+          plan_code?: string | null
+          raw?: Json
+          reference?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           country: string | null
@@ -315,7 +351,11 @@ export type Database = {
           is_guest: boolean
           last_active_at: string
           losses: number
+          paystack_customer_code: string | null
+          paystack_subscription_code: string | null
           rating: number
+          subscription_renews_at: string | null
+          subscription_status: string
           subscription_tier: Database["public"]["Enums"]["subscription_tier_enum"]
           username: string
           wins: number
@@ -329,7 +369,11 @@ export type Database = {
           is_guest?: boolean
           last_active_at?: string
           losses?: number
+          paystack_customer_code?: string | null
+          paystack_subscription_code?: string | null
           rating?: number
+          subscription_renews_at?: string | null
+          subscription_status?: string
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
           username: string
           wins?: number
@@ -343,7 +387,11 @@ export type Database = {
           is_guest?: boolean
           last_active_at?: string
           losses?: number
+          paystack_customer_code?: string | null
+          paystack_subscription_code?: string | null
           rating?: number
+          subscription_renews_at?: string | null
+          subscription_status?: string
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
           username?: string
           wins?: number
