@@ -7,6 +7,7 @@ import {
   Rss,
   MessageSquare,
   Swords,
+  Sparkles,
   LogOut,
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
@@ -28,6 +29,7 @@ export function Sidebar() {
           { to: "/messages", label: "Messages", Icon: MessageSquare },
         ]
       : []),
+    { to: "/billing", label: "Upgrade", Icon: Sparkles },
   ] as const;
 
   return (
