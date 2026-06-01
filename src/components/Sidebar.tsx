@@ -29,6 +29,7 @@ export function Sidebar() {
           { to: "/messages", label: "Messages", Icon: MessageSquare },
         ]
       : []),
+    { to: "/billing", label: "Upgrade", Icon: Sparkles },
   ] as const;
 
   return (
