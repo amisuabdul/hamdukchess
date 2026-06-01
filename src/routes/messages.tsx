@@ -4,7 +4,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { Send, MessageSquare } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -38,7 +37,7 @@ function MessagesPage() {
   if (!user) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
+
         <main className="mx-auto max-w-md px-4 py-16 text-center text-muted-foreground">
           Sign in to view messages.
         </main>
@@ -48,7 +47,7 @@ function MessagesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+
       <main className="mx-auto grid max-w-6xl gap-4 px-4 py-6 sm:px-6 md:grid-cols-[320px_1fr]">
         <ConversationList activeUsername={withUser} />
         <div className="rounded-2xl border border-border bg-card">

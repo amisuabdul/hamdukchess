@@ -4,7 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2, Swords, Trophy, X } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
 import { GuestUpgradeBanner } from "@/components/GuestUpgradeBanner";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -94,7 +93,7 @@ function LobbyPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <GuestUpgradeBanner />
         <header className="mb-8">

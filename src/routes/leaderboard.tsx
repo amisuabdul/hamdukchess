@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Trophy } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/leaderboard")({
@@ -30,7 +29,7 @@ function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+
       <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
         <header className="mb-8 flex items-center gap-3">
           <Trophy className="h-8 w-8 text-accent" />

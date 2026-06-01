@@ -2,7 +2,6 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Trophy, Calendar, Flag, UserPlus, UserCheck, UserMinus, MessageSquare, Check, X } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
 import { useAuth } from "@/lib/auth";
 import { getProfileByUsername } from "@/lib/profile.functions";
 import {
@@ -32,7 +31,7 @@ function ProfileError({ reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+
       <main className="mx-auto max-w-2xl px-4 py-16 text-center">
         <h1 className="font-serif text-2xl font-bold">Could not load profile</h1>
         <button
@@ -49,7 +48,7 @@ function ProfileError({ reset }: { error: Error; reset: () => void }) {
 function NotFound({ username }: { username: string }) {
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+
       <main className="mx-auto max-w-2xl px-4 py-16 text-center">
         <h1 className="font-serif text-2xl font-bold">Player not found</h1>
         <p className="mt-2 text-muted-foreground">No player named "{username}" on Hamduk.</p>
@@ -72,7 +71,7 @@ function ProfilePage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar />
+
         <main className="mx-auto max-w-4xl px-4 py-10 text-muted-foreground">Loading…</main>
       </div>
     );
@@ -85,7 +84,7 @@ function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+
       <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
         <header className="rounded-2xl border border-border bg-card p-6">
           <div className="flex flex-wrap items-start justify-between gap-6">

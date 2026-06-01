@@ -5,7 +5,6 @@ import { Chess, type Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { toast } from "sonner";
 import { Loader2, Flag, ArrowLeft } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { submitMove, resignGame } from "@/lib/matchmaking.functions";
@@ -136,7 +135,7 @@ function PlayPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
+
       <main className="mx-auto grid max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[1fr_300px]">
         <div>
           <Link to="/lobby" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="h-4 w-4" /> Back to lobby</Link>
