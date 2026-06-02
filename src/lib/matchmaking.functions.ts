@@ -21,7 +21,7 @@ export const findOrJoinMatch = createServerFn({ method: "POST" })
       p_time_control: data.timeControl,
       p_rating_window: 200,
       p_variant: data.variant,
-      p_start_fen: startFen,
+      p_start_fen: startFen ?? undefined,
     });
     if (error) throw new Error(error.message);
     return { gameId: gameId as string | null };
@@ -139,7 +139,7 @@ export const submitMove = createServerFn({ method: "POST" })
       endReason = "draw";
     }
 
-    const baseUpdate: Record<string, unknown> = {
+    const baseUpdate = {
       fen: newFen,
       pgn: newPgn,
       ply: newPly,
