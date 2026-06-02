@@ -32,13 +32,13 @@ function LobbyPage() {
   const find = useServerFn(findOrJoinMatch);
   const cancel = useServerFn(cancelQueue);
   const [searching, setSearching] = useState<string | null>(null);
+  const [variant, setVariant] = useState<"standard" | "chess960">("standard");
   const subRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
   }, [loading, user, navigate]);
 
-  // Subscribe to games created with me as a participant
   useEffect(() => {
     if (!user || !searching) return;
     const channel = supabase
@@ -57,7 +57,7 @@ function LobbyPage() {
   async function handleFind(tc: string) {
     setSearching(tc);
     try {
-      const { gameId } = await find({ data: { timeControl: tc as "3+0" | "5+0" | "10+0" | "15+10" } });
+      const { gameId } = await find({ data: { timeControl: tc as "3+0" | "5+0" | "10+0" | "15+10", variant } });
       if (gameId) {
         navigate({ to: "/play/$gameId", params: { gameId } });
       } else {
