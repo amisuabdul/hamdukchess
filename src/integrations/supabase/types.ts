@@ -121,52 +121,115 @@ export type Database = {
           },
         ]
       }
+      game_events: {
+        Row: {
+          by_user: string | null
+          created_at: string
+          game_id: string
+          id: number
+          payload: Json
+          type: string
+        }
+        Insert: {
+          by_user?: string | null
+          created_at?: string
+          game_id: string
+          id?: number
+          payload?: Json
+          type: string
+        }
+        Update: {
+          by_user?: string | null
+          created_at?: string
+          game_id?: string
+          id?: number
+          payload?: Json
+          type?: string
+        }
+        Relationships: []
+      }
       games: {
         Row: {
           black_id: string
+          chess960_start_fen: string | null
           created_at: string
+          draw_offer_at: string | null
+          draw_offer_by: string | null
           end_reason: string | null
           ended_at: string | null
           fen: string
           id: string
+          increment_sec: number | null
+          initial_sec: number | null
+          last_clock_update: string | null
           last_move_at: string
           pgn: string
           ply: number
+          rated: boolean
           result: string | null
           status: string
+          takeback_offer_at: string | null
+          takeback_offer_by: string | null
+          time_black_ms: number | null
           time_control: string
+          time_white_ms: number | null
+          variant: string
           white_id: string
           winner_id: string | null
         }
         Insert: {
           black_id: string
+          chess960_start_fen?: string | null
           created_at?: string
+          draw_offer_at?: string | null
+          draw_offer_by?: string | null
           end_reason?: string | null
           ended_at?: string | null
           fen?: string
           id?: string
+          increment_sec?: number | null
+          initial_sec?: number | null
+          last_clock_update?: string | null
           last_move_at?: string
           pgn?: string
           ply?: number
+          rated?: boolean
           result?: string | null
           status?: string
+          takeback_offer_at?: string | null
+          takeback_offer_by?: string | null
+          time_black_ms?: number | null
           time_control: string
+          time_white_ms?: number | null
+          variant?: string
           white_id: string
           winner_id?: string | null
         }
         Update: {
           black_id?: string
+          chess960_start_fen?: string | null
           created_at?: string
+          draw_offer_at?: string | null
+          draw_offer_by?: string | null
           end_reason?: string | null
           ended_at?: string | null
           fen?: string
           id?: string
+          increment_sec?: number | null
+          initial_sec?: number | null
+          last_clock_update?: string | null
           last_move_at?: string
           pgn?: string
           ply?: number
+          rated?: boolean
           result?: string | null
           status?: string
+          takeback_offer_at?: string | null
+          takeback_offer_by?: string | null
+          time_black_ms?: number | null
           time_control?: string
+          time_white_ms?: number | null
+          variant?: string
           white_id?: string
           winner_id?: string | null
         }
@@ -257,6 +320,33 @@ export type Database = {
           },
         ]
       }
+      move_telemetry: {
+        Row: {
+          created_at: string
+          elapsed_ms: number
+          game_id: string
+          id: number
+          ply: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          elapsed_ms: number
+          game_id: string
+          id?: number
+          ply: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          elapsed_ms?: number
+          game_id?: string
+          id?: number
+          ply?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       moves: {
         Row: {
           by_user: string
@@ -346,6 +436,8 @@ export type Database = {
           country: string | null
           created_at: string
           draws: number
+          flag_reason: string | null
+          flagged_for_review: boolean
           games_played: number
           id: string
           is_guest: boolean
@@ -364,6 +456,8 @@ export type Database = {
           country?: string | null
           created_at?: string
           draws?: number
+          flag_reason?: string | null
+          flagged_for_review?: boolean
           games_played?: number
           id: string
           is_guest?: boolean
@@ -382,6 +476,8 @@ export type Database = {
           country?: string | null
           created_at?: string
           draws?: number
+          flag_reason?: string | null
+          flagged_for_review?: boolean
           games_played?: number
           id?: string
           is_guest?: boolean
@@ -408,7 +504,12 @@ export type Database = {
         Returns: undefined
       }
       find_or_join_match: {
-        Args: { p_rating_window?: number; p_time_control: string }
+        Args: {
+          p_rating_window?: number
+          p_start_fen?: string
+          p_time_control: string
+          p_variant?: string
+        }
         Returns: string
       }
     }

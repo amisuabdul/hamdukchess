@@ -32,13 +32,13 @@ function LobbyPage() {
   const find = useServerFn(findOrJoinMatch);
   const cancel = useServerFn(cancelQueue);
   const [searching, setSearching] = useState<string | null>(null);
+  const [variant, setVariant] = useState<"standard" | "chess960">("standard");
   const subRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
   }, [loading, user, navigate]);
 
-  // Subscribe to games created with me as a participant
   useEffect(() => {
     if (!user || !searching) return;
     const channel = supabase
@@ -57,7 +57,7 @@ function LobbyPage() {
   async function handleFind(tc: string) {
     setSearching(tc);
     try {
-      const { gameId } = await find({ data: { timeControl: tc as "3+0" | "5+0" | "10+0" | "15+10" } });
+      const { gameId } = await find({ data: { timeControl: tc as "3+0" | "5+0" | "10+0" | "15+10", variant } });
       if (gameId) {
         navigate({ to: "/play/$gameId", params: { gameId } });
       } else {
@@ -104,6 +104,18 @@ function LobbyPage() {
         <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
           <section>
             <h2 className="mb-4 flex items-center gap-2 font-serif text-xl font-semibold"><Swords className="h-5 w-5 text-primary" /> Find a game</h2>
+            <div className="mb-4 inline-flex rounded-lg border border-border bg-card p-1">
+              {(["standard", "chess960"] as const).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setVariant(v)}
+                  disabled={!!searching}
+                  className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${variant === v ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"} disabled:opacity-50`}
+                >
+                  {v === "standard" ? "Standard" : "Chess960"}
+                </button>
+              ))}
+            </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {TIME_CONTROLS.map((tc) => {
                 const isSearching = searching === tc.id;
