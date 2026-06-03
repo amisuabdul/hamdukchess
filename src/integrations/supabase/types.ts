@@ -151,6 +151,9 @@ export type Database = {
       games: {
         Row: {
           black_id: string
+          black_rating_before: number | null
+          black_rating_delta: number | null
+          bot_persona_id: string | null
           chess960_start_fen: string | null
           created_at: string
           draw_offer_at: string | null
@@ -161,11 +164,13 @@ export type Database = {
           id: string
           increment_sec: number | null
           initial_sec: number | null
+          is_bot_game: boolean
           last_clock_update: string | null
           last_move_at: string
           pgn: string
           ply: number
           rated: boolean
+          region: string
           result: string | null
           status: string
           takeback_offer_at: string | null
@@ -175,10 +180,15 @@ export type Database = {
           time_white_ms: number | null
           variant: string
           white_id: string
+          white_rating_before: number | null
+          white_rating_delta: number | null
           winner_id: string | null
         }
         Insert: {
           black_id: string
+          black_rating_before?: number | null
+          black_rating_delta?: number | null
+          bot_persona_id?: string | null
           chess960_start_fen?: string | null
           created_at?: string
           draw_offer_at?: string | null
@@ -189,11 +199,13 @@ export type Database = {
           id?: string
           increment_sec?: number | null
           initial_sec?: number | null
+          is_bot_game?: boolean
           last_clock_update?: string | null
           last_move_at?: string
           pgn?: string
           ply?: number
           rated?: boolean
+          region?: string
           result?: string | null
           status?: string
           takeback_offer_at?: string | null
@@ -203,10 +215,15 @@ export type Database = {
           time_white_ms?: number | null
           variant?: string
           white_id: string
+          white_rating_before?: number | null
+          white_rating_delta?: number | null
           winner_id?: string | null
         }
         Update: {
           black_id?: string
+          black_rating_before?: number | null
+          black_rating_delta?: number | null
+          bot_persona_id?: string | null
           chess960_start_fen?: string | null
           created_at?: string
           draw_offer_at?: string | null
@@ -217,11 +234,13 @@ export type Database = {
           id?: string
           increment_sec?: number | null
           initial_sec?: number | null
+          is_bot_game?: boolean
           last_clock_update?: string | null
           last_move_at?: string
           pgn?: string
           ply?: number
           rated?: boolean
+          region?: string
           result?: string | null
           status?: string
           takeback_offer_at?: string | null
@@ -231,6 +250,8 @@ export type Database = {
           time_white_ms?: number | null
           variant?: string
           white_id?: string
+          white_rating_before?: number | null
+          white_rating_delta?: number | null
           winner_id?: string | null
         }
         Relationships: [
@@ -259,22 +280,31 @@ export type Database = {
       }
       matchmaking_queue: {
         Row: {
+          is_priority: boolean
           joined_at: string
           rating: number
+          region: string
           time_control: string
           user_id: string
+          variant: string
         }
         Insert: {
+          is_priority?: boolean
           joined_at?: string
           rating: number
+          region?: string
           time_control: string
           user_id: string
+          variant?: string
         }
         Update: {
+          is_priority?: boolean
           joined_at?: string
           rating?: number
+          region?: string
           time_control?: string
           user_id?: string
+          variant?: string
         }
         Relationships: []
       }
@@ -494,23 +524,92 @@ export type Database = {
         }
         Relationships: []
       }
+      ratings: {
+        Row: {
+          bot_games: number
+          draws: number
+          games_played: number
+          id: string
+          losses: number
+          rating: number
+          time_control: string
+          updated_at: string
+          user_id: string
+          variant: string
+          wins: number
+        }
+        Insert: {
+          bot_games?: number
+          draws?: number
+          games_played?: number
+          id?: string
+          losses?: number
+          rating?: number
+          time_control: string
+          updated_at?: string
+          user_id: string
+          variant?: string
+          wins?: number
+        }
+        Update: {
+          bot_games?: number
+          draws?: number
+          games_played?: number
+          id?: string
+          losses?: number
+          rating?: number
+          time_control?: string
+          updated_at?: string
+          user_id?: string
+          variant?: string
+          wins?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      apply_elo: {
-        Args: { p_black: string; p_result: string; p_white: string }
+      apply_elo:
+        | {
+            Args: { p_black: string; p_result: string; p_white: string }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_black: string
+              p_game_id?: string
+              p_result: string
+              p_time_control?: string
+              p_variant?: string
+              p_white: string
+            }
+            Returns: undefined
+          }
+      find_or_join_match:
+        | {
+            Args: {
+              p_rating_window?: number
+              p_start_fen?: string
+              p_time_control: string
+              p_variant?: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_rating_window?: number
+              p_region?: string
+              p_start_fen?: string
+              p_time_control: string
+              p_variant?: string
+            }
+            Returns: string
+          }
+      record_bot_game: {
+        Args: { p_time_control: string; p_variant?: string }
         Returns: undefined
-      }
-      find_or_join_match: {
-        Args: {
-          p_rating_window?: number
-          p_start_fen?: string
-          p_time_control: string
-          p_variant?: string
-        }
-        Returns: string
       }
     }
     Enums: {
