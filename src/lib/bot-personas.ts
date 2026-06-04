@@ -2,7 +2,22 @@
 // blunder injection, and eval-noise randomness. Legacy fields (skill,
 // blunderChance, trait, tagline, avatar) preserved for existing callers.
 
+import portraitArmyLegend    from "@/assets/bots/army_legend.jpg";
+import portraitAgbero        from "@/assets/bots/agbero.jpg";
+import portraitIyaamala      from "@/assets/bots/iyaamala.jpg";
+import portraitBabaIjebu     from "@/assets/bots/baba_ijebu.jpg";
+import portraitMamaCass      from "@/assets/bots/mama_cass.jpg";
+import portraitAreaFather    from "@/assets/bots/area_father.jpg";
+import portraitZoboMaster    from "@/assets/bots/zobo_master.jpg";
+import portraitThirdMainland from "@/assets/bots/third_mainland.jpg";
+import portraitEkoAtlantic   from "@/assets/bots/eko_atlantic.jpg";
+import portraitQueenAmina    from "@/assets/bots/queen_amina.jpg";
+import portraitObafemi       from "@/assets/bots/obafemi.jpg";
+import portraitOduduwa       from "@/assets/bots/oduduwa.jpg";
+import portraitNaijaLegend   from "@/assets/bots/naija_legend.jpg";
+
 export type BotTier = "free" | "plus";
+
 
 export type BotPersona = {
   id: string;
