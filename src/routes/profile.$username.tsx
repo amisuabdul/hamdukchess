@@ -172,6 +172,48 @@ function ProfilePage() {
   );
 }
 
+function RatingsPanel({ userId }: { userId: string }) {
+  const fetchRatings = useServerFn(getUserRatings);
+  const { data } = useQuery({
+    queryKey: ["ratings", userId],
+    queryFn: () => fetchRatings({ data: { userId } }),
+  });
+  const ratings = data?.ratings ?? [];
+  if (ratings.length === 0) return null;
+
+  const tcOrder = ["3+0", "5+0", "10+0", "15+10"];
+  const sorted = [...ratings].sort((a, b) => {
+    const ai = tcOrder.indexOf(a.time_control);
+    const bi = tcOrder.indexOf(b.time_control);
+    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+  });
+
+  return (
+    <section className="mt-6">
+      <h2 className="mb-3 font-serif text-lg font-bold">Ratings by time control</h2>
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {sorted.map((r) => {
+          const provisional = r.games_played < 10;
+          return (
+            <div key={`${r.time_control}-${r.variant}`} className="rounded-xl border border-border bg-card p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                {r.time_control} · {r.variant}
+              </p>
+              <p className="mt-1 font-mono text-2xl font-bold text-primary">
+                {provisional ? "~" : ""}{r.rating}
+              </p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">
+                {r.games_played} rated · {r.wins}W / {r.losses}L / {r.draws}D
+                {r.bot_games > 0 && <span> · {r.bot_games} vs bot</span>}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function Stat({ label, value, accent }: { label: string; value: string | number; accent?: string }) {
   return (
     <div className="rounded-xl border border-border bg-background/50 p-3">
