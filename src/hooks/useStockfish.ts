@@ -1,29 +1,9 @@
 import { useEffect, useRef } from "react";
+import { pickDepth, pickFromPvs, type BotMoveOpts, type Pv } from "@/lib/bot-engine";
 
 type BestMoveCb = (uci: string) => void;
 
-type BotMoveOpts = {
-  depthMin: number;
-  depthMax: number;
-  /** 0..1 — chance to play 2nd/3rd-best instead of best */
-  blunderRate: number;
-  /** Centipawn-scale gaussian noise added to PV scores */
-  randomness: number;
-  movetimeMs: number;
-  /** UCI moves to prefer on move 1 if legal (rough opening book) */
-  openingRepertoire?: string[];
-  /** Current ply (used to gate opening book) */
-  ply?: number;
-};
-
-type Pv = { move: string; score: number };
-
-function gaussian(): number {
-  // Box-Muller
-  const u = 1 - Math.random();
-  const v = Math.random();
-  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
-}
+export type { BotMoveOpts };
 
 export function useStockfish() {
   const workerRef = useRef<Worker | null>(null);
@@ -44,14 +24,12 @@ export function useStockfish() {
       const line = typeof e.data === "string" ? e.data : "";
 
       if (modeRef.current === "multi") {
-        // Parse MultiPV info lines: "info ... multipv N ... score cp X ... pv MOVE ..."
         const mpv = line.match(/multipv\s+(\d+)/);
         const score = line.match(/score\s+(cp|mate)\s+(-?\d+)/);
         const pv = line.match(/\spv\s+(\S+)/);
         if (mpv && score && pv) {
           const idx = parseInt(mpv[1], 10) - 1;
           const raw = parseInt(score[2], 10);
-          // Treat mate as a very large cp score, sign-preserved
           const cp = score[1] === "mate" ? Math.sign(raw) * 100000 : raw;
           pvsRef.current[idx] = { move: pv[1], score: cp };
         }
@@ -82,7 +60,7 @@ export function useStockfish() {
     };
   }, []);
 
-  /** Legacy / simple: ask Stockfish for best move at a given skill level. */
+  /** Simple best-move with Stockfish skill level (legacy). */
   const requestMove = (fen: string, skill: number, movetimeMs: number, cb: BestMoveCb) => {
     const w = workerRef.current;
     if (!w) return;
@@ -94,20 +72,16 @@ export function useStockfish() {
     w.postMessage(`go movetime ${movetimeMs}`);
   };
 
-  /** Bot move with depth range, blunder injection, eval noise, and tiny opening book. */
+  /** Bot move with depth range, MultiPV, blunder injection, noise, and book. */
   const requestBotMove = (fen: string, opts: BotMoveOpts, cb: BestMoveCb) => {
     const w = workerRef.current;
     if (!w) return;
 
-    // Opening book: very early plies pick from repertoire if legal-shaped (rough — engine validates anyway via go).
-    if (opts.openingRepertoire && (opts.ply ?? 0) <= 1 && opts.openingRepertoire.length > 0) {
+    // Tiny opening book — first move of the side only
+    if (opts.openingRepertoire && (opts.ply ?? 0) === 0 && fen.split(" ")[1] === "w") {
       const head = opts.openingRepertoire[Math.floor(Math.random() * opts.openingRepertoire.length)];
-      // Heuristic: only trust opening book on the very first move of the side
-      if ((opts.ply ?? 0) === 0 && fen.split(" ")[1] === "w") {
-        // Issue normal MultiPV but bias toward head — simplest: just play book move directly.
-        setTimeout(() => cb(head), 50);
-        return;
-      }
+      setTimeout(() => cb(head), 50);
+      return;
     }
 
     cbRef.current = cb;
@@ -115,30 +89,11 @@ export function useStockfish() {
     pvsRef.current = [];
     optsRef.current = opts;
 
-    const depth = opts.depthMin + Math.floor(Math.random() * (opts.depthMax - opts.depthMin + 1));
+    const depth = pickDepth(opts);
     w.postMessage("setoption name MultiPV value 3");
     w.postMessage(`position fen ${fen}`);
     w.postMessage(`go depth ${depth} movetime ${opts.movetimeMs}`);
   };
 
   return { requestMove, requestBotMove };
-}
-
-function pickFromPvs(pvs: Pv[], opts: BotMoveOpts): string | undefined {
-  const filtered = pvs.filter(Boolean);
-  if (filtered.length === 0) return undefined;
-
-  // Add gaussian eval noise
-  const noised = filtered.map((p) => ({
-    move: p.move,
-    score: p.score + gaussian() * opts.randomness * 100,
-  }));
-  noised.sort((a, b) => b.score - a.score);
-
-  // Blunder injection: with probability blunderRate, pick 2nd or 3rd (70/30)
-  if (Math.random() < opts.blunderRate && noised.length > 1) {
-    if (noised.length >= 3 && Math.random() < 0.3) return noised[2].move;
-    return noised[1].move;
-  }
-  return noised[0].move;
 }
