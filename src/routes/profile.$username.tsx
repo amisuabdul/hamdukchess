@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Trophy, Calendar, Flag, UserPlus, UserCheck, UserMinus, MessageSquare, Check, X } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { getProfileByUsername } from "@/lib/profile.functions";
+import { getUserRatings } from "@/lib/ratings.functions";
 import {
   followUser,
   unfollowUser,
@@ -120,6 +121,8 @@ function ProfilePage() {
             <Stat label="Win rate" value={`${winRate}%`} />
           </div>
         </header>
+
+        <RatingsPanel userId={p.id} />
 
         <section className="mt-8">
           <h2 className="mb-3 font-serif text-xl font-bold">Recent games</h2>
