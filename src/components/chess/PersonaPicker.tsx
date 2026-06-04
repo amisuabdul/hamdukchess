@@ -86,11 +86,18 @@ function PersonaRow({
     >
       <div
         className={
-          "size-9 shrink-0 rounded-sm flex items-center justify-center text-base " +
-          (selected ? "bg-zinc-100 text-zinc-900" : "bg-zinc-200 text-zinc-700")
+          "size-10 shrink-0 overflow-hidden rounded-sm ring-1 " +
+          (selected ? "ring-zinc-100" : "ring-black/10")
         }
       >
-        {persona.avatar}
+        <img
+          src={persona.portrait}
+          alt={persona.name}
+          loading="lazy"
+          width={40}
+          height={40}
+          className="h-full w-full object-cover"
+        />
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium truncate flex items-center gap-1.5">

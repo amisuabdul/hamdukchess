@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Chessboard } from "react-chessboard";
-import { Chess, type Square, type PieceSymbol, type Color } from "chess.js";
+import { type Square, type PieceSymbol, type Color } from "chess.js";
+import { Chess } from "chess.js";
 import { useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { useChessGame } from "@/hooks/useChessGame";
 import { useStockfish } from "@/hooks/useStockfish";
 import { sounds } from "@/lib/chess-sounds";
@@ -12,20 +15,36 @@ import { GameStatusBanner } from "./GameStatusBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PersonaPicker } from "./PersonaPicker";
 import { DEFAULT_PERSONA_ID, getPersona } from "@/lib/bot-personas";
+import { recordBotGame } from "@/lib/ratings.functions";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
 
 type Mode = "human" | "engine";
 
 export function ChessApp() {
   const game = useChessGame();
-  const { requestMove } = useStockfish();
+  const { requestBotMove } = useStockfish();
   const navigate = useNavigate();
+  const recordBot = useServerFn(recordBotGame);
+  const { user } = useAuth();
   const [mode, setMode] = useState<Mode>("human");
   const [personaId, setPersonaId] = useState<string>(DEFAULT_PERSONA_ID);
   const [orientation, setOrientation] = useState<"white" | "black">("white");
   const [selected, setSelected] = useState<Square | null>(null);
   const [pendingPromo, setPendingPromo] = useState<{ from: Square; to: Square } | null>(null);
   const engineThinking = useRef(false);
+  const recordedRef = useRef(false);
   const persona = getPersona(personaId);
+  const [userTier, setUserTier] = useState<"free" | "plus" | "gold">("free");
+
+  useEffect(() => {
+    if (!user) { setUserTier("free"); return; }
+    void supabase.from("profiles").select("subscription_tier").eq("id", user.id).single()
+      .then(({ data }) => {
+        const t = data?.subscription_tier as "free" | "plus" | "gold" | undefined;
+        if (t) setUserTier(t);
+      });
+  }, [user]);
 
   // Engine plays as black when mode === "engine"
   const engineColor: Color = "b";
@@ -60,39 +79,52 @@ export function ChessApp() {
     }
   }, [game.status]);
 
-  // Engine move
+  // Engine move — uses MultiPV + blunder injection + eval noise + opening book
   useEffect(() => {
     if (mode !== "engine" || game.gameOver) return;
     if (game.turn !== engineColor) return;
     if (engineThinking.current) return;
     engineThinking.current = true;
     const timer = setTimeout(() => {
-      requestMove(game.fen, persona.skill, persona.movetimeMs, (uci) => {
-        engineThinking.current = false;
-        if (!uci || uci === "(none)") return;
-        // Blunder injection: with persona.blunderChance, pick a random legal move
-        let chosen = uci;
-        if (Math.random() < persona.blunderChance) {
-          try {
-            const c = new Chess(game.fen);
-            const moves = c.moves({ verbose: true });
-            if (moves.length > 0) {
-              const m = moves[Math.floor(Math.random() * moves.length)];
-              chosen = `${m.from}${m.to}${m.promotion ?? ""}`;
-            }
-          } catch { /* fall through to engine move */ }
-        }
-        const from = chosen.slice(0, 2) as Square;
-        const to = chosen.slice(2, 4) as Square;
-        const promo = (chosen[4] as PieceSymbol | undefined) ?? undefined;
-        playWithSound(from, to, promo);
-      });
+      requestBotMove(
+        game.fen,
+        {
+          depthMin: persona.depthMin,
+          depthMax: persona.depthMax,
+          blunderRate: persona.blunderRate,
+          randomness: persona.randomness,
+          movetimeMs: persona.movetimeMs,
+          openingRepertoire: persona.openingRepertoire,
+          ply: game.history.length,
+        },
+        (uci) => {
+          engineThinking.current = false;
+          if (!uci || uci === "(none)") return;
+          const from = uci.slice(0, 2) as Square;
+          const to = uci.slice(2, 4) as Square;
+          const promo = (uci[4] as PieceSymbol | undefined) ?? undefined;
+          playWithSound(from, to, promo);
+        },
+      );
     }, 250);
     return () => {
       clearTimeout(timer);
       engineThinking.current = false;
     };
-  }, [mode, game.turn, game.fen, game.gameOver, requestMove, playWithSound, persona]);
+  }, [mode, game.turn, game.fen, game.gameOver, requestBotMove, playWithSound, persona, game.history.length]);
+
+  // Record bot game once when it ends (no ELO, just bot_games counter)
+  useEffect(() => {
+    if (mode !== "engine" || !game.gameOver || recordedRef.current || !user) return;
+    recordedRef.current = true;
+    void recordBot({ data: { timeControl: "5+0", variant: "standard" } })
+      .catch(() => { /* silent — bot tracking is best-effort */ });
+  }, [mode, game.gameOver, user, recordBot]);
+
+  // Reset record flag on new game
+  useEffect(() => {
+    if (game.history.length === 0) recordedRef.current = false;
+  }, [game.history.length]);
 
   const legalTargets = useMemo<Square[]>(
     () => (selected ? game.legalMovesFor(selected) : []),
@@ -329,15 +361,17 @@ export function ChessApp() {
             <div className="rounded-md bg-panel ring-1 ring-black/5 p-3">
               <PersonaPicker
                 value={personaId}
-                onChange={(id) => { setPersonaId(id); game.reset(); setSelected(null); setPendingPromo(null); }}
+                userTier={userTier}
+                onChange={(id) => { setPersonaId(id); game.reset(); setSelected(null); setPendingPromo(null); recordedRef.current = false; }}
+                onLockedClick={(p) => toast.info(`${p.name} is a Plus opponent — upgrade to unlock.`, { action: { label: "Upgrade", onClick: () => navigate({ to: "/billing" }) } })}
               />
-              <p className="mt-2 text-[11px] text-zinc-500 italic leading-snug">{persona.trait}</p>
+              <p className="mt-2 text-[11px] text-zinc-500 italic leading-snug">{persona.bio}</p>
             </div>
           )}
 
           <p className="text-xs text-zinc-400 leading-normal max-w-[32ch] text-pretty">
             {mode === "engine"
-              ? `Facing ${persona.name} from ${persona.hometown}. Skill ${persona.skill}/20.`
+              ? `Facing ${persona.name} from ${persona.hometown}. Depth ${persona.depthMin}–${persona.depthMax}, ${Math.round(persona.blunderRate * 100)}% blunder rate. Bot games don't affect ELO.`
               : "Hot-seat mode. Two players share the board — flip after each move if needed."}
           </p>
         </aside>
