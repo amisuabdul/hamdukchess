@@ -20,6 +20,7 @@ import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
+import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 
 const PuzzlesRoute = PuzzlesRouteImport.update({
@@ -77,6 +78,11 @@ const PlayGameIdRoute = PlayGameIdRouteImport.update({
   path: '/play/$gameId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
+  id: '/daily/$date',
+  path: '/daily/$date',
+  getParentRoute: () => PuzzlesRoute,
+} as any)
 const ApiPublicPaystackWebhookRoute =
   ApiPublicPaystackWebhookRouteImport.update({
     id: '/api/public/paystack/webhook',
@@ -93,9 +99,10 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
-  '/puzzles': typeof PuzzlesRoute
+  '/puzzles': typeof PuzzlesRouteWithChildren
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
+  '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -107,9 +114,10 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
-  '/puzzles': typeof PuzzlesRoute
+  '/puzzles': typeof PuzzlesRouteWithChildren
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
+  '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
 }
 export interface FileRoutesById {
@@ -122,9 +130,10 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
-  '/puzzles': typeof PuzzlesRoute
+  '/puzzles': typeof PuzzlesRouteWithChildren
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
+  '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
 }
 export interface FileRouteTypes {
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/puzzles'
     | '/play/$gameId'
     | '/profile/$username'
+    | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
     | '/puzzles'
     | '/play/$gameId'
     | '/profile/$username'
+    | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
   id:
     | '__root__'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/puzzles'
     | '/play/$gameId'
     | '/profile/$username'
+    | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
   fileRoutesById: FileRoutesById
 }
@@ -181,7 +193,7 @@ export interface RootRouteChildren {
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
-  PuzzlesRoute: typeof PuzzlesRoute
+  PuzzlesRoute: typeof PuzzlesRouteWithChildren
   PlayGameIdRoute: typeof PlayGameIdRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
@@ -266,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayGameIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/puzzles/daily/$date': {
+      id: '/puzzles/daily/$date'
+      path: '/daily/$date'
+      fullPath: '/puzzles/daily/$date'
+      preLoaderRoute: typeof PuzzlesDailyDateRouteImport
+      parentRoute: typeof PuzzlesRoute
+    }
     '/api/public/paystack/webhook': {
       id: '/api/public/paystack/webhook'
       path: '/api/public/paystack/webhook'
@@ -276,6 +295,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface PuzzlesRouteChildren {
+  PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
+}
+
+const PuzzlesRouteChildren: PuzzlesRouteChildren = {
+  PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
+}
+
+const PuzzlesRouteWithChildren =
+  PuzzlesRoute._addFileChildren(PuzzlesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalysisRoute: AnalysisRoute,
@@ -285,7 +315,7 @@ const rootRouteChildren: RootRouteChildren = {
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
-  PuzzlesRoute: PuzzlesRoute,
+  PuzzlesRoute: PuzzlesRouteWithChildren,
   PlayGameIdRoute: PlayGameIdRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
