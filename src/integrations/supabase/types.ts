@@ -524,6 +524,95 @@ export type Database = {
         }
         Relationships: []
       }
+      puzzle_ratings: {
+        Row: {
+          attempts: number
+          created_at: string
+          id: string
+          leitner_box: number
+          next_due_at: string
+          puzzle_id: string
+          solved_at: string | null
+          success: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          id?: string
+          leitner_box?: number
+          next_due_at?: string
+          puzzle_id: string
+          solved_at?: string | null
+          success: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          id?: string
+          leitner_box?: number
+          next_due_at?: string
+          puzzle_id?: string
+          solved_at?: string | null
+          success?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "puzzle_ratings_puzzle_id_fkey"
+            columns: ["puzzle_id"]
+            isOneToOne: false
+            referencedRelation: "puzzles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      puzzles: {
+        Row: {
+          approved: boolean
+          created_at: string
+          creator_id: string | null
+          daily_date: string | null
+          fen: string
+          id: string
+          rating: number
+          solution: string[]
+          source: string | null
+          themes: string[]
+          updated_at: string
+        }
+        Insert: {
+          approved?: boolean
+          created_at?: string
+          creator_id?: string | null
+          daily_date?: string | null
+          fen: string
+          id?: string
+          rating?: number
+          solution: string[]
+          source?: string | null
+          themes?: string[]
+          updated_at?: string
+        }
+        Update: {
+          approved?: boolean
+          created_at?: string
+          creator_id?: string | null
+          daily_date?: string | null
+          fen?: string
+          id?: string
+          rating?: number
+          solution?: string[]
+          source?: string | null
+          themes?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ratings: {
         Row: {
           bot_games: number
@@ -563,6 +652,39 @@ export type Database = {
           user_id?: string
           variant?: string
           wins?: number
+        }
+        Relationships: []
+      }
+      user_puzzle_stats: {
+        Row: {
+          best_streak: number
+          current_streak: number
+          failed_count: number
+          last_solved_date: string | null
+          rating: number
+          solved_count: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          best_streak?: number
+          current_streak?: number
+          failed_count?: number
+          last_solved_date?: string | null
+          rating?: number
+          solved_count?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          best_streak?: number
+          current_streak?: number
+          failed_count?: number
+          last_solved_date?: string | null
+          rating?: number
+          solved_count?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -610,6 +732,10 @@ export type Database = {
       record_bot_game: {
         Args: { p_time_control: string; p_variant?: string }
         Returns: undefined
+      }
+      submit_puzzle_attempt: {
+        Args: { p_puzzle_id: string; p_success: boolean }
+        Returns: Json
       }
     }
     Enums: {
