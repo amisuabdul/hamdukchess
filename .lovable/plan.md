@@ -1,132 +1,72 @@
+# Puzzles + Game Analysis — Phased Build
 
-## Scope
+This is a large surface (10+ features, 6 new tables, 3 realtime systems). Shipping it as one mega-migration is high risk. I'll cut it into 4 phases and ship them in order. You can stop me after any phase.
 
-Build the full real-time game loop on top of the existing matchmaking + `submitMove` server functions, using Upstash Redis for ephemeral state and Postgres for durable state.
+---
 
-## 1. Infra & schema
+## Phase 1 — Puzzle foundation (all tiers)
 
-**Install:** `@upstash/redis` (HTTP client, Worker-safe).
+**DB migration**
+- `puzzles` — fen, solution (uci[]), themes (text[]), rating, creator_id (nullable for seeded), approved, daily_date (nullable, unique)
+- `puzzle_ratings` — user_id, puzzle_id, success, attempts, leitner_box (1–5), next_due_at, solved_at
+- `user_puzzle_stats` — user_id, rating, solved_count, current_streak, best_streak, last_solved_date
 
-**New file:** `src/lib/redis.server.ts` — single client reading `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` inside a lazy proxy (matches `client.server.ts` pattern).
+**Code**
+- Migrate `src/lib/puzzle-storage.ts` (localStorage) → server fns in `src/lib/puzzles.functions.ts`: `getNextPuzzle` (Leitner-weighted: due failures first, then unseen near user rating ±100), `submitPuzzleAttempt` (ELO ±20, advance/reset Leitner box), `getDailyPuzzle(date)`, `getPuzzleById`
+- Route: `src/routes/puzzles.daily.$date.tsx` with OG meta for share links
+- Update `PuzzleHub` + `PuzzleBoard` to use server fns; keep localStorage as offline fallback for guests
+- Seed 200 puzzles from Lichess open DB (CSV → migration insert)
 
-**Migration:** extend `games`:
-- `variant text not null default 'standard'` — `'standard' | 'chess960'`
-- `chess960_start_fen text`
-- `initial_sec int`, `increment_sec int` — parsed from `time_control` on insert
-- `time_white_ms int`, `time_black_ms int` — server-authoritative clocks
-- `last_clock_update timestamptz`
-- `draw_offer_by uuid`, `draw_offer_at timestamptz` (30s expiry)
-- `takeback_offer_by uuid`, `takeback_offer_at timestamptz`
-- `rated boolean default true` (takebacks block on rated)
+---
 
-**New table:** `game_events` (append-only log: move, draw_offer, draw_accept, draw_decline, takeback_*, abort, resign, flag, disconnect, reconnect, rematch). RLS: readable by participants and spectators (game is public), insert only via service role.
+## Phase 2 — Puzzle Storm (Plus/Gold gated)
 
-**New table:** `move_telemetry` (`game_id`, `ply`, `user_id`, `elapsed_ms`, `created_at`) for anti-cheat. Service-role insert only, readable by admins later.
+**DB**: `puzzle_storm_scores` (user_id, score, solved, mistakes, played_at)
 
-**New column on `profiles`:** `flagged_for_review boolean default false`, `flag_reason text`.
+**Code**
+- `src/routes/puzzles.storm.tsx` — 3-min timer, fetches puzzle stream, +1/−1 scoring
+- Redis: live session state at `storm:{userId}` (TTL 5min), leaderboard at `storm:lb:daily:{yyyy-mm-dd}` and `storm:lb:alltime` (ZADD on completion)
+- Server fns: `startStorm`, `submitStormResult`, `getStormLeaderboard`
+- Tier gate via existing `subscription_tier` check; show upsell for free
 
-## 2. Clock engine
+---
 
-Server is source of truth. In `submitMove`:
-1. Compute `elapsed = now - last_clock_update`, deduct from mover's clock.
-2. If `clock <= 0` and ply ≥ 2 → game ends with `end_reason='flag'`, winner = opponent.
-3. Otherwise add `increment_sec * 1000` to mover's clock, set `last_clock_update = now`.
-4. Persist `time_white_ms`, `time_black_ms`, log `move` event with `elapsed_ms`.
+## Phase 3 — Game Review (Plus/Gold)
 
-**New server fn `checkFlag(gameId)`** — clients call when their displayed clock hits 0 for the opposing player; server recomputes from `last_clock_update` and flags if expired. No background tick needed (Workers have no cron-per-game); clients interpolate client-side every 100ms.
+**DB**: `game_analysis` (game_id, depth, eval_per_ply jsonb, classifications jsonb, accuracy_white, accuracy_black, opening_eco, opening_name)
 
-## 3. Game actions (server fns in `src/lib/game-actions.functions.ts`)
+**Code**
+- `src/lib/game-review.ts` — client-side Stockfish runner (reuse `useStockfish`), depth 14 (Plus) / 20 (Gold), computes ACL + classifications (Brilliant / Good / Inaccuracy / Mistake / Blunder by cp delta thresholds)
+- `src/components/chess/GameReview.tsx` — centipawn loss bar chart (Recharts), move list with classification icons, best-move overlay on board
+- Wire into `play.$gameId.tsx` post-game ("Review game" button)
+- Opening classification: bundled ECO table (`src/lib/eco.ts`, ~500 lines)
 
-- `offerDraw({gameId})` — set `draw_offer_by/at`, log event, broadcast via Realtime (postgres_changes on games row already fires).
-- `respondDraw({gameId, accept})` — must be opponent; if accept → end game `result='draw'`, `end_reason='agreement'`. If decline or >30s → clear offer.
-- `abortGame({gameId})` — only if `ply < 6` (move 3 each), no rating change, `end_reason='abort'`.
-- `resignGame` already exists.
-- `offerRematch({gameId})` / `respondRematch` — on accept, create new game with colors swapped, same `time_control`/`variant`, return new id.
+---
 
-All actions are RLS-safe (service role) and idempotent.
+## Phase 4 — Deferred (call out, build later)
 
-## 4. Premoves & takebacks
+Each is a non-trivial feature on its own; I'll spin them up one at a time after Phase 3 lands:
 
-**Premoves are client-only** (no server state):
-- `src/hooks/usePremoves.ts` — queue of up to 3 `{from,to,promo}`, validated against speculative chess.js after each own move.
-- On opponent move realtime event: validate head of queue against new fen; if legal, fire `submitMove`; else clear queue.
-- Render semi-transparent arrows in `play.$gameId.tsx`.
+- **Puzzle Battle** — Redis matchmaking + realtime channel, 1v1 race-to-5
+- **Puzzle Creator Studio** — FEN editor + Stockfish forced-line verification + admin review queue
+- **Opening Explorer** — needs Hamduk game stats aggregation cron, repertoire CRUD, opponent prep view
+- **Endgame Tablebase** — Syzygy API proxy + Redis 24h cache
+- **Weakness Detection** — batch job recomputing every 10 games, heatmap viz
 
-**Takebacks (casual only):**
-- `requestTakeback({gameId})` — rejected if `rated`. Sets `takeback_offer_by/at`.
-- `respondTakeback({gameId, accept})` — on accept: pop last move from `moves`, rebuild fen from prior move's fen, restore clocks from previous `move_telemetry` row, log event.
+---
 
-## 5. Presence & disconnect (Upstash Redis)
+## Technical notes
 
-**Keys:**
-- `presence:{user_id}` TTL 30s — `"online"` written by client heartbeat every 15s via `heartbeat()` server fn.
-- `presence:count` TTL 60s — recomputed on demand via `SCAN presence:*` (cap 1000) for homepage.
-- `game:{game_id}:disconnect:{user_id}` TTL 30s — set on `markDisconnected`.
+- Stockfish runs in the existing `useStockfish` worker — no new engine infra
+- ELO formula reuses the K=20 model already in `puzzle-storage.ts`
+- All new tables get `GRANT` + RLS scoped to `auth.uid()`; `puzzles.approved=true` is publicly readable
+- Storm/Battle leaderboards live in Redis (already wired via `redis.server.ts`); periodic snapshot to Postgres for durability
 
-**Server fns** in `src/lib/presence.functions.ts`:
-- `heartbeat()` — `SET presence:{uid} online EX 30`.
-- `markDisconnected({gameId})` — sets disconnect key, logs `disconnect` event (triggers realtime for opponent).
-- `claimDisconnectWin({gameId})` — opponent calls after 30s; server checks key still set + game state, then:
-  - ply < 10 → abort, no rating change
-  - ply ≥ 10 → start counting opponent's clock down; if their clock now ≤ 0, end with `end_reason='disconnect'`.
+## Order of operations
 
-**Client (`play.$gameId.tsx`):**
-- `visibilitychange` + `beforeunload` → fire `markDisconnected`.
-- Heartbeat interval while tab visible.
-- On opponent disconnect event → show banner + 30s countdown; on expiry auto-call `claimDisconnectWin`.
+1. Phase 1 migration → approve → regen types → write puzzle server fns + hook up UI + seed
+2. Phase 2 migration → storm route + Redis wiring
+3. Phase 3 migration → review component + Stockfish analysis runner
+4. Pause, review with you, then pick from Phase 4 list
 
-## 6. Chess960
-
-- `src/lib/chess960.ts` — generate one of 960 Fischer-random back ranks (bishops on opposite colors, king between rooks).
-- Extend `findOrJoinMatch` RPC: accept `p_variant`, store with game. Queue key includes variant so 960 players only match 960 players.
-- On game create: if `variant='chess960'`, generate fen, set `fen` + `chess960_start_fen`.
-- `play.$gameId.tsx` already loads fen from row — works as-is. Castling: chess.js supports Chess960 castling when fen has correct castling rights letters.
-
-## 7. Anti-cheat (logging only this pass)
-
-In `submitMove`: insert `move_telemetry` with `elapsed_ms` from client payload.
-
-**Background check (deferred):** Stockfish correlation requires worker infra we don't have yet. For now, add a simple heuristic in `submitMove` after game ends:
-- If `avg(elapsed_ms) < 3000` across ≥ 20 moves → set `profiles.flagged_for_review = true`, `flag_reason = 'fast_moves'`. Engine correlation comes later.
-
-## 8. Rate limits (Redis sliding window)
-
-`src/lib/rate-limit.server.ts` — generic `checkRate(userId, action, limit, windowSec)` using Upstash `INCR` + `EXPIRE`.
-
-Wire into: messages send (10/min), `offerRematch` (acts as invite, 20/day), `findOrJoinMatch` (1 active enforced by existing unique on `matchmaking_queue.user_id`).
-
-## 9. UI changes (`play.$gameId.tsx`)
-
-- Add clock displays (top/bottom of board), interpolated client-side.
-- Buttons: Resign (exists), Offer Draw, Abort (if ply<6), Rematch (if game over), Request Takeback (casual only).
-- Banners: incoming draw/takeback offer with Accept/Decline + 30s ring. Opponent disconnected with countdown.
-- Premove arrows rendered via react-chessboard `customArrows`.
-
-## Out of scope
-
-- Stockfish engine-correlation anti-cheat (needs separate worker).
-- Leaderboard Redis snapshot refresh job (no cron yet — keep reading from `profiles`).
-- B2B API rate keys.
-- Puzzle Storm / Battle Redis keys.
-- Chat / report rate limits (separate features).
-
-## File list
-
-Created:
-- `src/lib/redis.server.ts`
-- `src/lib/rate-limit.server.ts`
-- `src/lib/chess960.ts`
-- `src/lib/game-actions.functions.ts`
-- `src/lib/presence.functions.ts`
-- `src/hooks/usePremoves.ts`
-- `src/hooks/useGameClock.ts`
-- `src/components/chess/GameActionBar.tsx`
-- `src/components/chess/DrawOfferBanner.tsx`
-- `src/components/chess/DisconnectBanner.tsx`
-- migration
-
-Edited:
-- `src/lib/matchmaking.functions.ts` (clocks + telemetry + flag heuristic in `submitMove`; variant in `findOrJoinMatch`)
-- `src/routes/play.$gameId.tsx` (clocks, premoves, action bar, banners, heartbeat)
-- `src/routes/lobby.tsx` (variant toggle)
-- `src/integrations/supabase/types.ts` (auto-regen)
+Want me to start Phase 1?
