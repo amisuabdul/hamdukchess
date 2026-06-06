@@ -571,6 +571,39 @@ export type Database = {
           },
         ]
       }
+      puzzle_storm_scores: {
+        Row: {
+          duration_sec: number
+          id: string
+          mistakes: number
+          mode: string
+          played_at: string
+          score: number
+          solved: number
+          user_id: string
+        }
+        Insert: {
+          duration_sec?: number
+          id?: string
+          mistakes?: number
+          mode?: string
+          played_at?: string
+          score?: number
+          solved?: number
+          user_id: string
+        }
+        Update: {
+          duration_sec?: number
+          id?: string
+          mistakes?: number
+          mode?: string
+          played_at?: string
+          score?: number
+          solved?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       puzzles: {
         Row: {
           approved: boolean
