@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as PuzzlesRouteImport } from './routes/puzzles'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LobbyRouteImport } from './routes/lobby'
@@ -18,17 +17,13 @@ import { Route as FeedRouteImport } from './routes/feed'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PuzzlesIndexRouteImport } from './routes/puzzles.index'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 
-const PuzzlesRoute = PuzzlesRouteImport.update({
-  id: '/puzzles',
-  path: '/puzzles',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MessagesRoute = MessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
@@ -69,6 +64,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PuzzlesIndexRoute = PuzzlesIndexRouteImport.update({
+  id: '/puzzles/',
+  path: '/puzzles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PuzzlesStormRoute = PuzzlesStormRouteImport.update({
   id: '/storm',
   path: '/storm',
@@ -105,10 +105,10 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
-  '/puzzles': typeof PuzzlesRouteWithChildren
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/puzzles/': typeof PuzzlesIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
 }
@@ -121,10 +121,10 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
-  '/puzzles': typeof PuzzlesRouteWithChildren
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/puzzles': typeof PuzzlesIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
 }
@@ -138,10 +138,10 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
-  '/puzzles': typeof PuzzlesRouteWithChildren
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/puzzles/': typeof PuzzlesIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
 }
@@ -156,10 +156,10 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
-    | '/puzzles'
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/puzzles/'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -172,10 +172,10 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
-    | '/puzzles'
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/puzzles'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
   id:
@@ -188,10 +188,10 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
-    | '/puzzles'
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/puzzles/'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
   fileRoutesById: FileRoutesById
@@ -205,21 +205,14 @@ export interface RootRouteChildren {
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
-  PuzzlesRoute: typeof PuzzlesRouteWithChildren
   PlayGameIdRoute: typeof PlayGameIdRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
+  PuzzlesIndexRoute: typeof PuzzlesIndexRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/puzzles': {
-      id: '/puzzles'
-      path: '/puzzles'
-      fullPath: '/puzzles'
-      preLoaderRoute: typeof PuzzlesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/messages': {
       id: '/messages'
       path: '/messages'
@@ -276,6 +269,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/puzzles/': {
+      id: '/puzzles/'
+      path: '/puzzles'
+      fullPath: '/puzzles/'
+      preLoaderRoute: typeof PuzzlesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/puzzles/storm': {
       id: '/puzzles/storm'
       path: '/storm'
@@ -314,19 +314,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface PuzzlesRouteChildren {
-  PuzzlesStormRoute: typeof PuzzlesStormRoute
-  PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
-}
-
-const PuzzlesRouteChildren: PuzzlesRouteChildren = {
-  PuzzlesStormRoute: PuzzlesStormRoute,
-  PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
-}
-
-const PuzzlesRouteWithChildren =
-  PuzzlesRoute._addFileChildren(PuzzlesRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalysisRoute: AnalysisRoute,
@@ -336,11 +323,21 @@ const rootRouteChildren: RootRouteChildren = {
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
-  PuzzlesRoute: PuzzlesRouteWithChildren,
   PlayGameIdRoute: PlayGameIdRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
+  PuzzlesIndexRoute: PuzzlesIndexRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
