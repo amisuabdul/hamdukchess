@@ -227,6 +227,19 @@ export function PuzzleHub() {
               Open today's puzzle
             </Link>
           </div>
+
+          <div className="rounded-md bg-gradient-to-br from-amber-50 to-amber-100/40 ring-1 ring-amber-300/40 p-4">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-amber-700 mb-2">Puzzle Storm · Plus</p>
+            <p className="text-xs text-zinc-700 leading-relaxed">
+              Three minutes. Solve as many tactics as you can. Climb the daily leaderboard.
+            </p>
+            <Link
+              to="/puzzles/storm"
+              className="mt-3 block text-center w-full px-3 py-2 text-xs font-medium bg-zinc-900 text-zinc-100 rounded ring-1 ring-zinc-900 hover:bg-zinc-800 cursor-pointer transition-colors"
+            >
+              Enter the storm →
+            </Link>
+          </div>
         </aside>
       </main>
     </div>
