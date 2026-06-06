@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PuzzleHub } from "@/components/puzzles/PuzzleHub";
 
-export const Route = createFileRoute("/puzzles")({
+export const Route = createFileRoute("/puzzles/")({
   head: () => ({
     meta: [
       { title: "Puzzles — Hamduk Chess" },
