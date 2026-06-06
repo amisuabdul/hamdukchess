@@ -1,0 +1,1 @@
+DELETE FROM public.puzzles WHERE source = 'curated';
