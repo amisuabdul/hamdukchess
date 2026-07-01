@@ -231,8 +231,9 @@ export const acceptRematch = createServerFn({ method: "POST" })
 export const checkFlag = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => GameIdInput.parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const game = await loadGame(data.gameId);
+    assertParticipant(game, context.userId);
     if (game.status !== "active") return { flagged: false };
     if (!game.last_clock_update || !game.initial_sec) return { flagged: false };
     const elapsed = Date.now() - new Date(game.last_clock_update).getTime();
