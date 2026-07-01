@@ -22,6 +22,7 @@ import { usePremoves } from "@/hooks/usePremoves";
 import { GameActionBar } from "@/components/chess/GameActionBar";
 import { OfferBanner } from "@/components/chess/OfferBanner";
 import { DisconnectBanner } from "@/components/chess/DisconnectBanner";
+import { GameReview } from "@/components/chess/GameReview";
 
 type GameRow = {
   id: string;
@@ -80,6 +81,7 @@ function PlayPage() {
   const [submitting, setSubmitting] = useState(false);
   const [opponentDisconnectedAt, setOpponentDisconnectedAt] = useState<string | null>(null);
   const [rematchPending, setRematchPending] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
   const premoves = usePremoves(3);
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [loading, user, navigate]);
@@ -341,6 +343,14 @@ function PlayPage() {
                 <button onClick={handleAcceptRematch} className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90">Accept</button>
               </div>
             )}
+            {game.status === "completed" && chess && chess.history().length > 0 && (
+              <button
+                onClick={() => setReviewOpen(true)}
+                className="mt-3 w-full rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+              >
+                Review game
+              </button>
+            )}
 
             <div className="mt-3">
               <GameActionBar
@@ -365,6 +375,16 @@ function PlayPage() {
           <MoveHistory chess={chess} />
         </aside>
       </main>
+
+      {reviewOpen && chess && game && (
+        <GameReview
+          startFen={game.chess960_start_fen ?? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}
+          sanMoves={chess.history()}
+          orientation={orientation}
+          depth={14}
+          onClose={() => setReviewOpen(false)}
+        />
+      )}
     </div>
   );
 }
