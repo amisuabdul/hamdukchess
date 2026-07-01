@@ -375,6 +375,16 @@ function PlayPage() {
           <MoveHistory chess={chess} />
         </aside>
       </main>
+
+      {reviewOpen && chess && game && (
+        <GameReview
+          startFen={game.chess960_start_fen ?? "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}
+          sanMoves={chess.history()}
+          orientation={orientation}
+          depth={14}
+          onClose={() => setReviewOpen(false)}
+        />
+      )}
     </div>
   );
 }
