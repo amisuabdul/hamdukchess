@@ -15,7 +15,7 @@ import { GameStatusBanner } from "./GameStatusBanner";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PersonaPicker } from "./PersonaPicker";
 import { DEFAULT_PERSONA_ID, getPersona } from "@/lib/bot-personas";
-import { recordBotGame } from "@/lib/ratings.functions";
+import { recordBotGame, getMyBilling } from "@/lib/ratings.functions";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,11 +39,7 @@ export function ChessApp() {
 
   useEffect(() => {
     if (!user) { setUserTier("free"); return; }
-    void supabase.from("profiles").select("subscription_tier").eq("id", user.id).single()
-      .then(({ data }) => {
-        const t = data?.subscription_tier as "free" | "plus" | "gold" | undefined;
-        if (t) setUserTier(t);
-      });
+    void getMyBilling({}).then((b) => setUserTier(b.tier)).catch(() => setUserTier("free"));
   }, [user]);
 
   // Engine plays as black when mode === "engine"

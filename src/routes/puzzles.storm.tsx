@@ -60,12 +60,13 @@ function StormPage() {
       const s = data.session;
       setSignedIn(!!s);
       if (!s) return;
-      const { data: prof } = await supabase
-        .from("profiles")
-        .select("subscription_tier")
-        .eq("id", s.user.id)
-        .maybeSingle();
-      setTier(((prof?.subscription_tier ?? "free") as "free" | "plus" | "gold"));
+      const { getMyBilling } = await import("@/lib/ratings.functions");
+      try {
+        const b = await getMyBilling({});
+        setTier(b.tier);
+      } catch {
+        setTier("free");
+      }
     });
     return () => {
       mounted = false;

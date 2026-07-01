@@ -11,6 +11,7 @@ import {
   initializePaystackCheckout,
   verifyPaystackTransaction,
 } from "@/lib/paystack.functions";
+import { getMyBilling } from "@/lib/ratings.functions";
 import { TIER_PRICING, type PaidTier } from "@/lib/paystack-pricing";
 
 const billingSearchSchema = z.object({
