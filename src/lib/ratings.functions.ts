@@ -36,11 +36,30 @@ export const recordBotGame = createServerFn({ method: "POST" })
     variant: Variant.default("standard"),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
-    const { error } = await supabase.rpc("record_bot_game", {
+    // Route via service role so the SECURITY DEFINER RPC is not directly callable
+    // by authenticated clients, but bot-game stats can still be recorded.
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.rpc("record_bot_game", {
       p_time_control: data.timeControl,
       p_variant: data.variant,
     });
     if (error) throw new Error(error.message);
-    return { ok: true };
+    return { ok: true, userId: context.userId };
+  });
+
+export const getMyBilling = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("profiles")
+      .select("subscription_tier, subscription_status, subscription_renews_at")
+      .eq("id", context.userId)
+      .single();
+    if (error) throw new Error(error.message);
+    return {
+      tier: (data?.subscription_tier ?? "free") as "free" | "plus" | "gold",
+      status: data?.subscription_status ?? "inactive",
+      renewsAt: data?.subscription_renews_at ?? null,
+    };
   });

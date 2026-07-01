@@ -11,6 +11,7 @@ import {
   initializePaystackCheckout,
   verifyPaystackTransaction,
 } from "@/lib/paystack.functions";
+import { getMyBilling } from "@/lib/ratings.functions";
 import { TIER_PRICING, type PaidTier } from "@/lib/paystack-pricing";
 
 const billingSearchSchema = z.object({
@@ -62,17 +63,17 @@ function BillingPage() {
   const verifyFn = useServerFn(verifyPaystackTransaction);
   const [loadingTier, setLoadingTier] = useState<PaidTier | null>(null);
 
+  const getBilling = useServerFn(getMyBilling);
   const { data: profile, refetch } = useQuery({
     queryKey: ["profile-tier", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("subscription_tier, subscription_status, subscription_renews_at")
-        .eq("id", user!.id)
-        .single();
-      if (error) throw error;
-      return data;
+      const b = await getBilling({});
+      return {
+        subscription_tier: b.tier,
+        subscription_status: b.status,
+        subscription_renews_at: b.renewsAt,
+      };
     },
   });
 

@@ -28,11 +28,22 @@ export const onlineCount = createServerFn({ method: "GET" })
     return { count: total };
   });
 
+async function assertGameParticipant(gameId: string, userId: string) {
+  const { data: game, error } = await supabaseAdmin
+    .from("games")
+    .select("white_id, black_id")
+    .eq("id", gameId)
+    .single();
+  if (error || !game) throw new Error("Game not found");
+  if (userId !== game.white_id && userId !== game.black_id) throw new Error("Not a participant");
+}
+
 export const markDisconnected = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ gameId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { userId } = context;
+    await assertGameParticipant(data.gameId, userId);
     await redis.set(`game:${data.gameId}:disconnect:${userId}`, Date.now(), { ex: 30 });
     await supabaseAdmin.from("game_events").insert({
       game_id: data.gameId,
@@ -48,6 +59,7 @@ export const reconnect = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ gameId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { userId } = context;
+    await assertGameParticipant(data.gameId, userId);
     await redis.del(`game:${data.gameId}:disconnect:${userId}`);
     await supabaseAdmin.from("game_events").insert({
       game_id: data.gameId,
