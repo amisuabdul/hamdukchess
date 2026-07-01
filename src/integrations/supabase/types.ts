@@ -121,6 +121,56 @@ export type Database = {
           },
         ]
       }
+      game_analysis: {
+        Row: {
+          accuracy_black: number | null
+          accuracy_white: number | null
+          classifications: Json
+          created_at: string
+          created_by: string | null
+          depth: number
+          eval_per_ply: Json
+          game_id: string
+          id: string
+          opening_eco: string | null
+          opening_name: string | null
+        }
+        Insert: {
+          accuracy_black?: number | null
+          accuracy_white?: number | null
+          classifications: Json
+          created_at?: string
+          created_by?: string | null
+          depth: number
+          eval_per_ply: Json
+          game_id: string
+          id?: string
+          opening_eco?: string | null
+          opening_name?: string | null
+        }
+        Update: {
+          accuracy_black?: number | null
+          accuracy_white?: number | null
+          classifications?: Json
+          created_at?: string
+          created_by?: string | null
+          depth?: number
+          eval_per_ply?: Json
+          game_id?: string
+          id?: string
+          opening_eco?: string | null
+          opening_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "game_analysis_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: true
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       game_events: {
         Row: {
           by_user: string | null
