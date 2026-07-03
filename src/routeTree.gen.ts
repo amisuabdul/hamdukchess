@@ -18,9 +18,11 @@ import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PuzzlesIndexRouteImport } from './routes/puzzles.index'
+import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
+import { Route as LearnTutorialIdRouteImport } from './routes/learn.$tutorialId'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 
@@ -69,6 +71,11 @@ const PuzzlesIndexRoute = PuzzlesIndexRouteImport.update({
   path: '/puzzles/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LearnIndexRoute = LearnIndexRouteImport.update({
+  id: '/learn/',
+  path: '/learn/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PuzzlesStormRoute = PuzzlesStormRouteImport.update({
   id: '/puzzles/storm',
   path: '/puzzles/storm',
@@ -82,6 +89,11 @@ const ProfileUsernameRoute = ProfileUsernameRouteImport.update({
 const PlayGameIdRoute = PlayGameIdRouteImport.update({
   id: '/play/$gameId',
   path: '/play/$gameId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnTutorialIdRoute = LearnTutorialIdRouteImport.update({
+  id: '/learn/$tutorialId',
+  path: '/learn/$tutorialId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
@@ -105,9 +117,11 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/learn/': typeof LearnIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
@@ -121,9 +135,11 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/learn': typeof LearnIndexRoute
   '/puzzles': typeof PuzzlesIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
@@ -138,9 +154,11 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/learn/': typeof LearnIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
@@ -156,9 +174,11 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/learn/$tutorialId'
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/learn/'
     | '/puzzles/'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
@@ -172,9 +192,11 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/learn/$tutorialId'
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/learn'
     | '/puzzles'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
@@ -188,9 +210,11 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/learn/$tutorialId'
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/learn/'
     | '/puzzles/'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
@@ -205,9 +229,11 @@ export interface RootRouteChildren {
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
+  LearnTutorialIdRoute: typeof LearnTutorialIdRoute
   PlayGameIdRoute: typeof PlayGameIdRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
+  LearnIndexRoute: typeof LearnIndexRoute
   PuzzlesIndexRoute: typeof PuzzlesIndexRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
@@ -278,6 +304,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PuzzlesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/learn/': {
+      id: '/learn/'
+      path: '/learn'
+      fullPath: '/learn/'
+      preLoaderRoute: typeof LearnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/puzzles/storm': {
       id: '/puzzles/storm'
       path: '/puzzles/storm'
@@ -297,6 +330,13 @@ declare module '@tanstack/react-router' {
       path: '/play/$gameId'
       fullPath: '/play/$gameId'
       preLoaderRoute: typeof PlayGameIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn/$tutorialId': {
+      id: '/learn/$tutorialId'
+      path: '/learn/$tutorialId'
+      fullPath: '/learn/$tutorialId'
+      preLoaderRoute: typeof LearnTutorialIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/puzzles/daily/$date': {
@@ -325,9 +365,11 @@ const rootRouteChildren: RootRouteChildren = {
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
+  LearnTutorialIdRoute: LearnTutorialIdRoute,
   PlayGameIdRoute: PlayGameIdRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
+  LearnIndexRoute: LearnIndexRoute,
   PuzzlesIndexRoute: PuzzlesIndexRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,

@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Swords,
   Sparkles,
+  GraduationCap,
   LogOut,
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
@@ -21,6 +22,7 @@ export function Sidebar() {
   const topItems = [
     { to: "/", label: "Home", Icon: Home },
     { to: "/puzzles", label: "Puzzles", Icon: Puzzle },
+    { to: "/learn", label: "Learn", Icon: GraduationCap },
     { to: "/analysis", label: "Analysis", Icon: BarChart3 },
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user
