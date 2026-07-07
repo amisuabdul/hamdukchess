@@ -45,17 +45,36 @@ function TacticsIndex() {
   const { user } = useAuth();
   const fetchThemes = useServerFn(getTacticsThemes);
   const fetchStats = useServerFn(getMyPuzzleStats);
+  const fetchProgress = useServerFn(getMyThemeProgress);
 
-  const { data: themes, isLoading } = useQuery({
-    queryKey: ["tactics-themes", user?.id ?? "guest"],
+  const { data: baseThemes, isLoading } = useQuery({
+    queryKey: ["tactics-themes"],
     queryFn: () => fetchThemes(),
-    staleTime: 60_000,
+    staleTime: 5 * 60_000,
   });
 
   const { data: stats } = useQuery({
     queryKey: ["my-puzzle-stats"],
     queryFn: () => fetchStats(),
     enabled: !!user,
+  });
+
+  const { data: progress } = useQuery({
+    queryKey: ["my-theme-progress", user?.id],
+    queryFn: () => fetchProgress(),
+    enabled: !!user,
+  });
+
+  const themes = baseThemes?.map((t) => {
+    const p = progress?.find((r) => r.theme === t.theme);
+    if (!p) return t;
+    return {
+      ...t,
+      attempted: p.attempted,
+      solved: p.solved,
+      due: p.due,
+      accuracy: p.attempted > 0 ? p.solved / p.attempted : 0,
+    };
   });
 
   return (
