@@ -17,8 +17,10 @@ import { Route as FeedRouteImport } from './routes/feed'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TacticsIndexRouteImport } from './routes/tactics.index'
 import { Route as PuzzlesIndexRouteImport } from './routes/puzzles.index'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
+import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
@@ -66,6 +68,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TacticsIndexRoute = TacticsIndexRouteImport.update({
+  id: '/tactics/',
+  path: '/tactics/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PuzzlesIndexRoute = PuzzlesIndexRouteImport.update({
   id: '/puzzles/',
   path: '/puzzles/',
@@ -74,6 +81,11 @@ const PuzzlesIndexRoute = PuzzlesIndexRouteImport.update({
 const LearnIndexRoute = LearnIndexRouteImport.update({
   id: '/learn/',
   path: '/learn/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TacticsThemeRoute = TacticsThemeRouteImport.update({
+  id: '/tactics/$theme',
+  path: '/tactics/$theme',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PuzzlesStormRoute = PuzzlesStormRouteImport.update({
@@ -121,8 +133,10 @@ export interface FileRoutesByFullPath {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/tactics/$theme': typeof TacticsThemeRoute
   '/learn/': typeof LearnIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
+  '/tactics/': typeof TacticsIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
 }
@@ -139,8 +153,10 @@ export interface FileRoutesByTo {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/tactics/$theme': typeof TacticsThemeRoute
   '/learn': typeof LearnIndexRoute
   '/puzzles': typeof PuzzlesIndexRoute
+  '/tactics': typeof TacticsIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
 }
@@ -158,8 +174,10 @@ export interface FileRoutesById {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/tactics/$theme': typeof TacticsThemeRoute
   '/learn/': typeof LearnIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
+  '/tactics/': typeof TacticsIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
 }
@@ -178,8 +196,10 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/tactics/$theme'
     | '/learn/'
     | '/puzzles/'
+    | '/tactics/'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -196,8 +216,10 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/tactics/$theme'
     | '/learn'
     | '/puzzles'
+    | '/tactics'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
   id:
@@ -214,8 +236,10 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/tactics/$theme'
     | '/learn/'
     | '/puzzles/'
+    | '/tactics/'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
   fileRoutesById: FileRoutesById
@@ -233,8 +257,10 @@ export interface RootRouteChildren {
   PlayGameIdRoute: typeof PlayGameIdRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
+  TacticsThemeRoute: typeof TacticsThemeRoute
   LearnIndexRoute: typeof LearnIndexRoute
   PuzzlesIndexRoute: typeof PuzzlesIndexRoute
+  TacticsIndexRoute: typeof TacticsIndexRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
 }
@@ -297,6 +323,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tactics/': {
+      id: '/tactics/'
+      path: '/tactics'
+      fullPath: '/tactics/'
+      preLoaderRoute: typeof TacticsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/puzzles/': {
       id: '/puzzles/'
       path: '/puzzles'
@@ -309,6 +342,13 @@ declare module '@tanstack/react-router' {
       path: '/learn'
       fullPath: '/learn/'
       preLoaderRoute: typeof LearnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tactics/$theme': {
+      id: '/tactics/$theme'
+      path: '/tactics/$theme'
+      fullPath: '/tactics/$theme'
+      preLoaderRoute: typeof TacticsThemeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/puzzles/storm': {
@@ -369,8 +409,10 @@ const rootRouteChildren: RootRouteChildren = {
   PlayGameIdRoute: PlayGameIdRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
+  TacticsThemeRoute: TacticsThemeRoute,
   LearnIndexRoute: LearnIndexRoute,
   PuzzlesIndexRoute: PuzzlesIndexRoute,
+  TacticsIndexRoute: TacticsIndexRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
 }

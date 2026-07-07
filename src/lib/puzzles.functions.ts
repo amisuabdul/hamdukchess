@@ -175,3 +175,106 @@ export const getMyPuzzleStats = createServerFn({ method: "GET" })
       }
     );
   });
+
+export type TacticsThemeStat = {
+  theme: string;
+  total: number;
+  avgRating: number;
+  attempted: number;
+  solved: number;
+  accuracy: number; // 0..1
+  due: number;
+};
+
+/**
+ * Public — list all tactical themes with pool size and average rating.
+ * Dynamic: pulls straight from the puzzles table, no static list.
+ */
+export const getTacticsThemes = createServerFn({ method: "GET" }).handler(async () => {
+  const admin = await getAdmin();
+  const themeAgg = new Map<string, { total: number; ratingSum: number }>();
+  const PAGE = 1000;
+  let from = 0;
+  for (let i = 0; i < 20; i++) {
+    const { data, error } = await admin
+      .from("puzzles")
+      .select("themes,rating")
+      .eq("approved", true)
+      .range(from, from + PAGE - 1);
+    if (error) throw error;
+    if (!data || data.length === 0) break;
+    for (const row of data) {
+      for (const t of (row.themes ?? []) as string[]) {
+        const cur = themeAgg.get(t) ?? { total: 0, ratingSum: 0 };
+        cur.total += 1;
+        cur.ratingSum += row.rating as number;
+        themeAgg.set(t, cur);
+      }
+    }
+    if (data.length < PAGE) break;
+    from += PAGE;
+  }
+  const rows: TacticsThemeStat[] = [];
+  for (const [theme, s] of themeAgg) {
+    rows.push({
+      theme,
+      total: s.total,
+      avgRating: Math.round(s.ratingSum / s.total),
+      attempted: 0,
+      solved: 0,
+      accuracy: 0,
+      due: 0,
+    });
+  }
+  rows.sort((a, b) => b.total - a.total);
+  return rows;
+});
+
+/**
+ * Authed — caller's per-theme attempted/solved counts and due-for-review count.
+ * Merged with getTacticsThemes on the client.
+ */
+export const getMyThemeProgress = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const admin = await getAdmin();
+    const nowIso = new Date().toISOString();
+
+    const { data: attempts, error } = await supabase
+      .from("puzzle_ratings")
+      .select("puzzle_id,attempts,success,next_due_at")
+      .eq("user_id", userId);
+    if (error) throw new Error(error.message);
+    if (!attempts || attempts.length === 0) return [] as Array<{
+      theme: string;
+      attempted: number;
+      solved: number;
+      due: number;
+    }>;
+
+    const ids = attempts.map((a) => a.puzzle_id as string);
+    const { data: pzs } = await admin
+      .from("puzzles")
+      .select("id,themes")
+      .in("id", ids);
+    const idToThemes = new Map<string, string[]>();
+    for (const p of pzs ?? []) idToThemes.set(p.id as string, (p.themes ?? []) as string[]);
+
+    const agg = new Map<string, { attempted: number; solved: number; due: number }>();
+    for (const a of attempts) {
+      const themes = idToThemes.get(a.puzzle_id as string);
+      if (!themes) continue;
+      const attempted = (a.attempts as number) > 0 ? 1 : 0;
+      const solved = a.success ? 1 : 0;
+      const due = a.next_due_at && (a.next_due_at as string) <= nowIso ? 1 : 0;
+      for (const t of themes) {
+        const cur = agg.get(t) ?? { attempted: 0, solved: 0, due: 0 };
+        cur.attempted += attempted;
+        cur.solved += solved;
+        cur.due += due;
+        agg.set(t, cur);
+      }
+    }
+    return Array.from(agg, ([theme, v]) => ({ theme, ...v }));
+  });
