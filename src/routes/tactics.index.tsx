@@ -5,7 +5,7 @@ import { getTacticsThemes, getMyPuzzleStats } from "@/lib/puzzles.functions";
 import { useAuth } from "@/lib/auth";
 import { Flame, Target, Trophy, ChevronRight } from "lucide-react";
 
-export const Route = createFileRoute("/tactics")({
+export const Route = createFileRoute("/tactics/")({
   head: () => ({
     meta: [
       { title: "Tactics Trainer — Hamduk Chess" },
