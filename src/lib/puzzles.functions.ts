@@ -241,13 +241,13 @@ export const getTacticsThemes = createServerFn({ method: "GET" })
       const nowIso = new Date().toISOString();
       const { data: attempts } = await admin
         .from("puzzle_ratings")
-        .select("puzzle_id,attempts,successes,next_due_at")
+        .select("puzzle_id,attempts,success,next_due_at")
         .eq("user_id", userId);
       for (const a of attempts ?? []) {
         const themes = puzzleIdToThemes.get(a.puzzle_id as string);
         if (!themes) continue;
         const attempted = (a.attempts as number) > 0 ? 1 : 0;
-        const solved = (a.successes as number) > 0 ? 1 : 0;
+        const solved = a.success ? 1 : 0;
         const due = a.next_due_at && (a.next_due_at as string) <= nowIso ? 1 : 0;
         for (const t of themes) {
           const cur = userAgg.get(t) ?? { attempted: 0, solved: 0, due: 0 };
