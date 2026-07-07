@@ -187,91 +187,94 @@ export type TacticsThemeStat = {
 };
 
 /**
- * Public — list all tactical themes with pool size and (if signed in)
- * the caller's per-theme attempted/solved counts + due-for-review count.
+ * Public — list all tactical themes with pool size and average rating.
  * Dynamic: pulls straight from the puzzles table, no static list.
  */
-export const getTacticsThemes = createServerFn({ method: "GET" })
-  .handler(async () => {
+export const getTacticsThemes = createServerFn({ method: "GET" }).handler(async () => {
+  const admin = await getAdmin();
+  const themeAgg = new Map<string, { total: number; ratingSum: number }>();
+  const PAGE = 1000;
+  let from = 0;
+  for (let i = 0; i < 20; i++) {
+    const { data, error } = await admin
+      .from("puzzles")
+      .select("themes,rating")
+      .eq("approved", true)
+      .range(from, from + PAGE - 1);
+    if (error) throw error;
+    if (!data || data.length === 0) break;
+    for (const row of data) {
+      for (const t of (row.themes ?? []) as string[]) {
+        const cur = themeAgg.get(t) ?? { total: 0, ratingSum: 0 };
+        cur.total += 1;
+        cur.ratingSum += row.rating as number;
+        themeAgg.set(t, cur);
+      }
+    }
+    if (data.length < PAGE) break;
+    from += PAGE;
+  }
+  const rows: TacticsThemeStat[] = [];
+  for (const [theme, s] of themeAgg) {
+    rows.push({
+      theme,
+      total: s.total,
+      avgRating: Math.round(s.ratingSum / s.total),
+      attempted: 0,
+      solved: 0,
+      accuracy: 0,
+      due: 0,
+    });
+  }
+  rows.sort((a, b) => b.total - a.total);
+  return rows;
+});
+
+/**
+ * Authed — caller's per-theme attempted/solved counts and due-for-review count.
+ * Merged with getTacticsThemes on the client.
+ */
+export const getMyThemeProgress = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
     const admin = await getAdmin();
+    const nowIso = new Date().toISOString();
 
-    // 1) All approved puzzles: themes + rating (paged batches; table is small)
-    const themeAgg = new Map<string, { total: number; ratingSum: number }>();
-    const puzzleIdToThemes = new Map<string, string[]>();
-    const PAGE = 1000;
-    let from = 0;
-    // Cap at 20k to stay bounded; adjust if pool grows.
-    for (let i = 0; i < 20; i++) {
-      const { data, error } = await admin
-        .from("puzzles")
-        .select("id,themes,rating")
-        .eq("approved", true)
-        .range(from, from + PAGE - 1);
-      if (error) throw error;
-      if (!data || data.length === 0) break;
-      for (const row of data) {
-        const themes = (row.themes ?? []) as string[];
-        puzzleIdToThemes.set(row.id as string, themes);
-        for (const t of themes) {
-          const cur = themeAgg.get(t) ?? { total: 0, ratingSum: 0 };
-          cur.total += 1;
-          cur.ratingSum += row.rating as number;
-          themeAgg.set(t, cur);
-        }
-      }
-      if (data.length < PAGE) break;
-      from += PAGE;
-    }
+    const { data: attempts, error } = await supabase
+      .from("puzzle_ratings")
+      .select("puzzle_id,attempts,success,next_due_at")
+      .eq("user_id", userId);
+    if (error) throw new Error(error.message);
+    if (!attempts || attempts.length === 0) return [] as Array<{
+      theme: string;
+      attempted: number;
+      solved: number;
+      due: number;
+    }>;
 
-    // 2) If signed in, pull caller's attempts and split by theme.
-    let userId: string | null = null;
-    try {
-      const { getRequestHeader } = await import("@tanstack/react-start/server");
-      const auth = getRequestHeader("authorization") ?? getRequestHeader("Authorization");
-      if (auth?.startsWith("Bearer ")) {
-        const { data: u } = await admin.auth.getUser(auth.slice(7));
-        userId = u.user?.id ?? null;
-      }
-    } catch {
-      // ignore — treat as anonymous
-    }
+    const ids = attempts.map((a) => a.puzzle_id as string);
+    const { data: pzs } = await admin
+      .from("puzzles")
+      .select("id,themes")
+      .in("id", ids);
+    const idToThemes = new Map<string, string[]>();
+    for (const p of pzs ?? []) idToThemes.set(p.id as string, (p.themes ?? []) as string[]);
 
-    const userAgg = new Map<string, { attempted: number; solved: number; due: number }>();
-    if (userId) {
-      const nowIso = new Date().toISOString();
-      const { data: attempts } = await admin
-        .from("puzzle_ratings")
-        .select("puzzle_id,attempts,success,next_due_at")
-        .eq("user_id", userId);
-      for (const a of attempts ?? []) {
-        const themes = puzzleIdToThemes.get(a.puzzle_id as string);
-        if (!themes) continue;
-        const attempted = (a.attempts as number) > 0 ? 1 : 0;
-        const solved = a.success ? 1 : 0;
-        const due = a.next_due_at && (a.next_due_at as string) <= nowIso ? 1 : 0;
-        for (const t of themes) {
-          const cur = userAgg.get(t) ?? { attempted: 0, solved: 0, due: 0 };
-          cur.attempted += attempted;
-          cur.solved += solved;
-          cur.due += due;
-          userAgg.set(t, cur);
-        }
+    const agg = new Map<string, { attempted: number; solved: number; due: number }>();
+    for (const a of attempts) {
+      const themes = idToThemes.get(a.puzzle_id as string);
+      if (!themes) continue;
+      const attempted = (a.attempts as number) > 0 ? 1 : 0;
+      const solved = a.success ? 1 : 0;
+      const due = a.next_due_at && (a.next_due_at as string) <= nowIso ? 1 : 0;
+      for (const t of themes) {
+        const cur = agg.get(t) ?? { attempted: 0, solved: 0, due: 0 };
+        cur.attempted += attempted;
+        cur.solved += solved;
+        cur.due += due;
+        agg.set(t, cur);
       }
     }
-
-    const rows: TacticsThemeStat[] = [];
-    for (const [theme, s] of themeAgg) {
-      const u = userAgg.get(theme) ?? { attempted: 0, solved: 0, due: 0 };
-      rows.push({
-        theme,
-        total: s.total,
-        avgRating: Math.round(s.ratingSum / s.total),
-        attempted: u.attempted,
-        solved: u.solved,
-        accuracy: u.attempted > 0 ? u.solved / u.attempted : 0,
-        due: u.due,
-      });
-    }
-    rows.sort((a, b) => b.total - a.total);
-    return rows;
+    return Array.from(agg, ([theme, v]) => ({ theme, ...v }));
   });
