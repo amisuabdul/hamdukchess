@@ -9,6 +9,7 @@ import {
   Swords,
   Sparkles,
   GraduationCap,
+  Target,
   LogOut,
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
