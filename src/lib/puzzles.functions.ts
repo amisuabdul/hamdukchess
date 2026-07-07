@@ -175,3 +175,103 @@ export const getMyPuzzleStats = createServerFn({ method: "GET" })
       }
     );
   });
+
+export type TacticsThemeStat = {
+  theme: string;
+  total: number;
+  avgRating: number;
+  attempted: number;
+  solved: number;
+  accuracy: number; // 0..1
+  due: number;
+};
+
+/**
+ * Public — list all tactical themes with pool size and (if signed in)
+ * the caller's per-theme attempted/solved counts + due-for-review count.
+ * Dynamic: pulls straight from the puzzles table, no static list.
+ */
+export const getTacticsThemes = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const admin = await getAdmin();
+
+    // 1) All approved puzzles: themes + rating (paged batches; table is small)
+    const themeAgg = new Map<string, { total: number; ratingSum: number }>();
+    const puzzleIdToThemes = new Map<string, string[]>();
+    const PAGE = 1000;
+    let from = 0;
+    // Cap at 20k to stay bounded; adjust if pool grows.
+    for (let i = 0; i < 20; i++) {
+      const { data, error } = await admin
+        .from("puzzles")
+        .select("id,themes,rating")
+        .eq("approved", true)
+        .range(from, from + PAGE - 1);
+      if (error) throw error;
+      if (!data || data.length === 0) break;
+      for (const row of data) {
+        const themes = (row.themes ?? []) as string[];
+        puzzleIdToThemes.set(row.id as string, themes);
+        for (const t of themes) {
+          const cur = themeAgg.get(t) ?? { total: 0, ratingSum: 0 };
+          cur.total += 1;
+          cur.ratingSum += row.rating as number;
+          themeAgg.set(t, cur);
+        }
+      }
+      if (data.length < PAGE) break;
+      from += PAGE;
+    }
+
+    // 2) If signed in, pull caller's attempts and split by theme.
+    let userId: string | null = null;
+    try {
+      const { getRequestHeader } = await import("@tanstack/react-start/server");
+      const auth = getRequestHeader("authorization") ?? getRequestHeader("Authorization");
+      if (auth?.startsWith("Bearer ")) {
+        const { data: u } = await admin.auth.getUser(auth.slice(7));
+        userId = u.user?.id ?? null;
+      }
+    } catch {
+      // ignore — treat as anonymous
+    }
+
+    const userAgg = new Map<string, { attempted: number; solved: number; due: number }>();
+    if (userId) {
+      const nowIso = new Date().toISOString();
+      const { data: attempts } = await admin
+        .from("puzzle_ratings")
+        .select("puzzle_id,attempts,successes,next_due_at")
+        .eq("user_id", userId);
+      for (const a of attempts ?? []) {
+        const themes = puzzleIdToThemes.get(a.puzzle_id as string);
+        if (!themes) continue;
+        const attempted = (a.attempts as number) > 0 ? 1 : 0;
+        const solved = (a.successes as number) > 0 ? 1 : 0;
+        const due = a.next_due_at && (a.next_due_at as string) <= nowIso ? 1 : 0;
+        for (const t of themes) {
+          const cur = userAgg.get(t) ?? { attempted: 0, solved: 0, due: 0 };
+          cur.attempted += attempted;
+          cur.solved += solved;
+          cur.due += due;
+          userAgg.set(t, cur);
+        }
+      }
+    }
+
+    const rows: TacticsThemeStat[] = [];
+    for (const [theme, s] of themeAgg) {
+      const u = userAgg.get(theme) ?? { attempted: 0, solved: 0, due: 0 };
+      rows.push({
+        theme,
+        total: s.total,
+        avgRating: Math.round(s.ratingSum / s.total),
+        attempted: u.attempted,
+        solved: u.solved,
+        accuracy: u.attempted > 0 ? u.solved / u.attempted : 0,
+        due: u.due,
+      });
+    }
+    rows.sort((a, b) => b.total - a.total);
+    return rows;
+  });
