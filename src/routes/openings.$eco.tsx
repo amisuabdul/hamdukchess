@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getOpeningById } from "@/lib/openings-data";
@@ -58,7 +58,7 @@ function OpeningPage() {
   const rep = repertoire.find((r) => r.eco === eco && r.color === opening.color);
 
   const [tier, setTier] = useState<string | null>(null);
-  useState(() => {
+  useEffect(() => {
     if (!user) return;
     void supabase
       .from("profiles")
@@ -66,7 +66,7 @@ function OpeningPage() {
       .eq("id", user.id)
       .maybeSingle()
       .then(({ data }) => setTier((data?.subscription_tier as string) ?? null));
-  });
+  }, [user]);
   const isGold = tier === "gold";
 
   const [repMsg, setRepMsg] = useState<string | null>(null);
