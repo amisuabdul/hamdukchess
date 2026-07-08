@@ -738,6 +738,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_opening_progress: {
+        Row: {
+          attempts: number
+          correct: number
+          created_at: string
+          eco: string
+          id: string
+          last_practiced_at: string | null
+          mastered_depth: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          correct?: number
+          created_at?: string
+          eco: string
+          id?: string
+          last_practiced_at?: string | null
+          mastered_depth?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          correct?: number
+          created_at?: string
+          eco?: string
+          id?: string
+          last_practiced_at?: string | null
+          mastered_depth?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_puzzle_stats: {
         Row: {
           best_streak: number
@@ -766,6 +802,36 @@ export type Database = {
           last_solved_date?: string | null
           rating?: number
           solved_count?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_repertoire: {
+        Row: {
+          color: string
+          created_at: string
+          eco: string
+          id: string
+          notes: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          eco: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          eco?: string
+          id?: string
+          notes?: string | null
           updated_at?: string
           user_id?: string
         }
