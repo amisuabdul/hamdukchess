@@ -738,6 +738,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_endgame_progress: {
+        Row: {
+          attempts: number
+          best_move_count: number | null
+          completed: boolean
+          created_at: string
+          endgame_id: string
+          id: string
+          last_practiced_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          best_move_count?: number | null
+          completed?: boolean
+          created_at?: string
+          endgame_id: string
+          id?: string
+          last_practiced_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          best_move_count?: number | null
+          completed?: boolean
+          created_at?: string
+          endgame_id?: string
+          id?: string
+          last_practiced_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_opening_progress: {
         Row: {
           attempts: number
