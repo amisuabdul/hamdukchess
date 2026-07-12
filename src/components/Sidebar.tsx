@@ -11,6 +11,7 @@ import {
   GraduationCap,
   Target,
   BookOpen,
+  Crown,
   LogOut,
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
