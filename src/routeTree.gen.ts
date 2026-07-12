@@ -28,6 +28,7 @@ import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
 import { Route as OpeningsEcoRouteImport } from './routes/openings.$eco'
 import { Route as LearnTutorialIdRouteImport } from './routes/learn.$tutorialId'
+import { Route as EndgameIdRouteImport } from './routes/endgame.$id'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 
@@ -126,6 +127,11 @@ const LearnTutorialIdRoute = LearnTutorialIdRouteImport.update({
   path: '/learn/$tutorialId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EndgameIdRoute = EndgameIdRouteImport.update({
+  id: '/endgame/$id',
+  path: '/endgame/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
   id: '/puzzles/daily/$date',
   path: '/puzzles/daily/$date',
@@ -147,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
@@ -170,6 +177,7 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/openings/$eco'
     | '/play/$gameId'
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/openings/$eco'
     | '/play/$gameId'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/openings/$eco'
     | '/play/$gameId'
@@ -289,6 +301,7 @@ export interface RootRouteChildren {
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
+  EndgameIdRoute: typeof EndgameIdRoute
   LearnTutorialIdRoute: typeof LearnTutorialIdRoute
   OpeningsEcoRoute: typeof OpeningsEcoRoute
   PlayGameIdRoute: typeof PlayGameIdRoute
@@ -439,6 +452,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnTutorialIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/endgame/$id': {
+      id: '/endgame/$id'
+      path: '/endgame/$id'
+      fullPath: '/endgame/$id'
+      preLoaderRoute: typeof EndgameIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/puzzles/daily/$date': {
       id: '/puzzles/daily/$date'
       path: '/puzzles/daily/$date'
@@ -465,6 +485,7 @@ const rootRouteChildren: RootRouteChildren = {
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
+  EndgameIdRoute: EndgameIdRoute,
   LearnTutorialIdRoute: LearnTutorialIdRoute,
   OpeningsEcoRoute: OpeningsEcoRoute,
   PlayGameIdRoute: PlayGameIdRoute,
