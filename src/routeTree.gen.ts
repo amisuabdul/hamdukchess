@@ -21,12 +21,14 @@ import { Route as TacticsIndexRouteImport } from './routes/tactics.index'
 import { Route as PuzzlesIndexRouteImport } from './routes/puzzles.index'
 import { Route as OpeningsIndexRouteImport } from './routes/openings.index'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
+import { Route as EndgameIndexRouteImport } from './routes/endgame.index'
 import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
 import { Route as OpeningsEcoRouteImport } from './routes/openings.$eco'
 import { Route as LearnTutorialIdRouteImport } from './routes/learn.$tutorialId'
+import { Route as EndgameIdRouteImport } from './routes/endgame.$id'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 
@@ -90,6 +92,11 @@ const LearnIndexRoute = LearnIndexRouteImport.update({
   path: '/learn/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EndgameIndexRoute = EndgameIndexRouteImport.update({
+  id: '/endgame/',
+  path: '/endgame/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TacticsThemeRoute = TacticsThemeRouteImport.update({
   id: '/tactics/$theme',
   path: '/tactics/$theme',
@@ -120,6 +127,11 @@ const LearnTutorialIdRoute = LearnTutorialIdRouteImport.update({
   path: '/learn/$tutorialId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EndgameIdRoute = EndgameIdRouteImport.update({
+  id: '/endgame/$id',
+  path: '/endgame/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
   id: '/puzzles/daily/$date',
   path: '/puzzles/daily/$date',
@@ -141,12 +153,14 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/openings/': typeof OpeningsIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
@@ -163,12 +177,14 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/endgame': typeof EndgameIndexRoute
   '/learn': typeof LearnIndexRoute
   '/openings': typeof OpeningsIndexRoute
   '/puzzles': typeof PuzzlesIndexRoute
@@ -186,12 +202,14 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/openings/$eco': typeof OpeningsEcoRoute
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/openings/': typeof OpeningsIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
@@ -210,12 +228,14 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/openings/$eco'
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/endgame/'
     | '/learn/'
     | '/openings/'
     | '/puzzles/'
@@ -232,12 +252,14 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/openings/$eco'
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/endgame'
     | '/learn'
     | '/openings'
     | '/puzzles'
@@ -254,12 +276,14 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/openings/$eco'
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/endgame/'
     | '/learn/'
     | '/openings/'
     | '/puzzles/'
@@ -277,12 +301,14 @@ export interface RootRouteChildren {
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
+  EndgameIdRoute: typeof EndgameIdRoute
   LearnTutorialIdRoute: typeof LearnTutorialIdRoute
   OpeningsEcoRoute: typeof OpeningsEcoRoute
   PlayGameIdRoute: typeof PlayGameIdRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
   TacticsThemeRoute: typeof TacticsThemeRoute
+  EndgameIndexRoute: typeof EndgameIndexRoute
   LearnIndexRoute: typeof LearnIndexRoute
   OpeningsIndexRoute: typeof OpeningsIndexRoute
   PuzzlesIndexRoute: typeof PuzzlesIndexRoute
@@ -377,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/endgame/': {
+      id: '/endgame/'
+      path: '/endgame'
+      fullPath: '/endgame/'
+      preLoaderRoute: typeof EndgameIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tactics/$theme': {
       id: '/tactics/$theme'
       path: '/tactics/$theme'
@@ -419,6 +452,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnTutorialIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/endgame/$id': {
+      id: '/endgame/$id'
+      path: '/endgame/$id'
+      fullPath: '/endgame/$id'
+      preLoaderRoute: typeof EndgameIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/puzzles/daily/$date': {
       id: '/puzzles/daily/$date'
       path: '/puzzles/daily/$date'
@@ -445,12 +485,14 @@ const rootRouteChildren: RootRouteChildren = {
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
+  EndgameIdRoute: EndgameIdRoute,
   LearnTutorialIdRoute: LearnTutorialIdRoute,
   OpeningsEcoRoute: OpeningsEcoRoute,
   PlayGameIdRoute: PlayGameIdRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
   TacticsThemeRoute: TacticsThemeRoute,
+  EndgameIndexRoute: EndgameIndexRoute,
   LearnIndexRoute: LearnIndexRoute,
   OpeningsIndexRoute: OpeningsIndexRoute,
   PuzzlesIndexRoute: PuzzlesIndexRoute,

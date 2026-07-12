@@ -11,6 +11,7 @@ import {
   GraduationCap,
   Target,
   BookOpen,
+  Crown,
   LogOut,
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
@@ -27,6 +28,7 @@ export function Sidebar() {
     { to: "/tactics", label: "Tactics", Icon: Target },
     { to: "/learn", label: "Learn", Icon: GraduationCap },
     { to: "/openings", label: "Openings", Icon: BookOpen },
+    { to: "/endgame", label: "Endgame", Icon: Crown },
     { to: "/analysis", label: "Analysis", Icon: BarChart3 },
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user
