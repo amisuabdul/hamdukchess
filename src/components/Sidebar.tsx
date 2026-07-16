@@ -12,6 +12,7 @@ import {
   Target,
   BookOpen,
   Crown,
+  Video,
   LogOut,
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
@@ -29,6 +30,7 @@ export function Sidebar() {
     { to: "/learn", label: "Learn", Icon: GraduationCap },
     { to: "/openings", label: "Openings", Icon: BookOpen },
     { to: "/endgame", label: "Endgame", Icon: Crown },
+    { to: "/lessons", label: "Lessons", Icon: Video },
     { to: "/analysis", label: "Analysis", Icon: BarChart3 },
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user

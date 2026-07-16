@@ -906,6 +906,104 @@ export type Database = {
         }
         Relationships: []
       }
+      user_video_progress: {
+        Row: {
+          completed: boolean
+          created_at: string
+          id: string
+          last_watched_at: string
+          position_sec: number
+          updated_at: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          last_watched_at?: string
+          position_sec?: number
+          updated_at?: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          id?: string
+          last_watched_at?: string
+          position_sec?: number
+          updated_at?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_video_progress_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "video_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_lessons: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          difficulty: string
+          duration_sec: number
+          external_id: string | null
+          id: string
+          instructor: string | null
+          is_premium: boolean
+          published: boolean
+          sort_order: number
+          source: Database["public"]["Enums"]["video_source_enum"]
+          storage_path: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          duration_sec?: number
+          external_id?: string | null
+          id?: string
+          instructor?: string | null
+          is_premium?: boolean
+          published?: boolean
+          sort_order?: number
+          source: Database["public"]["Enums"]["video_source_enum"]
+          storage_path?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          duration_sec?: number
+          external_id?: string | null
+          id?: string
+          instructor?: string | null
+          is_premium?: boolean
+          published?: boolean
+          sort_order?: number
+          source?: Database["public"]["Enums"]["video_source_enum"]
+          storage_path?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -959,6 +1057,7 @@ export type Database = {
     Enums: {
       friend_status_enum: "pending" | "accepted" | "blocked"
       subscription_tier_enum: "free" | "plus" | "gold"
+      video_source_enum: "youtube" | "vimeo" | "cloud"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1088,6 +1187,7 @@ export const Constants = {
     Enums: {
       friend_status_enum: ["pending", "accepted", "blocked"],
       subscription_tier_enum: ["free", "plus", "gold"],
+      video_source_enum: ["youtube", "vimeo", "cloud"],
     },
   },
 } as const
