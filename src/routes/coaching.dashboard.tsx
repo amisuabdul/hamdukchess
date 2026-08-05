@@ -41,7 +41,7 @@ export const Route = createFileRoute("/coaching/dashboard")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: CoachingDashboard;
+  component: CoachingDashboard,
 });
 
 type SlotDraft = { weekday: number; start_minute: number; end_minute: number };
