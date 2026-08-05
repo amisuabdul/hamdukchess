@@ -23,6 +23,7 @@ import { Route as OpeningsIndexRouteImport } from './routes/openings.index'
 import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as EndgameIndexRouteImport } from './routes/endgame.index'
+import { Route as CoachesIndexRouteImport } from './routes/coaches.index'
 import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
@@ -104,6 +105,11 @@ const EndgameIndexRoute = EndgameIndexRouteImport.update({
   path: '/endgame/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoachesIndexRoute = CoachesIndexRouteImport.update({
+  id: '/coaches/',
+  path: '/coaches/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TacticsThemeRoute = TacticsThemeRouteImport.update({
   id: '/tactics/$theme',
   path: '/tactics/$theme',
@@ -173,6 +179,7 @@ export interface FileRoutesByFullPath {
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/lessons/': typeof LessonsIndexRoute
@@ -199,6 +206,7 @@ export interface FileRoutesByTo {
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/coaches': typeof CoachesIndexRoute
   '/endgame': typeof EndgameIndexRoute
   '/learn': typeof LearnIndexRoute
   '/lessons': typeof LessonsIndexRoute
@@ -226,6 +234,7 @@ export interface FileRoutesById {
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/lessons/': typeof LessonsIndexRoute
@@ -254,6 +263,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/coaches/'
     | '/endgame/'
     | '/learn/'
     | '/lessons/'
@@ -280,6 +290,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/coaches'
     | '/endgame'
     | '/learn'
     | '/lessons'
@@ -306,6 +317,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/coaches/'
     | '/endgame/'
     | '/learn/'
     | '/lessons/'
@@ -333,6 +345,7 @@ export interface RootRouteChildren {
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
   TacticsThemeRoute: typeof TacticsThemeRoute
+  CoachesIndexRoute: typeof CoachesIndexRoute
   EndgameIndexRoute: typeof EndgameIndexRoute
   LearnIndexRoute: typeof LearnIndexRoute
   LessonsIndexRoute: typeof LessonsIndexRoute
@@ -443,6 +456,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EndgameIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coaches/': {
+      id: '/coaches/'
+      path: '/coaches'
+      fullPath: '/coaches/'
+      preLoaderRoute: typeof CoachesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tactics/$theme': {
       id: '/tactics/$theme'
       path: '/tactics/$theme'
@@ -533,6 +553,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
   TacticsThemeRoute: TacticsThemeRoute,
+  CoachesIndexRoute: CoachesIndexRoute,
   EndgameIndexRoute: EndgameIndexRoute,
   LearnIndexRoute: LearnIndexRoute,
   LessonsIndexRoute: LessonsIndexRoute,
