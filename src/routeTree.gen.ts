@@ -23,6 +23,7 @@ import { Route as OpeningsIndexRouteImport } from './routes/openings.index'
 import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as EndgameIndexRouteImport } from './routes/endgame.index'
+import { Route as CoachesIndexRouteImport } from './routes/coaches.index'
 import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
@@ -31,6 +32,8 @@ import { Route as OpeningsEcoRouteImport } from './routes/openings.$eco'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as LearnTutorialIdRouteImport } from './routes/learn.$tutorialId'
 import { Route as EndgameIdRouteImport } from './routes/endgame.$id'
+import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboard'
+import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 
@@ -104,6 +107,11 @@ const EndgameIndexRoute = EndgameIndexRouteImport.update({
   path: '/endgame/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoachesIndexRoute = CoachesIndexRouteImport.update({
+  id: '/coaches/',
+  path: '/coaches/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TacticsThemeRoute = TacticsThemeRouteImport.update({
   id: '/tactics/$theme',
   path: '/tactics/$theme',
@@ -144,6 +152,16 @@ const EndgameIdRoute = EndgameIdRouteImport.update({
   path: '/endgame/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoachingDashboardRoute = CoachingDashboardRouteImport.update({
+  id: '/coaching/dashboard',
+  path: '/coaching/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoachesCoachIdRoute = CoachesCoachIdRouteImport.update({
+  id: '/coaches/$coachId',
+  path: '/coaches/$coachId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
   id: '/puzzles/daily/$date',
   path: '/puzzles/daily/$date',
@@ -165,6 +183,8 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/coaches/$coachId': typeof CoachesCoachIdRoute
+  '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
@@ -173,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/lessons/': typeof LessonsIndexRoute
@@ -191,6 +212,8 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/coaches/$coachId': typeof CoachesCoachIdRoute
+  '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
@@ -199,6 +222,7 @@ export interface FileRoutesByTo {
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/coaches': typeof CoachesIndexRoute
   '/endgame': typeof EndgameIndexRoute
   '/learn': typeof LearnIndexRoute
   '/lessons': typeof LessonsIndexRoute
@@ -218,6 +242,8 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/coaches/$coachId': typeof CoachesCoachIdRoute
+  '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
@@ -226,6 +252,7 @@ export interface FileRoutesById {
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
   '/lessons/': typeof LessonsIndexRoute
@@ -246,6 +273,8 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/coaches/$coachId'
+    | '/coaching/dashboard'
     | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/lessons/$id'
@@ -254,6 +283,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/coaches/'
     | '/endgame/'
     | '/learn/'
     | '/lessons/'
@@ -272,6 +302,8 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/coaches/$coachId'
+    | '/coaching/dashboard'
     | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/lessons/$id'
@@ -280,6 +312,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/coaches'
     | '/endgame'
     | '/learn'
     | '/lessons'
@@ -298,6 +331,8 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/coaches/$coachId'
+    | '/coaching/dashboard'
     | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/lessons/$id'
@@ -306,6 +341,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/coaches/'
     | '/endgame/'
     | '/learn/'
     | '/lessons/'
@@ -325,6 +361,8 @@ export interface RootRouteChildren {
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
+  CoachesCoachIdRoute: typeof CoachesCoachIdRoute
+  CoachingDashboardRoute: typeof CoachingDashboardRoute
   EndgameIdRoute: typeof EndgameIdRoute
   LearnTutorialIdRoute: typeof LearnTutorialIdRoute
   LessonsIdRoute: typeof LessonsIdRoute
@@ -333,6 +371,7 @@ export interface RootRouteChildren {
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
   TacticsThemeRoute: typeof TacticsThemeRoute
+  CoachesIndexRoute: typeof CoachesIndexRoute
   EndgameIndexRoute: typeof EndgameIndexRoute
   LearnIndexRoute: typeof LearnIndexRoute
   LessonsIndexRoute: typeof LessonsIndexRoute
@@ -443,6 +482,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EndgameIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coaches/': {
+      id: '/coaches/'
+      path: '/coaches'
+      fullPath: '/coaches/'
+      preLoaderRoute: typeof CoachesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tactics/$theme': {
       id: '/tactics/$theme'
       path: '/tactics/$theme'
@@ -499,6 +545,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EndgameIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coaching/dashboard': {
+      id: '/coaching/dashboard'
+      path: '/coaching/dashboard'
+      fullPath: '/coaching/dashboard'
+      preLoaderRoute: typeof CoachingDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coaches/$coachId': {
+      id: '/coaches/$coachId'
+      path: '/coaches/$coachId'
+      fullPath: '/coaches/$coachId'
+      preLoaderRoute: typeof CoachesCoachIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/puzzles/daily/$date': {
       id: '/puzzles/daily/$date'
       path: '/puzzles/daily/$date'
@@ -525,6 +585,8 @@ const rootRouteChildren: RootRouteChildren = {
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
+  CoachesCoachIdRoute: CoachesCoachIdRoute,
+  CoachingDashboardRoute: CoachingDashboardRoute,
   EndgameIdRoute: EndgameIdRoute,
   LearnTutorialIdRoute: LearnTutorialIdRoute,
   LessonsIdRoute: LessonsIdRoute,
@@ -533,6 +595,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
   TacticsThemeRoute: TacticsThemeRoute,
+  CoachesIndexRoute: CoachesIndexRoute,
   EndgameIndexRoute: EndgameIndexRoute,
   LearnIndexRoute: LearnIndexRoute,
   LessonsIndexRoute: LessonsIndexRoute,
