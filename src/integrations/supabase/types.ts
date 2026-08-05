@@ -46,6 +46,220 @@ export type Database = {
           },
         ]
       }
+      coach_availability: {
+        Row: {
+          coach_id: string
+          created_at: string
+          end_minute: number
+          id: string
+          start_minute: number
+          updated_at: string
+          weekday: number
+        }
+        Insert: {
+          coach_id: string
+          created_at?: string
+          end_minute: number
+          id?: string
+          start_minute: number
+          updated_at?: string
+          weekday: number
+        }
+        Update: {
+          coach_id?: string
+          created_at?: string
+          end_minute?: number
+          id?: string
+          start_minute?: number
+          updated_at?: string
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_availability_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coach_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coach_profiles: {
+        Row: {
+          avg_rating: number
+          bio: string | null
+          created_at: string
+          currency: string
+          display_name: string
+          fide_elo: number | null
+          fide_title: string | null
+          hourly_rate_kobo: number
+          id: string
+          is_active: boolean
+          languages: string[]
+          paystack_subaccount_code: string | null
+          platform_fee_pct: number
+          rating_count: number
+          sessions_completed: number
+          specialties: string[]
+          timezone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avg_rating?: number
+          bio?: string | null
+          created_at?: string
+          currency?: string
+          display_name: string
+          fide_elo?: number | null
+          fide_title?: string | null
+          hourly_rate_kobo?: number
+          id?: string
+          is_active?: boolean
+          languages?: string[]
+          paystack_subaccount_code?: string | null
+          platform_fee_pct?: number
+          rating_count?: number
+          sessions_completed?: number
+          specialties?: string[]
+          timezone?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avg_rating?: number
+          bio?: string | null
+          created_at?: string
+          currency?: string
+          display_name?: string
+          fide_elo?: number | null
+          fide_title?: string | null
+          hourly_rate_kobo?: number
+          id?: string
+          is_active?: boolean
+          languages?: string[]
+          paystack_subaccount_code?: string | null
+          platform_fee_pct?: number
+          rating_count?: number
+          sessions_completed?: number
+          specialties?: string[]
+          timezone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coach_reviews: {
+        Row: {
+          coach_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          session_id: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          coach_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          session_id: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          coach_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          session_id?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_reviews_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coach_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coach_reviews_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "coach_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coach_sessions: {
+        Row: {
+          amount_kobo: number
+          coach_id: string
+          coach_notes: string | null
+          created_at: string
+          currency: string
+          duration_min: number
+          id: string
+          meeting_url: string | null
+          paystack_reference: string | null
+          platform_fee_kobo: number
+          scheduled_at: string
+          status: string
+          student_id: string
+          student_notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_kobo: number
+          coach_id: string
+          coach_notes?: string | null
+          created_at?: string
+          currency?: string
+          duration_min?: number
+          id?: string
+          meeting_url?: string | null
+          paystack_reference?: string | null
+          platform_fee_kobo?: number
+          scheduled_at: string
+          status?: string
+          student_id: string
+          student_notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_kobo?: number
+          coach_id?: string
+          coach_notes?: string | null
+          created_at?: string
+          currency?: string
+          duration_min?: number
+          id?: string
+          meeting_url?: string | null
+          paystack_reference?: string | null
+          platform_fee_kobo?: number
+          scheduled_at?: string
+          status?: string
+          student_id?: string
+          student_notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_sessions_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coach_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       follows: {
         Row: {
           created_at: string
