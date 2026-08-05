@@ -32,6 +32,7 @@ import { Route as OpeningsEcoRouteImport } from './routes/openings.$eco'
 import { Route as LessonsIdRouteImport } from './routes/lessons.$id'
 import { Route as LearnTutorialIdRouteImport } from './routes/learn.$tutorialId'
 import { Route as EndgameIdRouteImport } from './routes/endgame.$id'
+import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboard'
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
@@ -151,6 +152,11 @@ const EndgameIdRoute = EndgameIdRouteImport.update({
   path: '/endgame/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoachingDashboardRoute = CoachingDashboardRouteImport.update({
+  id: '/coaching/dashboard',
+  path: '/coaching/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoachesCoachIdRoute = CoachesCoachIdRouteImport.update({
   id: '/coaches/$coachId',
   path: '/coaches/$coachId',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
+  '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
+  '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
@@ -235,6 +243,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
+  '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
   '/learn/$tutorialId': typeof LearnTutorialIdRoute
   '/lessons/$id': typeof LessonsIdRoute
@@ -265,6 +274,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/coaches/$coachId'
+    | '/coaching/dashboard'
     | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/lessons/$id'
@@ -293,6 +303,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/coaches/$coachId'
+    | '/coaching/dashboard'
     | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/lessons/$id'
@@ -321,6 +332,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/messages'
     | '/coaches/$coachId'
+    | '/coaching/dashboard'
     | '/endgame/$id'
     | '/learn/$tutorialId'
     | '/lessons/$id'
@@ -350,6 +362,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
   CoachesCoachIdRoute: typeof CoachesCoachIdRoute
+  CoachingDashboardRoute: typeof CoachingDashboardRoute
   EndgameIdRoute: typeof EndgameIdRoute
   LearnTutorialIdRoute: typeof LearnTutorialIdRoute
   LessonsIdRoute: typeof LessonsIdRoute
@@ -532,6 +545,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EndgameIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coaching/dashboard': {
+      id: '/coaching/dashboard'
+      path: '/coaching/dashboard'
+      fullPath: '/coaching/dashboard'
+      preLoaderRoute: typeof CoachingDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/coaches/$coachId': {
       id: '/coaches/$coachId'
       path: '/coaches/$coachId'
@@ -566,6 +586,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
   CoachesCoachIdRoute: CoachesCoachIdRoute,
+  CoachingDashboardRoute: CoachingDashboardRoute,
   EndgameIdRoute: EndgameIdRoute,
   LearnTutorialIdRoute: LearnTutorialIdRoute,
   LessonsIdRoute: LessonsIdRoute,

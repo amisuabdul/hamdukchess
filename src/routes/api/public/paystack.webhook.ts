@@ -33,7 +33,7 @@ export const Route = createFileRoute("/api/public/paystack/webhook")({
             amount?: number;
             currency?: string;
             customer?: { customer_code?: string; email?: string };
-            metadata?: { user_id?: string; tier?: PaidTier };
+            metadata?: { user_id?: string; tier?: PaidTier; kind?: string; session_id?: string };
             subscription_code?: string;
             next_payment_date?: string;
           };
@@ -54,6 +54,20 @@ export const Route = createFileRoute("/api/public/paystack/webhook")({
           plan_code: payload.data?.metadata?.tier ?? null,
           raw: payload,
         });
+
+        // Coaching session payments confirm a booking instead of a tier upgrade.
+        if (
+          payload.event === "charge.success" &&
+          payload.data.status === "success" &&
+          payload.data.metadata?.kind === "coach_session" &&
+          payload.data.metadata.session_id
+        ) {
+          await supabaseAdmin
+            .from("coach_sessions")
+            .update({ status: "confirmed" })
+            .eq("id", payload.data.metadata.session_id);
+          return new Response("ok", { status: 200 });
+        }
 
         const tier = payload.data?.metadata?.tier as PaidTier | undefined;
         const userId = payload.data?.metadata?.user_id;
