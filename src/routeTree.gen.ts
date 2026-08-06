@@ -13,6 +13,7 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LobbyRouteImport } from './routes/lobby'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AnalysisRouteImport } from './routes/analysis'
@@ -24,6 +25,7 @@ import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
 import { Route as LearnIndexRouteImport } from './routes/learn.index'
 import { Route as EndgameIndexRouteImport } from './routes/endgame.index'
 import { Route as CoachesIndexRouteImport } from './routes/coaches.index'
+import { Route as AssistantIndexRouteImport } from './routes/assistant.index'
 import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
@@ -34,6 +36,8 @@ import { Route as LearnTutorialIdRouteImport } from './routes/learn.$tutorialId'
 import { Route as EndgameIdRouteImport } from './routes/endgame.$id'
 import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboard'
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
+import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 
@@ -55,6 +59,11 @@ const LobbyRoute = LobbyRouteImport.update({
 const LeaderboardRoute = LeaderboardRouteImport.update({
   id: '/leaderboard',
   path: '/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsightsRoute = InsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FeedRoute = FeedRouteImport.update({
@@ -112,6 +121,11 @@ const CoachesIndexRoute = CoachesIndexRouteImport.update({
   path: '/coaches/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssistantIndexRoute = AssistantIndexRouteImport.update({
+  id: '/assistant/',
+  path: '/assistant/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TacticsThemeRoute = TacticsThemeRouteImport.update({
   id: '/tactics/$theme',
   path: '/tactics/$theme',
@@ -162,6 +176,16 @@ const CoachesCoachIdRoute = CoachesCoachIdRouteImport.update({
   path: '/coaches/$coachId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AssistantThreadIdRoute = AssistantThreadIdRouteImport.update({
+  id: '/assistant/$threadId',
+  path: '/assistant/$threadId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
   id: '/puzzles/daily/$date',
   path: '/puzzles/daily/$date',
@@ -179,10 +203,13 @@ export interface FileRoutesByFullPath {
   '/analysis': typeof AnalysisRoute
   '/billing': typeof BillingRoute
   '/feed': typeof FeedRoute
+  '/insights': typeof InsightsRoute
   '/leaderboard': typeof LeaderboardRoute
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/api/chat': typeof ApiChatRoute
+  '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
@@ -193,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/assistant/': typeof AssistantIndexRoute
   '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
@@ -208,10 +236,13 @@ export interface FileRoutesByTo {
   '/analysis': typeof AnalysisRoute
   '/billing': typeof BillingRoute
   '/feed': typeof FeedRoute
+  '/insights': typeof InsightsRoute
   '/leaderboard': typeof LeaderboardRoute
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/api/chat': typeof ApiChatRoute
+  '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
@@ -222,6 +253,7 @@ export interface FileRoutesByTo {
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/assistant': typeof AssistantIndexRoute
   '/coaches': typeof CoachesIndexRoute
   '/endgame': typeof EndgameIndexRoute
   '/learn': typeof LearnIndexRoute
@@ -238,10 +270,13 @@ export interface FileRoutesById {
   '/analysis': typeof AnalysisRoute
   '/billing': typeof BillingRoute
   '/feed': typeof FeedRoute
+  '/insights': typeof InsightsRoute
   '/leaderboard': typeof LeaderboardRoute
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/api/chat': typeof ApiChatRoute
+  '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/coaching/dashboard': typeof CoachingDashboardRoute
   '/endgame/$id': typeof EndgameIdRoute
@@ -252,6 +287,7 @@ export interface FileRoutesById {
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
   '/tactics/$theme': typeof TacticsThemeRoute
+  '/assistant/': typeof AssistantIndexRoute
   '/coaches/': typeof CoachesIndexRoute
   '/endgame/': typeof EndgameIndexRoute
   '/learn/': typeof LearnIndexRoute
@@ -269,10 +305,13 @@ export interface FileRouteTypes {
     | '/analysis'
     | '/billing'
     | '/feed'
+    | '/insights'
     | '/leaderboard'
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/api/chat'
+    | '/assistant/$threadId'
     | '/coaches/$coachId'
     | '/coaching/dashboard'
     | '/endgame/$id'
@@ -283,6 +322,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/assistant/'
     | '/coaches/'
     | '/endgame/'
     | '/learn/'
@@ -298,10 +338,13 @@ export interface FileRouteTypes {
     | '/analysis'
     | '/billing'
     | '/feed'
+    | '/insights'
     | '/leaderboard'
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/api/chat'
+    | '/assistant/$threadId'
     | '/coaches/$coachId'
     | '/coaching/dashboard'
     | '/endgame/$id'
@@ -312,6 +355,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/assistant'
     | '/coaches'
     | '/endgame'
     | '/learn'
@@ -327,10 +371,13 @@ export interface FileRouteTypes {
     | '/analysis'
     | '/billing'
     | '/feed'
+    | '/insights'
     | '/leaderboard'
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/api/chat'
+    | '/assistant/$threadId'
     | '/coaches/$coachId'
     | '/coaching/dashboard'
     | '/endgame/$id'
@@ -341,6 +388,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/puzzles/storm'
     | '/tactics/$theme'
+    | '/assistant/'
     | '/coaches/'
     | '/endgame/'
     | '/learn/'
@@ -357,10 +405,13 @@ export interface RootRouteChildren {
   AnalysisRoute: typeof AnalysisRoute
   BillingRoute: typeof BillingRoute
   FeedRoute: typeof FeedRoute
+  InsightsRoute: typeof InsightsRoute
   LeaderboardRoute: typeof LeaderboardRoute
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
   MessagesRoute: typeof MessagesRoute
+  ApiChatRoute: typeof ApiChatRoute
+  AssistantThreadIdRoute: typeof AssistantThreadIdRoute
   CoachesCoachIdRoute: typeof CoachesCoachIdRoute
   CoachingDashboardRoute: typeof CoachingDashboardRoute
   EndgameIdRoute: typeof EndgameIdRoute
@@ -371,6 +422,7 @@ export interface RootRouteChildren {
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
   TacticsThemeRoute: typeof TacticsThemeRoute
+  AssistantIndexRoute: typeof AssistantIndexRoute
   CoachesIndexRoute: typeof CoachesIndexRoute
   EndgameIndexRoute: typeof EndgameIndexRoute
   LearnIndexRoute: typeof LearnIndexRoute
@@ -410,6 +462,13 @@ declare module '@tanstack/react-router' {
       path: '/leaderboard'
       fullPath: '/leaderboard'
       preLoaderRoute: typeof LeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insights': {
+      id: '/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof InsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/feed': {
@@ -489,6 +548,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoachesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assistant/': {
+      id: '/assistant/'
+      path: '/assistant'
+      fullPath: '/assistant/'
+      preLoaderRoute: typeof AssistantIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tactics/$theme': {
       id: '/tactics/$theme'
       path: '/tactics/$theme'
@@ -559,6 +625,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoachesCoachIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/assistant/$threadId': {
+      id: '/assistant/$threadId'
+      path: '/assistant/$threadId'
+      fullPath: '/assistant/$threadId'
+      preLoaderRoute: typeof AssistantThreadIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/puzzles/daily/$date': {
       id: '/puzzles/daily/$date'
       path: '/puzzles/daily/$date'
@@ -581,10 +661,13 @@ const rootRouteChildren: RootRouteChildren = {
   AnalysisRoute: AnalysisRoute,
   BillingRoute: BillingRoute,
   FeedRoute: FeedRoute,
+  InsightsRoute: InsightsRoute,
   LeaderboardRoute: LeaderboardRoute,
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,
   MessagesRoute: MessagesRoute,
+  ApiChatRoute: ApiChatRoute,
+  AssistantThreadIdRoute: AssistantThreadIdRoute,
   CoachesCoachIdRoute: CoachesCoachIdRoute,
   CoachingDashboardRoute: CoachingDashboardRoute,
   EndgameIdRoute: EndgameIdRoute,
@@ -595,6 +678,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
   TacticsThemeRoute: TacticsThemeRoute,
+  AssistantIndexRoute: AssistantIndexRoute,
   CoachesIndexRoute: CoachesIndexRoute,
   EndgameIndexRoute: EndgameIndexRoute,
   LearnIndexRoute: LearnIndexRoute,
@@ -608,13 +692,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

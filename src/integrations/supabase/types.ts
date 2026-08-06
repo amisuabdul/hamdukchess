@@ -46,6 +46,79 @@ export type Database = {
           },
         ]
       }
+      assistant_messages: {
+        Row: {
+          created_at: string
+          id: string
+          parts: Json
+          role: string
+          sdk_message_id: string | null
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          parts?: Json
+          role: string
+          sdk_message_id?: string | null
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          parts?: Json
+          role?: string
+          sdk_message_id?: string | null
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assistant_messages_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "assistant_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assistant_threads: {
+        Row: {
+          created_at: string
+          game_id: string | null
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          game_id?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          game_id?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assistant_threads_game_id_fkey"
+            columns: ["game_id"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coach_availability: {
         Row: {
           coach_id: string
@@ -1215,6 +1288,51 @@ export type Database = {
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      weakness_reports: {
+        Row: {
+          capture_heatmap: Json
+          computed_at: string
+          created_at: string
+          games_analyzed: number
+          id: string
+          opening_gaps: Json
+          phase_errors: Json
+          piece_blunders: Json
+          suggestions: Json
+          summary: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          capture_heatmap?: Json
+          computed_at?: string
+          created_at?: string
+          games_analyzed?: number
+          id?: string
+          opening_gaps?: Json
+          phase_errors?: Json
+          piece_blunders?: Json
+          suggestions?: Json
+          summary?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          capture_heatmap?: Json
+          computed_at?: string
+          created_at?: string
+          games_analyzed?: number
+          id?: string
+          opening_gaps?: Json
+          phase_errors?: Json
+          piece_blunders?: Json
+          suggestions?: Json
+          summary?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

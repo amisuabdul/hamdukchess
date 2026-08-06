@@ -14,7 +14,9 @@ import {
   Crown,
   Video,
   Users,
+  Activity,
   LogOut,
+
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -37,11 +39,14 @@ export function Sidebar() {
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user
       ? [
+          { to: "/assistant", label: "AI Coach", Icon: Sparkles },
+          { to: "/insights", label: "My Weaknesses", Icon: Activity },
           { to: "/feed", label: "Feed", Icon: Rss },
           { to: "/messages", label: "Messages", Icon: MessageSquare },
         ]
       : []),
     { to: "/billing", label: "Upgrade", Icon: Sparkles },
+
   ] as const;
 
   return (
