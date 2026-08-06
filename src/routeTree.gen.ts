@@ -13,6 +13,7 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LobbyRouteImport } from './routes/lobby'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AnalysisRouteImport } from './routes/analysis'
@@ -58,6 +59,11 @@ const LobbyRoute = LobbyRouteImport.update({
 const LeaderboardRoute = LeaderboardRouteImport.update({
   id: '/leaderboard',
   path: '/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsightsRoute = InsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FeedRoute = FeedRouteImport.update({
@@ -197,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/analysis': typeof AnalysisRoute
   '/billing': typeof BillingRoute
   '/feed': typeof FeedRoute
+  '/insights': typeof InsightsRoute
   '/leaderboard': typeof LeaderboardRoute
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByTo {
   '/analysis': typeof AnalysisRoute
   '/billing': typeof BillingRoute
   '/feed': typeof FeedRoute
+  '/insights': typeof InsightsRoute
   '/leaderboard': typeof LeaderboardRoute
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
@@ -262,6 +270,7 @@ export interface FileRoutesById {
   '/analysis': typeof AnalysisRoute
   '/billing': typeof BillingRoute
   '/feed': typeof FeedRoute
+  '/insights': typeof InsightsRoute
   '/leaderboard': typeof LeaderboardRoute
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
@@ -296,6 +305,7 @@ export interface FileRouteTypes {
     | '/analysis'
     | '/billing'
     | '/feed'
+    | '/insights'
     | '/leaderboard'
     | '/lobby'
     | '/login'
@@ -328,6 +338,7 @@ export interface FileRouteTypes {
     | '/analysis'
     | '/billing'
     | '/feed'
+    | '/insights'
     | '/leaderboard'
     | '/lobby'
     | '/login'
@@ -360,6 +371,7 @@ export interface FileRouteTypes {
     | '/analysis'
     | '/billing'
     | '/feed'
+    | '/insights'
     | '/leaderboard'
     | '/lobby'
     | '/login'
@@ -393,6 +405,7 @@ export interface RootRouteChildren {
   AnalysisRoute: typeof AnalysisRoute
   BillingRoute: typeof BillingRoute
   FeedRoute: typeof FeedRoute
+  InsightsRoute: typeof InsightsRoute
   LeaderboardRoute: typeof LeaderboardRoute
   LobbyRoute: typeof LobbyRoute
   LoginRoute: typeof LoginRoute
@@ -449,6 +462,13 @@ declare module '@tanstack/react-router' {
       path: '/leaderboard'
       fullPath: '/leaderboard'
       preLoaderRoute: typeof LeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insights': {
+      id: '/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof InsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/feed': {
@@ -641,6 +661,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalysisRoute: AnalysisRoute,
   BillingRoute: BillingRoute,
   FeedRoute: FeedRoute,
+  InsightsRoute: InsightsRoute,
   LeaderboardRoute: LeaderboardRoute,
   LobbyRoute: LobbyRoute,
   LoginRoute: LoginRoute,

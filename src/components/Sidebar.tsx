@@ -37,11 +37,14 @@ export function Sidebar() {
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user
       ? [
+          { to: "/assistant", label: "AI Coach", Icon: Sparkles },
+          { to: "/insights", label: "My Weaknesses", Icon: Activity },
           { to: "/feed", label: "Feed", Icon: Rss },
           { to: "/messages", label: "Messages", Icon: MessageSquare },
         ]
       : []),
     { to: "/billing", label: "Upgrade", Icon: Sparkles },
+
   ] as const;
 
   return (
