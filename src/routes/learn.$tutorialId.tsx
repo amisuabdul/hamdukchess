@@ -34,13 +34,15 @@ export const Route = createFileRoute("/learn/$tutorialId")({
   loader: ({ params }) => {
     const tutorial = getTutorial(params.tutorialId);
     if (!tutorial) throw notFound();
-    return { tutorial };
+    return { tutorialId: tutorial.id };
   },
   component: TutorialPage,
 });
 
 function TutorialPage() {
-  const { tutorial } = Route.useLoaderData();
+  const { tutorialId } = Route.useParams();
+  const tutorial = getTutorial(tutorialId)!;
+
   const { user } = useAuth();
   const fetchProgress = useServerFn(getMyTutorialProgress);
   const save = useServerFn(saveTutorialProgress);
