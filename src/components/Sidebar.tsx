@@ -14,7 +14,9 @@ import {
   Crown,
   Video,
   Users,
+  Activity,
   LogOut,
+
 } from "lucide-react";
 import { useAuth, signOut } from "@/lib/auth";
 import { ThemeToggle } from "@/components/ThemeToggle";
