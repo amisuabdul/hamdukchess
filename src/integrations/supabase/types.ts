@@ -46,6 +46,130 @@ export type Database = {
           },
         ]
       }
+      api_keys: {
+        Row: {
+          created_at: string
+          id: string
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          monthly_limit: number
+          name: string
+          owner_id: string
+          revoked_at: string | null
+          scopes: string[]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          monthly_limit?: number
+          name: string
+          owner_id: string
+          revoked_at?: string | null
+          scopes?: string[]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          monthly_limit?: number
+          name?: string
+          owner_id?: string
+          revoked_at?: string | null
+          scopes?: string[]
+        }
+        Relationships: []
+      }
+      api_usage: {
+        Row: {
+          created_at: string
+          endpoint: string
+          id: number
+          key_id: string
+          method: string
+          owner_id: string
+          status: number
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          id?: number
+          key_id: string
+          method: string
+          owner_id: string
+          status: number
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          id?: number
+          key_id?: string
+          method?: string
+          owner_id?: string
+          status?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_usage_key_id_fkey"
+            columns: ["key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_webhooks: {
+        Row: {
+          created_at: string
+          disabled: boolean
+          events: string[]
+          failure_count: number
+          id: string
+          key_id: string | null
+          owner_id: string
+          secret: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          disabled?: boolean
+          events?: string[]
+          failure_count?: number
+          id?: string
+          key_id?: string | null
+          owner_id: string
+          secret: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          disabled?: boolean
+          events?: string[]
+          failure_count?: number
+          id?: string
+          key_id?: string | null
+          owner_id?: string
+          secret?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_webhooks_key_id_fkey"
+            columns: ["key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assistant_messages: {
         Row: {
           created_at: string
@@ -115,6 +239,98 @@ export type Database = {
             columns: ["game_id"]
             isOneToOne: false
             referencedRelation: "games"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      class_session_students: {
+        Row: {
+          board_fen: string | null
+          created_at: string
+          id: string
+          label: string
+          last_seen_at: string
+          moves_made: number
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          board_fen?: string | null
+          created_at?: string
+          id?: string
+          label?: string
+          last_seen_at?: string
+          moves_made?: number
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          board_fen?: string | null
+          created_at?: string
+          id?: string
+          label?: string
+          last_seen_at?: string
+          moves_made?: number
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_session_students_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "class_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "class_session_students_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      class_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          key_id: string | null
+          locked: boolean
+          owner_id: string
+          position_fen: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key_id?: string | null
+          locked?: boolean
+          owner_id: string
+          position_fen?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key_id?: string | null
+          locked?: boolean
+          owner_id?: string
+          position_fen?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "class_sessions_key_id_fkey"
+            columns: ["key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
             referencedColumns: ["id"]
           },
         ]
@@ -329,6 +545,47 @@ export type Database = {
             columns: ["coach_id"]
             isOneToOne: false
             referencedRelation: "coach_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      embed_tokens: {
+        Row: {
+          config: Json
+          created_at: string
+          expires_at: string | null
+          id: string
+          key_id: string
+          kind: string
+          owner_id: string
+          token: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key_id: string
+          kind: string
+          owner_id: string
+          token: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          key_id?: string
+          kind?: string
+          owner_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "embed_tokens_key_id_fkey"
+            columns: ["key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
             referencedColumns: ["id"]
           },
         ]
@@ -762,6 +1019,125 @@ export type Database = {
           },
         ]
       }
+      org_members: {
+        Row: {
+          created_at: string
+          id: string
+          org_owner_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          org_owner_id: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          org_owner_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      org_tournament_players: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+          score: number
+          tiebreak: number
+          tournament_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          id?: string
+          score?: number
+          tiebreak?: number
+          tournament_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
+          score?: number
+          tiebreak?: number
+          tournament_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_tournament_players_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "org_tournaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "org_tournament_players_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      org_tournaments: {
+        Row: {
+          created_at: string
+          current_round: number
+          format: string
+          id: string
+          name: string
+          owner_id: string
+          rounds: number
+          starts_at: string | null
+          status: string
+          time_control: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_round?: number
+          format?: string
+          id?: string
+          name: string
+          owner_id: string
+          rounds?: number
+          starts_at?: string | null
+          status?: string
+          time_control?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_round?: number
+          format?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          rounds?: number
+          starts_at?: string | null
+          status?: string
+          time_control?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       payment_events: {
         Row: {
           amount: number | null
@@ -808,6 +1184,7 @@ export type Database = {
           games_played: number
           id: string
           is_guest: boolean
+          is_org: boolean
           last_active_at: string
           losses: number
           paystack_customer_code: string | null
@@ -828,6 +1205,7 @@ export type Database = {
           games_played?: number
           id: string
           is_guest?: boolean
+          is_org?: boolean
           last_active_at?: string
           losses?: number
           paystack_customer_code?: string | null
@@ -848,6 +1226,7 @@ export type Database = {
           games_played?: number
           id?: string
           is_guest?: boolean
+          is_org?: boolean
           last_active_at?: string
           losses?: number
           paystack_customer_code?: string | null
@@ -1335,6 +1714,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      webhook_deliveries: {
+        Row: {
+          attempt: number
+          created_at: string
+          delivered_at: string | null
+          error: string | null
+          event: string
+          id: string
+          next_retry_at: string | null
+          payload: Json
+          response_status: number | null
+          status: string
+          webhook_id: string
+        }
+        Insert: {
+          attempt?: number
+          created_at?: string
+          delivered_at?: string | null
+          error?: string | null
+          event: string
+          id?: string
+          next_retry_at?: string | null
+          payload?: Json
+          response_status?: number | null
+          status?: string
+          webhook_id: string
+        }
+        Update: {
+          attempt?: number
+          created_at?: string
+          delivered_at?: string | null
+          error?: string | null
+          event?: string
+          id?: string
+          next_retry_at?: string | null
+          payload?: Json
+          response_status?: number | null
+          status?: string
+          webhook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_deliveries_webhook_id_fkey"
+            columns: ["webhook_id"]
+            isOneToOne: false
+            referencedRelation: "api_webhooks"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
