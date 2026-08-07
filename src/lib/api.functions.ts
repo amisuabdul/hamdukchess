@@ -126,7 +126,7 @@ export const updateApiKey = createServerFn({ method: "POST" })
     if (data.monthlyLimit) patch.monthly_limit = data.monthlyLimit;
     const { error } = await supabaseAdmin
       .from("api_keys")
-      .update(patch)
+      .update(patch as never)
       .eq("id", data.id)
       .eq("owner_id", context.userId);
     if (error) throw new Error(error.message);
