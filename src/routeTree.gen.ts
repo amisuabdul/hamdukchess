@@ -16,6 +16,7 @@ import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as BillingRouteImport } from './routes/billing'
+import { Route as ApiDashboardRouteImport } from './routes/api-dashboard'
 import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TacticsIndexRouteImport } from './routes/tactics.index'
@@ -87,6 +88,11 @@ const FeedRoute = FeedRouteImport.update({
 const BillingRoute = BillingRouteImport.update({
   id: '/billing',
   path: '/billing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDashboardRoute = ApiDashboardRouteImport.update({
+  id: '/api-dashboard',
+  path: '/api-dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalysisRoute = AnalysisRouteImport.update({
@@ -287,6 +293,7 @@ const ApiPublicV1ClassesSessionIdSetPositionRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
+  '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
@@ -333,6 +340,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
+  '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
@@ -380,6 +388,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/analysis': typeof AnalysisRoute
+  '/api-dashboard': typeof ApiDashboardRoute
   '/billing': typeof BillingRoute
   '/feed': typeof FeedRoute
   '/insights': typeof InsightsRoute
@@ -428,6 +437,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/analysis'
+    | '/api-dashboard'
     | '/billing'
     | '/feed'
     | '/insights'
@@ -474,6 +484,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/analysis'
+    | '/api-dashboard'
     | '/billing'
     | '/feed'
     | '/insights'
@@ -520,6 +531,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/analysis'
+    | '/api-dashboard'
     | '/billing'
     | '/feed'
     | '/insights'
@@ -567,6 +579,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalysisRoute: typeof AnalysisRoute
+  ApiDashboardRoute: typeof ApiDashboardRoute
   BillingRoute: typeof BillingRoute
   FeedRoute: typeof FeedRoute
   InsightsRoute: typeof InsightsRoute
@@ -654,6 +667,13 @@ declare module '@tanstack/react-router' {
       path: '/billing'
       fullPath: '/billing'
       preLoaderRoute: typeof BillingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api-dashboard': {
+      id: '/api-dashboard'
+      path: '/api-dashboard'
+      fullPath: '/api-dashboard'
+      preLoaderRoute: typeof ApiDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analysis': {
@@ -980,6 +1000,7 @@ const ApiPublicV1EmbedTokenRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalysisRoute: AnalysisRoute,
+  ApiDashboardRoute: ApiDashboardRoute,
   BillingRoute: BillingRoute,
   FeedRoute: FeedRoute,
   InsightsRoute: InsightsRoute,
