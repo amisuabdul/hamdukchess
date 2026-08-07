@@ -51,6 +51,7 @@
     "@tanstack/router-plugin": "^1.167.28",
     "@upstash/redis": "^1.38.0",
     "ai": "^7.0.52",
+    "bcryptjs": "^3.0.3",
     "chess.js": "^1.4.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -78,7 +79,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
-    "@lovable.dev/vite-tanstack-config": "2.8.5",
+    "@lovable.dev/vite-tanstack-config": "2.9.1",
+    "@types/bcryptjs": "^3.0.0",
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",

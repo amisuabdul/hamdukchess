@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import {
   Outlet,
+  useRouterState,
   Link,
   createRootRouteWithContext,
   useRouter,
@@ -151,6 +152,12 @@ function AuthAwareShell() {
     });
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // Embedded widgets render chrome-free inside third-party iframes.
+  if (pathname.startsWith("/embed/")) {
+    return <Outlet />;
+  }
+
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />

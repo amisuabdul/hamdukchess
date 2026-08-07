@@ -15,6 +15,7 @@ import {
   Video,
   Users,
   Activity,
+  Code2,
   LogOut,
 
 } from "lucide-react";
@@ -43,6 +44,7 @@ export function Sidebar() {
           { to: "/insights", label: "My Weaknesses", Icon: Activity },
           { to: "/feed", label: "Feed", Icon: Rss },
           { to: "/messages", label: "Messages", Icon: MessageSquare },
+          { to: "/api-dashboard", label: "Developer API", Icon: Code2 },
         ]
       : []),
     { to: "/billing", label: "Upgrade", Icon: Sparkles },
