@@ -47,6 +47,7 @@ import { Route as ApiPublicV1UsersUsernameRatingRouteImport } from './routes/api
 import { Route as ApiPublicV1UsersUsernameGamesRouteImport } from './routes/api/public/v1/users.$username.games'
 import { Route as ApiPublicV1TournamentsIdStandingsRouteImport } from './routes/api/public/v1/tournaments.$id.standings'
 import { Route as ApiPublicV1EmbedTokenTokenRouteImport } from './routes/api/public/v1/embed.token.$token'
+import { Route as ApiPublicV1ClassesSessionIdSetPositionRouteImport } from './routes/api/public/v1/classes.session.$id.set-position'
 
 const MessagesRoute = MessagesRouteImport.update({
   id: '/messages',
@@ -244,6 +245,12 @@ const ApiPublicV1EmbedTokenTokenRoute =
     path: '/$token',
     getParentRoute: () => ApiPublicV1EmbedTokenRoute,
   } as any)
+const ApiPublicV1ClassesSessionIdSetPositionRoute =
+  ApiPublicV1ClassesSessionIdSetPositionRouteImport.update({
+    id: '/$id/set-position',
+    path: '/$id/set-position',
+    getParentRoute: () => ApiPublicV1ClassesSessionRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -278,12 +285,13 @@ export interface FileRoutesByFullPath {
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
-  '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRoute
+  '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
   '/api/public/v1/tournaments/$id/standings': typeof ApiPublicV1TournamentsIdStandingsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
+  '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -318,12 +326,13 @@ export interface FileRoutesByTo {
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
-  '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRoute
+  '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
   '/api/public/v1/tournaments/$id/standings': typeof ApiPublicV1TournamentsIdStandingsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
+  '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -359,12 +368,13 @@ export interface FileRoutesById {
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
-  '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRoute
+  '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
   '/api/public/v1/embed/token/$token': typeof ApiPublicV1EmbedTokenTokenRoute
   '/api/public/v1/tournaments/$id/standings': typeof ApiPublicV1TournamentsIdStandingsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
+  '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -407,6 +417,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments/$id/standings'
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
+    | '/api/public/v1/classes/session/$id/set-position'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -447,6 +458,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments/$id/standings'
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
+    | '/api/public/v1/classes/session/$id/set-position'
   id:
     | '__root__'
     | '/'
@@ -487,6 +499,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments/$id/standings'
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
+    | '/api/public/v1/classes/session/$id/set-position'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -522,7 +535,7 @@ export interface RootRouteChildren {
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
   ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRouteWithChildren
-  ApiPublicV1ClassesSessionRoute: typeof ApiPublicV1ClassesSessionRoute
+  ApiPublicV1ClassesSessionRoute: typeof ApiPublicV1ClassesSessionRouteWithChildren
   ApiPublicV1EmbedTokenRoute: typeof ApiPublicV1EmbedTokenRouteWithChildren
   ApiPublicV1UsersUsernameGamesRoute: typeof ApiPublicV1UsersUsernameGamesRoute
   ApiPublicV1UsersUsernameRatingRoute: typeof ApiPublicV1UsersUsernameRatingRoute
@@ -796,6 +809,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1EmbedTokenTokenRouteImport
       parentRoute: typeof ApiPublicV1EmbedTokenRoute
     }
+    '/api/public/v1/classes/session/$id/set-position': {
+      id: '/api/public/v1/classes/session/$id/set-position'
+      path: '/$id/set-position'
+      fullPath: '/api/public/v1/classes/session/$id/set-position'
+      preLoaderRoute: typeof ApiPublicV1ClassesSessionIdSetPositionRouteImport
+      parentRoute: typeof ApiPublicV1ClassesSessionRoute
+    }
   }
 }
 
@@ -812,6 +832,21 @@ const ApiPublicV1TournamentsRouteChildren: ApiPublicV1TournamentsRouteChildren =
 const ApiPublicV1TournamentsRouteWithChildren =
   ApiPublicV1TournamentsRoute._addFileChildren(
     ApiPublicV1TournamentsRouteChildren,
+  )
+
+interface ApiPublicV1ClassesSessionRouteChildren {
+  ApiPublicV1ClassesSessionIdSetPositionRoute: typeof ApiPublicV1ClassesSessionIdSetPositionRoute
+}
+
+const ApiPublicV1ClassesSessionRouteChildren: ApiPublicV1ClassesSessionRouteChildren =
+  {
+    ApiPublicV1ClassesSessionIdSetPositionRoute:
+      ApiPublicV1ClassesSessionIdSetPositionRoute,
+  }
+
+const ApiPublicV1ClassesSessionRouteWithChildren =
+  ApiPublicV1ClassesSessionRoute._addFileChildren(
+    ApiPublicV1ClassesSessionRouteChildren,
   )
 
 interface ApiPublicV1EmbedTokenRouteChildren {
@@ -860,7 +895,7 @@ const rootRouteChildren: RootRouteChildren = {
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
   ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRouteWithChildren,
-  ApiPublicV1ClassesSessionRoute: ApiPublicV1ClassesSessionRoute,
+  ApiPublicV1ClassesSessionRoute: ApiPublicV1ClassesSessionRouteWithChildren,
   ApiPublicV1EmbedTokenRoute: ApiPublicV1EmbedTokenRouteWithChildren,
   ApiPublicV1UsersUsernameGamesRoute: ApiPublicV1UsersUsernameGamesRoute,
   ApiPublicV1UsersUsernameRatingRoute: ApiPublicV1UsersUsernameRatingRoute,
