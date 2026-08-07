@@ -47,6 +47,7 @@ import { Route as ApiPublicV1UsersUsernameRatingRouteImport } from './routes/api
 import { Route as ApiPublicV1UsersUsernameGamesRouteImport } from './routes/api/public/v1/users.$username.games'
 import { Route as ApiPublicV1TournamentsIdStandingsRouteImport } from './routes/api/public/v1/tournaments.$id.standings'
 import { Route as ApiPublicV1EmbedTokenTokenRouteImport } from './routes/api/public/v1/embed.token.$token'
+import { Route as ApiPublicV1ClassesSessionIdStudentsRouteImport } from './routes/api/public/v1/classes.session.$id.students'
 import { Route as ApiPublicV1ClassesSessionIdSetPositionRouteImport } from './routes/api/public/v1/classes.session.$id.set-position'
 
 const MessagesRoute = MessagesRouteImport.update({
@@ -245,6 +246,12 @@ const ApiPublicV1EmbedTokenTokenRoute =
     path: '/$token',
     getParentRoute: () => ApiPublicV1EmbedTokenRoute,
   } as any)
+const ApiPublicV1ClassesSessionIdStudentsRoute =
+  ApiPublicV1ClassesSessionIdStudentsRouteImport.update({
+    id: '/$id/students',
+    path: '/$id/students',
+    getParentRoute: () => ApiPublicV1ClassesSessionRoute,
+  } as any)
 const ApiPublicV1ClassesSessionIdSetPositionRoute =
   ApiPublicV1ClassesSessionIdSetPositionRouteImport.update({
     id: '/$id/set-position',
@@ -292,6 +299,7 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
   '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
+  '/api/public/v1/classes/session/$id/students': typeof ApiPublicV1ClassesSessionIdStudentsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -333,6 +341,7 @@ export interface FileRoutesByTo {
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
   '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
+  '/api/public/v1/classes/session/$id/students': typeof ApiPublicV1ClassesSessionIdStudentsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -375,6 +384,7 @@ export interface FileRoutesById {
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
   '/api/public/v1/classes/session/$id/set-position': typeof ApiPublicV1ClassesSessionIdSetPositionRoute
+  '/api/public/v1/classes/session/$id/students': typeof ApiPublicV1ClassesSessionIdStudentsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -418,6 +428,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
     | '/api/public/v1/classes/session/$id/set-position'
+    | '/api/public/v1/classes/session/$id/students'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -459,6 +470,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
     | '/api/public/v1/classes/session/$id/set-position'
+    | '/api/public/v1/classes/session/$id/students'
   id:
     | '__root__'
     | '/'
@@ -500,6 +512,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
     | '/api/public/v1/classes/session/$id/set-position'
+    | '/api/public/v1/classes/session/$id/students'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -809,6 +822,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1EmbedTokenTokenRouteImport
       parentRoute: typeof ApiPublicV1EmbedTokenRoute
     }
+    '/api/public/v1/classes/session/$id/students': {
+      id: '/api/public/v1/classes/session/$id/students'
+      path: '/$id/students'
+      fullPath: '/api/public/v1/classes/session/$id/students'
+      preLoaderRoute: typeof ApiPublicV1ClassesSessionIdStudentsRouteImport
+      parentRoute: typeof ApiPublicV1ClassesSessionRoute
+    }
     '/api/public/v1/classes/session/$id/set-position': {
       id: '/api/public/v1/classes/session/$id/set-position'
       path: '/$id/set-position'
@@ -836,12 +856,15 @@ const ApiPublicV1TournamentsRouteWithChildren =
 
 interface ApiPublicV1ClassesSessionRouteChildren {
   ApiPublicV1ClassesSessionIdSetPositionRoute: typeof ApiPublicV1ClassesSessionIdSetPositionRoute
+  ApiPublicV1ClassesSessionIdStudentsRoute: typeof ApiPublicV1ClassesSessionIdStudentsRoute
 }
 
 const ApiPublicV1ClassesSessionRouteChildren: ApiPublicV1ClassesSessionRouteChildren =
   {
     ApiPublicV1ClassesSessionIdSetPositionRoute:
       ApiPublicV1ClassesSessionIdSetPositionRoute,
+    ApiPublicV1ClassesSessionIdStudentsRoute:
+      ApiPublicV1ClassesSessionIdStudentsRoute,
   }
 
 const ApiPublicV1ClassesSessionRouteWithChildren =
