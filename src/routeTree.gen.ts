@@ -41,6 +41,7 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 import { Route as ApiPublicV1UsersUsernameRatingRouteImport } from './routes/api/public/v1/users.$username.rating'
+import { Route as ApiPublicV1UsersUsernameGamesRouteImport } from './routes/api/public/v1/users.$username.games'
 
 const MessagesRoute = MessagesRouteImport.update({
   id: '/messages',
@@ -204,6 +205,12 @@ const ApiPublicV1UsersUsernameRatingRoute =
     path: '/api/public/v1/users/$username/rating',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicV1UsersUsernameGamesRoute =
+  ApiPublicV1UsersUsernameGamesRouteImport.update({
+    id: '/api/public/v1/users/$username/games',
+    path: '/api/public/v1/users/$username/games',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/tactics/': typeof TacticsIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
+  '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
 }
 export interface FileRoutesByTo {
@@ -271,6 +279,7 @@ export interface FileRoutesByTo {
   '/tactics': typeof TacticsIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
+  '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
 }
 export interface FileRoutesById {
@@ -306,6 +315,7 @@ export interface FileRoutesById {
   '/tactics/': typeof TacticsIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
+  '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
 }
 export interface FileRouteTypes {
@@ -342,6 +352,7 @@ export interface FileRouteTypes {
     | '/tactics/'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
+    | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -376,6 +387,7 @@ export interface FileRouteTypes {
     | '/tactics'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
+    | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
   id:
     | '__root__'
@@ -410,6 +422,7 @@ export interface FileRouteTypes {
     | '/tactics/'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
+    | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
   fileRoutesById: FileRoutesById
 }
@@ -445,6 +458,7 @@ export interface RootRouteChildren {
   TacticsIndexRoute: typeof TacticsIndexRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
+  ApiPublicV1UsersUsernameGamesRoute: typeof ApiPublicV1UsersUsernameGamesRoute
   ApiPublicV1UsersUsernameRatingRoute: typeof ApiPublicV1UsersUsernameRatingRoute
 }
 
@@ -674,6 +688,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1UsersUsernameRatingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/users/$username/games': {
+      id: '/api/public/v1/users/$username/games'
+      path: '/api/public/v1/users/$username/games'
+      fullPath: '/api/public/v1/users/$username/games'
+      preLoaderRoute: typeof ApiPublicV1UsersUsernameGamesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -709,6 +730,7 @@ const rootRouteChildren: RootRouteChildren = {
   TacticsIndexRoute: TacticsIndexRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
+  ApiPublicV1UsersUsernameGamesRoute: ApiPublicV1UsersUsernameGamesRoute,
   ApiPublicV1UsersUsernameRatingRoute: ApiPublicV1UsersUsernameRatingRoute,
 }
 export const routeTree = rootRouteImport
