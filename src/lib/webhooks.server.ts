@@ -107,7 +107,7 @@ export async function dispatchWebhookEvent(
     if (!hook.events.includes(event)) continue;
     const { data: delivery } = await supabaseAdmin
       .from("webhook_deliveries")
-      .insert({ webhook_id: hook.id, event, payload, attempt: 1, status: "pending" })
+      .insert({ webhook_id: hook.id, event, payload: payload as never, attempt: 1, status: "pending" })
       .select("id")
       .single();
     if (!delivery) continue;
