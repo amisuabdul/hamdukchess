@@ -39,6 +39,7 @@ import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
+import { Route as ApiPublicV1TournamentsRouteImport } from './routes/api/public/v1/tournaments'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
 import { Route as ApiPublicV1UsersUsernameRatingRouteImport } from './routes/api/public/v1/users.$username.rating'
 import { Route as ApiPublicV1UsersUsernameGamesRouteImport } from './routes/api/public/v1/users.$username.games'
@@ -193,6 +194,11 @@ const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
   path: '/puzzles/daily/$date',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1TournamentsRoute = ApiPublicV1TournamentsRouteImport.update({
+  id: '/api/public/v1/tournaments',
+  path: '/api/public/v1/tournaments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaystackWebhookRoute =
   ApiPublicPaystackWebhookRouteImport.update({
     id: '/api/public/paystack/webhook',
@@ -244,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/tactics/': typeof TacticsIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
+  '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
 }
@@ -279,6 +286,7 @@ export interface FileRoutesByTo {
   '/tactics': typeof TacticsIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
+  '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
 }
@@ -315,6 +323,7 @@ export interface FileRoutesById {
   '/tactics/': typeof TacticsIndexRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/api/public/paystack/webhook': typeof ApiPublicPaystackWebhookRoute
+  '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRoute
   '/api/public/v1/users/$username/games': typeof ApiPublicV1UsersUsernameGamesRoute
   '/api/public/v1/users/$username/rating': typeof ApiPublicV1UsersUsernameRatingRoute
 }
@@ -352,6 +361,7 @@ export interface FileRouteTypes {
     | '/tactics/'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
+    | '/api/public/v1/tournaments'
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
   fileRoutesByTo: FileRoutesByTo
@@ -387,6 +397,7 @@ export interface FileRouteTypes {
     | '/tactics'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
+    | '/api/public/v1/tournaments'
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
   id:
@@ -422,6 +433,7 @@ export interface FileRouteTypes {
     | '/tactics/'
     | '/puzzles/daily/$date'
     | '/api/public/paystack/webhook'
+    | '/api/public/v1/tournaments'
     | '/api/public/v1/users/$username/games'
     | '/api/public/v1/users/$username/rating'
   fileRoutesById: FileRoutesById
@@ -458,6 +470,7 @@ export interface RootRouteChildren {
   TacticsIndexRoute: typeof TacticsIndexRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
   ApiPublicPaystackWebhookRoute: typeof ApiPublicPaystackWebhookRoute
+  ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRoute
   ApiPublicV1UsersUsernameGamesRoute: typeof ApiPublicV1UsersUsernameGamesRoute
   ApiPublicV1UsersUsernameRatingRoute: typeof ApiPublicV1UsersUsernameRatingRoute
 }
@@ -674,6 +687,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PuzzlesDailyDateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/tournaments': {
+      id: '/api/public/v1/tournaments'
+      path: '/api/public/v1/tournaments'
+      fullPath: '/api/public/v1/tournaments'
+      preLoaderRoute: typeof ApiPublicV1TournamentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/paystack/webhook': {
       id: '/api/public/paystack/webhook'
       path: '/api/public/paystack/webhook'
@@ -730,6 +750,7 @@ const rootRouteChildren: RootRouteChildren = {
   TacticsIndexRoute: TacticsIndexRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
   ApiPublicPaystackWebhookRoute: ApiPublicPaystackWebhookRoute,
+  ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRoute,
   ApiPublicV1UsersUsernameGamesRoute: ApiPublicV1UsersUsernameGamesRoute,
   ApiPublicV1UsersUsernameRatingRoute: ApiPublicV1UsersUsernameRatingRoute,
 }
