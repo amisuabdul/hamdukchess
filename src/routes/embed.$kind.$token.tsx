@@ -150,7 +150,7 @@ function BoardWidget({ payload }: { payload: BoardPayload }) {
       post({ type: "move", san: move.san, from: move.from, to: move.to, fen: game.fen() });
       if (data.sessionId) {
         void reportStudentBoard({
-          data: { token: payload.config?.session_id ? tokenFromPath() : tokenFromPath(), label: label.current, fen: game.fen(), movesMade: count },
+          data: { token: tokenFromPath(), label: label.current, fen: game.fen(), movesMade: count },
         });
       }
       return true;
