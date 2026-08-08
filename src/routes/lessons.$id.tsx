@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { getMyBilling } from "@/lib/ratings.functions";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -11,7 +12,6 @@ import {
 } from "@/lib/videos.functions";
 import { VideoPlayer } from "@/components/lessons/VideoPlayer";
 import { useAuth } from "@/lib/auth";
-import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, Check, Clock, Lock, User } from "lucide-react";
 
 export const Route = createFileRoute("/lessons/$id")({
@@ -52,15 +52,13 @@ function LessonPage() {
   const myProg = progress.find((p) => p.video_id === id);
 
   const [tier, setTier] = useState<string | null>(null);
+  const loadBilling = useServerFn(getMyBilling);
   useEffect(() => {
     if (!user) return;
-    void supabase
-      .from("profiles")
-      .select("subscription_tier")
-      .eq("id", user.id)
-      .maybeSingle()
-      .then(({ data }) => setTier((data?.subscription_tier as string) ?? null));
-  }, [user]);
+    void loadBilling({})
+      .then((b) => setTier(b.tier))
+      .catch(() => setTier(null));
+  }, [user, loadBilling]);
   const isGold = tier === "gold";
 
   // Auto-record "started" on first load for iframe sources

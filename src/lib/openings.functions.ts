@@ -79,8 +79,9 @@ export const recordOpeningSession = createServerFn({ method: "POST" })
 
 // ---- Repertoire (Gold-gated) ----
 
-async function requireGold(supabase: any, userId: string) {
-  const { data: profile, error } = await supabase
+async function requireGold(_supabase: unknown, userId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: profile, error } = await supabaseAdmin
     .from("profiles")
     .select("subscription_tier")
     .eq("id", userId)
