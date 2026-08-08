@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { getMyBilling } from "@/lib/ratings.functions";
 import { useCallback, useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -58,15 +59,13 @@ function OpeningPage() {
   const rep = repertoire.find((r) => r.eco === eco && r.color === opening.color);
 
   const [tier, setTier] = useState<string | null>(null);
+  const loadBilling = useServerFn(getMyBilling);
   useEffect(() => {
     if (!user) return;
-    void supabase
-      .from("profiles")
-      .select("subscription_tier")
-      .eq("id", user.id)
-      .maybeSingle()
-      .then(({ data }) => setTier((data?.subscription_tier as string) ?? null));
-  }, [user]);
+    void loadBilling({})
+      .then((b) => setTier(b.tier))
+      .catch(() => setTier(null));
+  }, [user, loadBilling]);
   const isGold = tier === "gold";
 
   const [repMsg, setRepMsg] = useState<string | null>(null);

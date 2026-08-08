@@ -128,7 +128,8 @@ export const upsertCoachProfile = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => CoachProfileInput.parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { data: profile } = await supabase
+    const { supabaseAdmin: admin1 } = await import("@/integrations/supabase/client.server");
+    const { data: profile } = await admin1
       .from("profiles")
       .select("subscription_tier")
       .eq("id", userId)
@@ -190,7 +191,8 @@ export const bookCoachSession = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
-    const { data: me } = await supabase
+    const { supabaseAdmin: admin2 } = await import("@/integrations/supabase/client.server");
+    const { data: me } = await admin2
       .from("profiles")
       .select("username, subscription_tier")
       .eq("id", userId)

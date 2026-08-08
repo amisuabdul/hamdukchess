@@ -113,7 +113,8 @@ export const getSignedVideoUrl = createServerFn({ method: "POST" })
       throw new Error("This lesson is not hosted on Lovable Cloud");
     }
     if (lesson.is_premium) {
-      const { data: profile } = await supabase
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: profile } = await supabaseAdmin
         .from("profiles")
         .select("subscription_tier")
         .eq("id", userId)
