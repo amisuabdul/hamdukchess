@@ -12,7 +12,6 @@ import {
 } from "@/lib/videos.functions";
 import { VideoPlayer } from "@/components/lessons/VideoPlayer";
 import { useAuth } from "@/lib/auth";
-import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, Check, Clock, Lock, User } from "lucide-react";
 
 export const Route = createFileRoute("/lessons/$id")({

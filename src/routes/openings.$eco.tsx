@@ -15,7 +15,6 @@ import {
 } from "@/lib/openings.functions";
 import { useAuth } from "@/lib/auth";
 import { ChevronLeft, BookmarkPlus, BookmarkCheck, Lock } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/openings/$eco")({
   head: ({ params }) => {
