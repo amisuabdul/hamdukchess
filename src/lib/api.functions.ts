@@ -5,13 +5,19 @@ import { API_SCOPES, WEBHOOK_EVENTS } from "@/lib/api-scopes";
 
 const ScopeArray = z.array(z.enum(API_SCOPES)).min(1);
 
-async function assertApiAccess(supabase: any, userId: string) {
-  const { data, error } = await supabase
+async function readTier(userId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
     .from("profiles")
     .select("subscription_tier, is_org")
     .eq("id", userId)
     .single();
   if (error) throw new Error(error.message);
+  return data;
+}
+
+async function assertApiAccess(_supabase: unknown, userId: string) {
+  const data = await readTier(userId);
   if (data.subscription_tier !== "gold" && !data.is_org) {
     throw new Error("The developer API is available on Gold and organisation accounts.");
   }
@@ -21,14 +27,11 @@ async function assertApiAccess(supabase: any, userId: string) {
 export const getApiAccess = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data } = await context.supabase
-      .from("profiles")
-      .select("subscription_tier, is_org")
-      .eq("id", context.userId)
-      .single();
+    const data = await readTier(context.userId);
     const tier = (data?.subscription_tier ?? "free") as string;
     return { tier, isOrg: Boolean(data?.is_org), allowed: tier === "gold" || Boolean(data?.is_org) };
   });
+
 
 export const listApiKeys = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
