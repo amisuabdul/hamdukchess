@@ -71,6 +71,10 @@ export const respondDraw = createServerFn({ method: "POST" })
       await supabaseAdmin.rpc("apply_elo", {
         p_white: game.white_id, p_black: game.black_id, p_result: "draw",
       });
+      {
+        const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
+        await emitGameCompleted(game.id);
+      }
     } else {
       await supabaseAdmin.from("games").update({
         draw_offer_by: null, draw_offer_at: null,
@@ -100,6 +104,10 @@ export const abortGame = createServerFn({ method: "POST" })
     await supabaseAdmin.from("game_events").insert({
       game_id: game.id, type: "abort", by_user: userId, payload: {},
     });
+    {
+      const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
+      await emitGameCompleted(game.id);
+    }
     return { ok: true };
   });
 
@@ -258,5 +266,9 @@ export const checkFlag = createServerFn({ method: "POST" })
     await supabaseAdmin.rpc("apply_elo", {
       p_white: game.white_id, p_black: game.black_id, p_result: result,
     });
+    {
+      const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
+      await emitGameCompleted(game.id);
+    }
     return { flagged: true };
   });
