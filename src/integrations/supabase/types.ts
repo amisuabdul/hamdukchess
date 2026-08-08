@@ -1770,42 +1770,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      apply_elo:
-        | {
-            Args: { p_black: string; p_result: string; p_white: string }
-            Returns: undefined
-          }
-        | {
-            Args: {
-              p_black: string
-              p_game_id?: string
-              p_result: string
-              p_time_control?: string
-              p_variant?: string
-              p_white: string
-            }
-            Returns: undefined
-          }
-      find_or_join_match:
-        | {
-            Args: {
-              p_rating_window?: number
-              p_start_fen?: string
-              p_time_control: string
-              p_variant?: string
-            }
-            Returns: string
-          }
-        | {
-            Args: {
-              p_rating_window?: number
-              p_region?: string
-              p_start_fen?: string
-              p_time_control: string
-              p_variant?: string
-            }
-            Returns: string
-          }
+      apply_elo: {
+        Args: {
+          p_black: string
+          p_game_id?: string
+          p_result: string
+          p_time_control?: string
+          p_variant?: string
+          p_white: string
+        }
+        Returns: undefined
+      }
+      find_or_join_match: {
+        Args: {
+          p_rating_window?: number
+          p_region?: string
+          p_start_fen?: string
+          p_time_control: string
+          p_variant?: string
+        }
+        Returns: string
+      }
       record_bot_game: {
         Args: { p_time_control: string; p_variant?: string }
         Returns: undefined

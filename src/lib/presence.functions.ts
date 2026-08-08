@@ -100,6 +100,10 @@ export const claimDisconnectWin = createServerFn({ method: "POST" })
       await supabaseAdmin.from("game_events").insert({
         game_id: game.id, type: "abort", by_user: userId, payload: { reason: "disconnect_pre_move_10" },
       });
+      {
+        const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
+        await emitGameCompleted(game.id);
+      }
       return { ended: true, reason: "aborted" };
     }
 
@@ -121,5 +125,9 @@ export const claimDisconnectWin = createServerFn({ method: "POST" })
       p_black: game.black_id,
       p_result: result,
     });
+    {
+      const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
+      await emitGameCompleted(game.id);
+    }
     return { ended: true, reason: "disconnect_win" };
   });

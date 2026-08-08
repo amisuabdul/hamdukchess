@@ -99,6 +99,10 @@ export const submitMove = createServerFn({ method: "POST" })
       await supabaseAdmin.rpc("apply_elo", {
         p_white: game.white_id, p_black: game.black_id, p_result: result,
       });
+      {
+        const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
+        await emitGameCompleted(game.id);
+      }
       throw new Error("Flagged on time");
     }
 
@@ -199,6 +203,10 @@ export const submitMove = createServerFn({ method: "POST" })
         p_black: game.black_id,
         p_result: result,
       });
+      {
+        const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
+        await emitGameCompleted(game.id);
+      }
       // Naive anti-cheat flag: avg move time < 3s across ≥ 20 moves
       const { data: tele } = await supabaseAdmin
         .from("move_telemetry")
@@ -258,5 +266,9 @@ export const resignGame = createServerFn({ method: "POST" })
       p_black: game.black_id,
       p_result: result,
     });
+    {
+      const { emitGameCompleted } = await import("@/lib/game-webhooks.server");
+      await emitGameCompleted(game.id);
+    }
     return { ok: true };
   });
