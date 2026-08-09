@@ -41,6 +41,7 @@ import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboa
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AdminGamesRouteImport } from './routes/admin.games'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as EmbedKindTokenRouteImport } from './routes/embed.$kind.$token'
@@ -219,6 +220,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminGamesRoute = AdminGamesRouteImport.update({
+  id: '/games',
+  path: '/games',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
   id: '/users/',
   path: '/users/',
@@ -326,6 +332,7 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/admin/games': typeof AdminGamesRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -376,6 +383,7 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/admin/games': typeof AdminGamesRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -428,6 +436,7 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/admin/games': typeof AdminGamesRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -481,6 +490,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/admin/games'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -531,6 +541,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/admin/games'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -582,6 +593,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/admin/games'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -891,6 +903,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/games': {
+      id: '/admin/games'
+      path: '/games'
+      fullPath: '/admin/games'
+      preLoaderRoute: typeof AdminGamesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/users/': {
       id: '/admin/users/'
       path: '/users'
@@ -1014,12 +1033,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminGamesRoute: typeof AdminGamesRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
   AdminUsersIndexRoute: typeof AdminUsersIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminGamesRoute: AdminGamesRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminUsersUserIdRoute: AdminUsersUserIdRoute,
   AdminUsersIndexRoute: AdminUsersIndexRoute,
