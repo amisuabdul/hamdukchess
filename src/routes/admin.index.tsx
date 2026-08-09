@@ -25,6 +25,7 @@ function AdminOverview() {
   });
 
   const s = overview.data?.stats;
+  const recent = overview.data?.recent;
 
   return (
     <div>
@@ -32,7 +33,7 @@ function AdminOverview() {
 
       {overview.isLoading ? (
         <EmptyState>Loading metrics…</EmptyState>
-      ) : s ? (
+      ) : s && recent ? (
         <>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Stat label="Total users" value={s.totalUsers} hint={`${s.guests} guests · ${s.bannedUsers} banned`} />
@@ -109,10 +110,10 @@ function AdminOverview() {
             <Card>
               <h2 className="font-serif text-lg">Recent signups</h2>
               <div className="mt-3 space-y-2 text-sm">
-                {overview.data.recent.signups.length === 0 ? (
+                {recent.signups.length === 0 ? (
                   <EmptyState>No signups yet.</EmptyState>
                 ) : (
-                  overview.data.recent.signups.map((u) => (
+                  recent.signups.map((u) => (
                     <div key={u.id} className="flex items-center justify-between gap-2">
                       <Link to="/admin/users/$userId" params={{ userId: u.id }} className="hover:underline">
                         {u.username}
@@ -130,10 +131,10 @@ function AdminOverview() {
             <Card>
               <h2 className="font-serif text-lg">Recently flagged games</h2>
               <div className="mt-3 space-y-2 text-sm">
-                {overview.data.recent.flagged.length === 0 ? (
+                {recent.flagged.length === 0 ? (
                   <EmptyState>Nothing flagged. Nice.</EmptyState>
                 ) : (
-                  overview.data.recent.flagged.map((g) => (
+                  recent.flagged.map((g) => (
                     <div key={g.id} className="flex items-center justify-between gap-2">
                       <Link to="/admin/games" className="truncate hover:underline">
                         {g.flag_reason ?? "flagged"}
