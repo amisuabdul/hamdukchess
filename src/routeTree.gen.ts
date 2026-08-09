@@ -44,6 +44,7 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as EmbedKindTokenRouteImport } from './routes/embed.$kind.$token'
+import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
 import { Route as ApiPublicV1WebhooksRouteImport } from './routes/api/public/v1/webhooks'
 import { Route as ApiPublicV1TournamentsRouteImport } from './routes/api/public/v1/tournaments'
 import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/public/paystack.webhook'
@@ -233,6 +234,11 @@ const EmbedKindTokenRoute = EmbedKindTokenRouteImport.update({
   path: '/embed/$kind/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersUserIdRoute = AdminUsersUserIdRouteImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiPublicV1WebhooksRoute = ApiPublicV1WebhooksRouteImport.update({
   id: '/api/public/v1/webhooks',
   path: '/api/public/v1/webhooks',
@@ -341,6 +347,7 @@ export interface FileRoutesByFullPath {
   '/openings/': typeof OpeningsIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
   '/tactics/': typeof TacticsIndexRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
@@ -390,6 +397,7 @@ export interface FileRoutesByTo {
   '/openings': typeof OpeningsIndexRoute
   '/puzzles': typeof PuzzlesIndexRoute
   '/tactics': typeof TacticsIndexRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users': typeof AdminUsersIndexRoute
@@ -441,6 +449,7 @@ export interface FileRoutesById {
   '/openings/': typeof OpeningsIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
   '/tactics/': typeof TacticsIndexRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
   '/puzzles/daily/$date': typeof PuzzlesDailyDateRoute
   '/admin/users/': typeof AdminUsersIndexRoute
@@ -493,6 +502,7 @@ export interface FileRouteTypes {
     | '/openings/'
     | '/puzzles/'
     | '/tactics/'
+    | '/admin/users/$userId'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
     | '/admin/users/'
@@ -542,6 +552,7 @@ export interface FileRouteTypes {
     | '/openings'
     | '/puzzles'
     | '/tactics'
+    | '/admin/users/$userId'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
     | '/admin/users'
@@ -592,6 +603,7 @@ export interface FileRouteTypes {
     | '/openings/'
     | '/puzzles/'
     | '/tactics/'
+    | '/admin/users/$userId'
     | '/embed/$kind/$token'
     | '/puzzles/daily/$date'
     | '/admin/users/'
@@ -900,6 +912,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmbedKindTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users/$userId': {
+      id: '/admin/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/admin/users/$userId'
+      preLoaderRoute: typeof AdminUsersUserIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/public/v1/webhooks': {
       id: '/api/public/v1/webhooks'
       path: '/api/public/v1/webhooks'
@@ -996,11 +1015,13 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
   AdminUsersIndexRoute: typeof AdminUsersIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
+  AdminUsersUserIdRoute: AdminUsersUserIdRoute,
   AdminUsersIndexRoute: AdminUsersIndexRoute,
 }
 
