@@ -46,6 +46,7 @@ import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminOrgsRouteImport } from './routes/admin.orgs'
 import { Route as AdminGamesRouteImport } from './routes/admin.games'
 import { Route as AdminCoachesRouteImport } from './routes/admin.coaches'
+import { Route as AdminAuditLogRouteImport } from './routes/admin.audit-log'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as EmbedKindTokenRouteImport } from './routes/embed.$kind.$token'
@@ -249,6 +250,11 @@ const AdminCoachesRoute = AdminCoachesRouteImport.update({
   path: '/coaches',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAuditLogRoute = AdminAuditLogRouteImport.update({
+  id: '/audit-log',
+  path: '/audit-log',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
   id: '/users/',
   path: '/users/',
@@ -356,6 +362,7 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
   '/admin/orgs': typeof AdminOrgsRoute
@@ -411,6 +418,7 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
   '/admin/orgs': typeof AdminOrgsRoute
@@ -468,6 +476,7 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/admin/audit-log': typeof AdminAuditLogRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
   '/admin/orgs': typeof AdminOrgsRoute
@@ -526,6 +535,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/admin/audit-log'
     | '/admin/coaches'
     | '/admin/games'
     | '/admin/orgs'
@@ -581,6 +591,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/admin/audit-log'
     | '/admin/coaches'
     | '/admin/games'
     | '/admin/orgs'
@@ -637,6 +648,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/admin/audit-log'
     | '/admin/coaches'
     | '/admin/games'
     | '/admin/orgs'
@@ -986,6 +998,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCoachesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/audit-log': {
+      id: '/admin/audit-log'
+      path: '/audit-log'
+      fullPath: '/admin/audit-log'
+      preLoaderRoute: typeof AdminAuditLogRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/users/': {
       id: '/admin/users/'
       path: '/users'
@@ -1109,6 +1128,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAuditLogRoute: typeof AdminAuditLogRoute
   AdminCoachesRoute: typeof AdminCoachesRoute
   AdminGamesRoute: typeof AdminGamesRoute
   AdminOrgsRoute: typeof AdminOrgsRoute
@@ -1120,6 +1140,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditLogRoute: AdminAuditLogRoute,
   AdminCoachesRoute: AdminCoachesRoute,
   AdminGamesRoute: AdminGamesRoute,
   AdminOrgsRoute: AdminOrgsRoute,
