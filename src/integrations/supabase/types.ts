@@ -46,6 +46,66 @@ export type Database = {
           },
         ]
       }
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_id: string
+          after: Json | null
+          before: Json | null
+          created_at: string
+          id: number
+          reason: string | null
+          target_id: string | null
+          target_table: string | null
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          after?: Json | null
+          before?: Json | null
+          created_at?: string
+          id?: number
+          reason?: string | null
+          target_id?: string | null
+          target_table?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          after?: Json | null
+          before?: Json | null
+          created_at?: string
+          id?: number
+          reason?: string | null
+          target_id?: string | null
+          target_table?: string | null
+        }
+        Relationships: []
+      }
+      admin_roles: {
+        Row: {
+          created_at: string
+          granted_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["admin_role_enum"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["admin_role_enum"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["admin_role_enum"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       api_keys: {
         Row: {
           created_at: string
@@ -755,6 +815,8 @@ export type Database = {
           end_reason: string | null
           ended_at: string | null
           fen: string
+          flag_reason: string | null
+          flagged_for_review: boolean
           id: string
           increment_sec: number | null
           initial_sec: number | null
@@ -790,6 +852,8 @@ export type Database = {
           end_reason?: string | null
           ended_at?: string | null
           fen?: string
+          flag_reason?: string | null
+          flagged_for_review?: boolean
           id?: string
           increment_sec?: number | null
           initial_sec?: number | null
@@ -825,6 +889,8 @@ export type Database = {
           end_reason?: string | null
           ended_at?: string | null
           fen?: string
+          flag_reason?: string | null
+          flagged_for_review?: boolean
           id?: string
           increment_sec?: number | null
           initial_sec?: number | null
@@ -1176,6 +1242,9 @@ export type Database = {
       }
       profiles: {
         Row: {
+          banned_at: string | null
+          banned_by: string | null
+          banned_reason: string | null
           country: string | null
           created_at: string
           draws: number
@@ -1193,10 +1262,14 @@ export type Database = {
           subscription_renews_at: string | null
           subscription_status: string
           subscription_tier: Database["public"]["Enums"]["subscription_tier_enum"]
+          suspended_until: string | null
           username: string
           wins: number
         }
         Insert: {
+          banned_at?: string | null
+          banned_by?: string | null
+          banned_reason?: string | null
           country?: string | null
           created_at?: string
           draws?: number
@@ -1214,10 +1287,14 @@ export type Database = {
           subscription_renews_at?: string | null
           subscription_status?: string
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
+          suspended_until?: string | null
           username: string
           wins?: number
         }
         Update: {
+          banned_at?: string | null
+          banned_by?: string | null
+          banned_reason?: string | null
           country?: string | null
           created_at?: string
           draws?: number
@@ -1235,6 +1312,7 @@ export type Database = {
           subscription_renews_at?: string | null
           subscription_status?: string
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
+          suspended_until?: string | null
           username?: string
           wins?: number
         }
@@ -1401,6 +1479,51 @@ export type Database = {
           user_id?: string
           variant?: string
           wins?: number
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reporter_id: string
+          resolution_note: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          target_id: string
+          target_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reporter_id: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          target_id: string
+          target_type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reporter_id?: string
+          resolution_note?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          target_id?: string
+          target_type?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1781,6 +1904,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      current_admin_role: {
+        Args: never
+        Returns: Database["public"]["Enums"]["admin_role_enum"]
+      }
       find_or_join_match: {
         Args: {
           p_rating_window?: number
@@ -1791,6 +1918,7 @@ export type Database = {
         }
         Returns: string
       }
+      is_admin: { Args: { min_role?: string }; Returns: boolean }
       record_bot_game: {
         Args: { p_time_control: string; p_variant?: string }
         Returns: undefined
@@ -1801,6 +1929,7 @@ export type Database = {
       }
     }
     Enums: {
+      admin_role_enum: "super_admin" | "admin" | "moderator" | "support"
       friend_status_enum: "pending" | "accepted" | "blocked"
       subscription_tier_enum: "free" | "plus" | "gold"
       video_source_enum: "youtube" | "vimeo" | "cloud"
@@ -1931,6 +2060,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_role_enum: ["super_admin", "admin", "moderator", "support"],
       friend_status_enum: ["pending", "accepted", "blocked"],
       subscription_tier_enum: ["free", "plus", "gold"],
       video_source_enum: ["youtube", "vimeo", "cloud"],
