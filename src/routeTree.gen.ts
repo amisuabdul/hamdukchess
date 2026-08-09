@@ -42,6 +42,7 @@ import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as AdminOrgsRouteImport } from './routes/admin.orgs'
 import { Route as AdminGamesRouteImport } from './routes/admin.games'
 import { Route as AdminCoachesRouteImport } from './routes/admin.coaches'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
@@ -227,6 +228,11 @@ const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   path: '/payments',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminOrgsRoute = AdminOrgsRouteImport.update({
+  id: '/orgs',
+  path: '/orgs',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminGamesRoute = AdminGamesRouteImport.update({
   id: '/games',
   path: '/games',
@@ -346,6 +352,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
+  '/admin/orgs': typeof AdminOrgsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
@@ -399,6 +406,7 @@ export interface FileRoutesByTo {
   '/messages': typeof MessagesRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
+  '/admin/orgs': typeof AdminOrgsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
@@ -454,6 +462,7 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRoute
   '/admin/coaches': typeof AdminCoachesRoute
   '/admin/games': typeof AdminGamesRoute
+  '/admin/orgs': typeof AdminOrgsRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
@@ -510,6 +519,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/admin/coaches'
     | '/admin/games'
+    | '/admin/orgs'
     | '/admin/payments'
     | '/api/chat'
     | '/assistant/$threadId'
@@ -563,6 +573,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/admin/coaches'
     | '/admin/games'
+    | '/admin/orgs'
     | '/admin/payments'
     | '/api/chat'
     | '/assistant/$threadId'
@@ -617,6 +628,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/admin/coaches'
     | '/admin/games'
+    | '/admin/orgs'
     | '/admin/payments'
     | '/api/chat'
     | '/assistant/$threadId'
@@ -934,6 +946,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPaymentsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/orgs': {
+      id: '/admin/orgs'
+      path: '/orgs'
+      fullPath: '/admin/orgs'
+      preLoaderRoute: typeof AdminOrgsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/games': {
       id: '/admin/games'
       path: '/games'
@@ -1073,6 +1092,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminCoachesRoute: typeof AdminCoachesRoute
   AdminGamesRoute: typeof AdminGamesRoute
+  AdminOrgsRoute: typeof AdminOrgsRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
@@ -1082,6 +1102,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminCoachesRoute: AdminCoachesRoute,
   AdminGamesRoute: AdminGamesRoute,
+  AdminOrgsRoute: AdminOrgsRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminUsersUserIdRoute: AdminUsersUserIdRoute,
