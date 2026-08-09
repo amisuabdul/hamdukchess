@@ -41,6 +41,7 @@ import { Route as CoachingDashboardRouteImport } from './routes/coaching.dashboa
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as PuzzlesDailyDateRouteImport } from './routes/puzzles.daily.$date'
 import { Route as EmbedKindTokenRouteImport } from './routes/embed.$kind.$token'
 import { Route as ApiPublicV1WebhooksRouteImport } from './routes/api/public/v1/webhooks'
@@ -217,6 +218,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
 const PuzzlesDailyDateRoute = PuzzlesDailyDateRouteImport.update({
   id: '/puzzles/daily/$date',
   path: '/puzzles/daily/$date',
@@ -314,6 +320,7 @@ export interface FileRoutesByFullPath {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -362,6 +369,7 @@ export interface FileRoutesByTo {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -412,6 +420,7 @@ export interface FileRoutesById {
   '/lobby': typeof LobbyRoute
   '/login': typeof LoginRoute
   '/messages': typeof MessagesRoute
+  '/admin/users': typeof AdminUsersRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
@@ -463,6 +472,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/admin/users'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -511,6 +521,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/admin/users'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -560,6 +571,7 @@ export interface FileRouteTypes {
     | '/lobby'
     | '/login'
     | '/messages'
+    | '/admin/users'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/coaches/$coachId'
@@ -867,6 +879,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/puzzles/daily/$date': {
       id: '/puzzles/daily/$date'
       path: '/puzzles/daily/$date'
@@ -976,10 +995,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 

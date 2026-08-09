@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 import { Card, EmptyState, Pager, PageHeader, Pill, when } from "@/components/admin/AdminUi";
 import { listUsers } from "@/lib/admin.functions";
 
-export const Route = createFileRoute("/admin/users")({
+export const Route = createFileRoute("/admin/users/")({
   head: () => ({
     meta: [
       { title: "User management | Hamduk Chess staff" },
