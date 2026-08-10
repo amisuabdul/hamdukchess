@@ -58,6 +58,7 @@ import { Route as ApiPublicPaystackWebhookRouteImport } from './routes/api/publi
 import { Route as ApiPublicV1WebhooksRetrySweepRouteImport } from './routes/api/public/v1/webhooks.retry-sweep'
 import { Route as ApiPublicV1WebhooksIdRouteImport } from './routes/api/public/v1/webhooks.$id'
 import { Route as ApiPublicV1EmbedTokenRouteImport } from './routes/api/public/v1/embed.token'
+import { Route as ApiPublicV1DiagQuotaRouteImport } from './routes/api/public/v1/diag.quota'
 import { Route as ApiPublicV1ClassesSessionRouteImport } from './routes/api/public/v1/classes.session'
 import { Route as ApiPublicV1UsersUsernameRatingRouteImport } from './routes/api/public/v1/users.$username.rating'
 import { Route as ApiPublicV1UsersUsernameGamesRouteImport } from './routes/api/public/v1/users.$username.games'
@@ -313,6 +314,11 @@ const ApiPublicV1EmbedTokenRoute = ApiPublicV1EmbedTokenRouteImport.update({
   path: '/api/public/v1/embed/token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1DiagQuotaRoute = ApiPublicV1DiagQuotaRouteImport.update({
+  id: '/api/public/v1/diag/quota',
+  path: '/api/public/v1/diag/quota',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1ClassesSessionRoute =
   ApiPublicV1ClassesSessionRouteImport.update({
     id: '/api/public/v1/classes/session',
@@ -404,6 +410,7 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
+  '/api/public/v1/diag/quota': typeof ApiPublicV1DiagQuotaRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
   '/api/public/v1/webhooks/$id': typeof ApiPublicV1WebhooksIdRoute
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
@@ -461,6 +468,7 @@ export interface FileRoutesByTo {
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
+  '/api/public/v1/diag/quota': typeof ApiPublicV1DiagQuotaRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
   '/api/public/v1/webhooks/$id': typeof ApiPublicV1WebhooksIdRoute
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
@@ -520,6 +528,7 @@ export interface FileRoutesById {
   '/api/public/v1/tournaments': typeof ApiPublicV1TournamentsRouteWithChildren
   '/api/public/v1/webhooks': typeof ApiPublicV1WebhooksRouteWithChildren
   '/api/public/v1/classes/session': typeof ApiPublicV1ClassesSessionRouteWithChildren
+  '/api/public/v1/diag/quota': typeof ApiPublicV1DiagQuotaRoute
   '/api/public/v1/embed/token': typeof ApiPublicV1EmbedTokenRouteWithChildren
   '/api/public/v1/webhooks/$id': typeof ApiPublicV1WebhooksIdRoute
   '/api/public/v1/webhooks/retry-sweep': typeof ApiPublicV1WebhooksRetrySweepRoute
@@ -580,6 +589,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
     | '/api/public/v1/classes/session'
+    | '/api/public/v1/diag/quota'
     | '/api/public/v1/embed/token'
     | '/api/public/v1/webhooks/$id'
     | '/api/public/v1/webhooks/retry-sweep'
@@ -637,6 +647,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
     | '/api/public/v1/classes/session'
+    | '/api/public/v1/diag/quota'
     | '/api/public/v1/embed/token'
     | '/api/public/v1/webhooks/$id'
     | '/api/public/v1/webhooks/retry-sweep'
@@ -695,6 +706,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/tournaments'
     | '/api/public/v1/webhooks'
     | '/api/public/v1/classes/session'
+    | '/api/public/v1/diag/quota'
     | '/api/public/v1/embed/token'
     | '/api/public/v1/webhooks/$id'
     | '/api/public/v1/webhooks/retry-sweep'
@@ -744,6 +756,7 @@ export interface RootRouteChildren {
   ApiPublicV1TournamentsRoute: typeof ApiPublicV1TournamentsRouteWithChildren
   ApiPublicV1WebhooksRoute: typeof ApiPublicV1WebhooksRouteWithChildren
   ApiPublicV1ClassesSessionRoute: typeof ApiPublicV1ClassesSessionRouteWithChildren
+  ApiPublicV1DiagQuotaRoute: typeof ApiPublicV1DiagQuotaRoute
   ApiPublicV1EmbedTokenRoute: typeof ApiPublicV1EmbedTokenRouteWithChildren
   ApiPublicV1UsersUsernameGamesRoute: typeof ApiPublicV1UsersUsernameGamesRoute
   ApiPublicV1UsersUsernameRatingRoute: typeof ApiPublicV1UsersUsernameRatingRoute
@@ -1094,6 +1107,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1EmbedTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/diag/quota': {
+      id: '/api/public/v1/diag/quota'
+      path: '/api/public/v1/diag/quota'
+      fullPath: '/api/public/v1/diag/quota'
+      preLoaderRoute: typeof ApiPublicV1DiagQuotaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/classes/session': {
       id: '/api/public/v1/classes/session'
       path: '/api/public/v1/classes/session'
@@ -1271,6 +1291,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicV1TournamentsRoute: ApiPublicV1TournamentsRouteWithChildren,
   ApiPublicV1WebhooksRoute: ApiPublicV1WebhooksRouteWithChildren,
   ApiPublicV1ClassesSessionRoute: ApiPublicV1ClassesSessionRouteWithChildren,
+  ApiPublicV1DiagQuotaRoute: ApiPublicV1DiagQuotaRoute,
   ApiPublicV1EmbedTokenRoute: ApiPublicV1EmbedTokenRouteWithChildren,
   ApiPublicV1UsersUsernameGamesRoute: ApiPublicV1UsersUsernameGamesRoute,
   ApiPublicV1UsersUsernameRatingRoute: ApiPublicV1UsersUsernameRatingRoute,
@@ -1278,13 +1299,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
