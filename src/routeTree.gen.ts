@@ -31,6 +31,7 @@ import { Route as CoachesIndexRouteImport } from './routes/coaches.index'
 import { Route as AssistantIndexRouteImport } from './routes/assistant.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
+import { Route as StudyStudyIdRouteImport } from './routes/study.$studyId'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
@@ -175,6 +176,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const TacticsThemeRoute = TacticsThemeRouteImport.update({
   id: '/tactics/$theme',
   path: '/tactics/$theme',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudyStudyIdRoute = StudyStudyIdRouteImport.update({
+  id: '/study/$studyId',
+  path: '/study/$studyId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PuzzlesStormRoute = PuzzlesStormRouteImport.update({
@@ -392,6 +398,7 @@ export interface FileRoutesByFullPath {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
   '/admin/': typeof AdminIndexRoute
   '/assistant/': typeof AssistantIndexRoute
@@ -450,6 +457,7 @@ export interface FileRoutesByTo {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
   '/admin': typeof AdminIndexRoute
   '/assistant': typeof AssistantIndexRoute
@@ -510,6 +518,7 @@ export interface FileRoutesById {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
   '/admin/': typeof AdminIndexRoute
   '/assistant/': typeof AssistantIndexRoute
@@ -571,6 +580,7 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/study/$studyId'
     | '/tactics/$theme'
     | '/admin/'
     | '/assistant/'
@@ -629,6 +639,7 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/study/$studyId'
     | '/tactics/$theme'
     | '/admin'
     | '/assistant'
@@ -688,6 +699,7 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/study/$studyId'
     | '/tactics/$theme'
     | '/admin/'
     | '/assistant/'
@@ -741,6 +753,7 @@ export interface RootRouteChildren {
   PlayGameIdRoute: typeof PlayGameIdRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
+  StudyStudyIdRoute: typeof StudyStudyIdRoute
   TacticsThemeRoute: typeof TacticsThemeRoute
   AssistantIndexRoute: typeof AssistantIndexRoute
   CoachesIndexRoute: typeof CoachesIndexRoute
@@ -916,6 +929,13 @@ declare module '@tanstack/react-router' {
       path: '/tactics/$theme'
       fullPath: '/tactics/$theme'
       preLoaderRoute: typeof TacticsThemeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/study/$studyId': {
+      id: '/study/$studyId'
+      path: '/study/$studyId'
+      fullPath: '/study/$studyId'
+      preLoaderRoute: typeof StudyStudyIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/puzzles/storm': {
@@ -1276,6 +1296,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlayGameIdRoute: PlayGameIdRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
+  StudyStudyIdRoute: StudyStudyIdRoute,
   TacticsThemeRoute: TacticsThemeRoute,
   AssistantIndexRoute: AssistantIndexRoute,
   CoachesIndexRoute: CoachesIndexRoute,
