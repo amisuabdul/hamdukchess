@@ -37,6 +37,7 @@ export function Sidebar() {
     { to: "/lessons", label: "Lessons", Icon: Video },
     { to: "/coaches", label: "Coaches", Icon: Users },
     { to: "/analysis", label: "Analysis", Icon: BarChart3 },
+    { to: "/study", label: "Study Boards", Icon: BookOpen },
     { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
     ...(user
       ? [
