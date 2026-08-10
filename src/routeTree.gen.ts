@@ -21,6 +21,7 @@ import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TacticsIndexRouteImport } from './routes/tactics.index'
+import { Route as StudyIndexRouteImport } from './routes/study.index'
 import { Route as PuzzlesIndexRouteImport } from './routes/puzzles.index'
 import { Route as OpeningsIndexRouteImport } from './routes/openings.index'
 import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
@@ -124,6 +125,11 @@ const IndexRoute = IndexRouteImport.update({
 const TacticsIndexRoute = TacticsIndexRouteImport.update({
   id: '/tactics/',
   path: '/tactics/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudyIndexRoute = StudyIndexRouteImport.update({
+  id: '/study/',
+  path: '/study/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PuzzlesIndexRoute = PuzzlesIndexRouteImport.update({
@@ -395,6 +401,7 @@ export interface FileRoutesByFullPath {
   '/lessons/': typeof LessonsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
+  '/study/': typeof StudyIndexRoute
   '/tactics/': typeof TacticsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
@@ -452,6 +459,7 @@ export interface FileRoutesByTo {
   '/lessons': typeof LessonsIndexRoute
   '/openings': typeof OpeningsIndexRoute
   '/puzzles': typeof PuzzlesIndexRoute
+  '/study': typeof StudyIndexRoute
   '/tactics': typeof TacticsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
@@ -511,6 +519,7 @@ export interface FileRoutesById {
   '/lessons/': typeof LessonsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
+  '/study/': typeof StudyIndexRoute
   '/tactics/': typeof TacticsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
@@ -571,6 +580,7 @@ export interface FileRouteTypes {
     | '/lessons/'
     | '/openings/'
     | '/puzzles/'
+    | '/study/'
     | '/tactics/'
     | '/admin/users/$userId'
     | '/embed/$kind/$token'
@@ -628,6 +638,7 @@ export interface FileRouteTypes {
     | '/lessons'
     | '/openings'
     | '/puzzles'
+    | '/study'
     | '/tactics'
     | '/admin/users/$userId'
     | '/embed/$kind/$token'
@@ -686,6 +697,7 @@ export interface FileRouteTypes {
     | '/lessons/'
     | '/openings/'
     | '/puzzles/'
+    | '/study/'
     | '/tactics/'
     | '/admin/users/$userId'
     | '/embed/$kind/$token'
@@ -737,6 +749,7 @@ export interface RootRouteChildren {
   LessonsIndexRoute: typeof LessonsIndexRoute
   OpeningsIndexRoute: typeof OpeningsIndexRoute
   PuzzlesIndexRoute: typeof PuzzlesIndexRoute
+  StudyIndexRoute: typeof StudyIndexRoute
   TacticsIndexRoute: typeof TacticsIndexRoute
   EmbedKindTokenRoute: typeof EmbedKindTokenRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
@@ -833,6 +846,13 @@ declare module '@tanstack/react-router' {
       path: '/tactics'
       fullPath: '/tactics/'
       preLoaderRoute: typeof TacticsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/study/': {
+      id: '/study/'
+      path: '/study'
+      fullPath: '/study/'
+      preLoaderRoute: typeof StudyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/puzzles/': {
@@ -1264,6 +1284,7 @@ const rootRouteChildren: RootRouteChildren = {
   LessonsIndexRoute: LessonsIndexRoute,
   OpeningsIndexRoute: OpeningsIndexRoute,
   PuzzlesIndexRoute: PuzzlesIndexRoute,
+  StudyIndexRoute: StudyIndexRoute,
   TacticsIndexRoute: TacticsIndexRoute,
   EmbedKindTokenRoute: EmbedKindTokenRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
