@@ -21,6 +21,7 @@ import { Route as AnalysisRouteImport } from './routes/analysis'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TacticsIndexRouteImport } from './routes/tactics.index'
+import { Route as StudyIndexRouteImport } from './routes/study.index'
 import { Route as PuzzlesIndexRouteImport } from './routes/puzzles.index'
 import { Route as OpeningsIndexRouteImport } from './routes/openings.index'
 import { Route as LessonsIndexRouteImport } from './routes/lessons.index'
@@ -30,6 +31,7 @@ import { Route as CoachesIndexRouteImport } from './routes/coaches.index'
 import { Route as AssistantIndexRouteImport } from './routes/assistant.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TacticsThemeRouteImport } from './routes/tactics.$theme'
+import { Route as StudyStudyIdRouteImport } from './routes/study.$studyId'
 import { Route as PuzzlesStormRouteImport } from './routes/puzzles.storm'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as PlayGameIdRouteImport } from './routes/play.$gameId'
@@ -126,6 +128,11 @@ const TacticsIndexRoute = TacticsIndexRouteImport.update({
   path: '/tactics/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudyIndexRoute = StudyIndexRouteImport.update({
+  id: '/study/',
+  path: '/study/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PuzzlesIndexRoute = PuzzlesIndexRouteImport.update({
   id: '/puzzles/',
   path: '/puzzles/',
@@ -169,6 +176,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const TacticsThemeRoute = TacticsThemeRouteImport.update({
   id: '/tactics/$theme',
   path: '/tactics/$theme',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudyStudyIdRoute = StudyStudyIdRouteImport.update({
+  id: '/study/$studyId',
+  path: '/study/$studyId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PuzzlesStormRoute = PuzzlesStormRouteImport.update({
@@ -386,6 +398,7 @@ export interface FileRoutesByFullPath {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
   '/admin/': typeof AdminIndexRoute
   '/assistant/': typeof AssistantIndexRoute
@@ -395,6 +408,7 @@ export interface FileRoutesByFullPath {
   '/lessons/': typeof LessonsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
+  '/study/': typeof StudyIndexRoute
   '/tactics/': typeof TacticsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
@@ -443,6 +457,7 @@ export interface FileRoutesByTo {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
   '/admin': typeof AdminIndexRoute
   '/assistant': typeof AssistantIndexRoute
@@ -452,6 +467,7 @@ export interface FileRoutesByTo {
   '/lessons': typeof LessonsIndexRoute
   '/openings': typeof OpeningsIndexRoute
   '/puzzles': typeof PuzzlesIndexRoute
+  '/study': typeof StudyIndexRoute
   '/tactics': typeof TacticsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
@@ -502,6 +518,7 @@ export interface FileRoutesById {
   '/play/$gameId': typeof PlayGameIdRoute
   '/profile/$username': typeof ProfileUsernameRoute
   '/puzzles/storm': typeof PuzzlesStormRoute
+  '/study/$studyId': typeof StudyStudyIdRoute
   '/tactics/$theme': typeof TacticsThemeRoute
   '/admin/': typeof AdminIndexRoute
   '/assistant/': typeof AssistantIndexRoute
@@ -511,6 +528,7 @@ export interface FileRoutesById {
   '/lessons/': typeof LessonsIndexRoute
   '/openings/': typeof OpeningsIndexRoute
   '/puzzles/': typeof PuzzlesIndexRoute
+  '/study/': typeof StudyIndexRoute
   '/tactics/': typeof TacticsIndexRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
   '/embed/$kind/$token': typeof EmbedKindTokenRoute
@@ -562,6 +580,7 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/study/$studyId'
     | '/tactics/$theme'
     | '/admin/'
     | '/assistant/'
@@ -571,6 +590,7 @@ export interface FileRouteTypes {
     | '/lessons/'
     | '/openings/'
     | '/puzzles/'
+    | '/study/'
     | '/tactics/'
     | '/admin/users/$userId'
     | '/embed/$kind/$token'
@@ -619,6 +639,7 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/study/$studyId'
     | '/tactics/$theme'
     | '/admin'
     | '/assistant'
@@ -628,6 +649,7 @@ export interface FileRouteTypes {
     | '/lessons'
     | '/openings'
     | '/puzzles'
+    | '/study'
     | '/tactics'
     | '/admin/users/$userId'
     | '/embed/$kind/$token'
@@ -677,6 +699,7 @@ export interface FileRouteTypes {
     | '/play/$gameId'
     | '/profile/$username'
     | '/puzzles/storm'
+    | '/study/$studyId'
     | '/tactics/$theme'
     | '/admin/'
     | '/assistant/'
@@ -686,6 +709,7 @@ export interface FileRouteTypes {
     | '/lessons/'
     | '/openings/'
     | '/puzzles/'
+    | '/study/'
     | '/tactics/'
     | '/admin/users/$userId'
     | '/embed/$kind/$token'
@@ -729,6 +753,7 @@ export interface RootRouteChildren {
   PlayGameIdRoute: typeof PlayGameIdRoute
   ProfileUsernameRoute: typeof ProfileUsernameRoute
   PuzzlesStormRoute: typeof PuzzlesStormRoute
+  StudyStudyIdRoute: typeof StudyStudyIdRoute
   TacticsThemeRoute: typeof TacticsThemeRoute
   AssistantIndexRoute: typeof AssistantIndexRoute
   CoachesIndexRoute: typeof CoachesIndexRoute
@@ -737,6 +762,7 @@ export interface RootRouteChildren {
   LessonsIndexRoute: typeof LessonsIndexRoute
   OpeningsIndexRoute: typeof OpeningsIndexRoute
   PuzzlesIndexRoute: typeof PuzzlesIndexRoute
+  StudyIndexRoute: typeof StudyIndexRoute
   TacticsIndexRoute: typeof TacticsIndexRoute
   EmbedKindTokenRoute: typeof EmbedKindTokenRoute
   PuzzlesDailyDateRoute: typeof PuzzlesDailyDateRoute
@@ -835,6 +861,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TacticsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/study/': {
+      id: '/study/'
+      path: '/study'
+      fullPath: '/study/'
+      preLoaderRoute: typeof StudyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/puzzles/': {
       id: '/puzzles/'
       path: '/puzzles'
@@ -896,6 +929,13 @@ declare module '@tanstack/react-router' {
       path: '/tactics/$theme'
       fullPath: '/tactics/$theme'
       preLoaderRoute: typeof TacticsThemeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/study/$studyId': {
+      id: '/study/$studyId'
+      path: '/study/$studyId'
+      fullPath: '/study/$studyId'
+      preLoaderRoute: typeof StudyStudyIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/puzzles/storm': {
@@ -1256,6 +1296,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlayGameIdRoute: PlayGameIdRoute,
   ProfileUsernameRoute: ProfileUsernameRoute,
   PuzzlesStormRoute: PuzzlesStormRoute,
+  StudyStudyIdRoute: StudyStudyIdRoute,
   TacticsThemeRoute: TacticsThemeRoute,
   AssistantIndexRoute: AssistantIndexRoute,
   CoachesIndexRoute: CoachesIndexRoute,
@@ -1264,6 +1305,7 @@ const rootRouteChildren: RootRouteChildren = {
   LessonsIndexRoute: LessonsIndexRoute,
   OpeningsIndexRoute: OpeningsIndexRoute,
   PuzzlesIndexRoute: PuzzlesIndexRoute,
+  StudyIndexRoute: StudyIndexRoute,
   TacticsIndexRoute: TacticsIndexRoute,
   EmbedKindTokenRoute: EmbedKindTokenRoute,
   PuzzlesDailyDateRoute: PuzzlesDailyDateRoute,
