@@ -810,6 +810,7 @@ export type Database = {
           bot_persona_id: string | null
           chess960_start_fen: string | null
           created_at: string
+          days_per_move: number | null
           draw_offer_at: string | null
           draw_offer_by: string | null
           end_reason: string | null
@@ -821,13 +822,18 @@ export type Database = {
           increment_sec: number | null
           initial_sec: number | null
           is_bot_game: boolean
+          is_correspondence: boolean
+          is_public: boolean
           last_clock_update: string | null
           last_move_at: string
+          move_deadline: string | null
+          notify_by_email: boolean
           pgn: string
           ply: number
           rated: boolean
           region: string
           result: string | null
+          spectator_count: number
           status: string
           takeback_offer_at: string | null
           takeback_offer_by: string | null
@@ -847,6 +853,7 @@ export type Database = {
           bot_persona_id?: string | null
           chess960_start_fen?: string | null
           created_at?: string
+          days_per_move?: number | null
           draw_offer_at?: string | null
           draw_offer_by?: string | null
           end_reason?: string | null
@@ -858,13 +865,18 @@ export type Database = {
           increment_sec?: number | null
           initial_sec?: number | null
           is_bot_game?: boolean
+          is_correspondence?: boolean
+          is_public?: boolean
           last_clock_update?: string | null
           last_move_at?: string
+          move_deadline?: string | null
+          notify_by_email?: boolean
           pgn?: string
           ply?: number
           rated?: boolean
           region?: string
           result?: string | null
+          spectator_count?: number
           status?: string
           takeback_offer_at?: string | null
           takeback_offer_by?: string | null
@@ -884,6 +896,7 @@ export type Database = {
           bot_persona_id?: string | null
           chess960_start_fen?: string | null
           created_at?: string
+          days_per_move?: number | null
           draw_offer_at?: string | null
           draw_offer_by?: string | null
           end_reason?: string | null
@@ -895,13 +908,18 @@ export type Database = {
           increment_sec?: number | null
           initial_sec?: number | null
           is_bot_game?: boolean
+          is_correspondence?: boolean
+          is_public?: boolean
           last_clock_update?: string | null
           last_move_at?: string
+          move_deadline?: string | null
+          notify_by_email?: boolean
           pgn?: string
           ply?: number
           rated?: boolean
           region?: string
           result?: string | null
+          spectator_count?: number
           status?: string
           takeback_offer_at?: string | null
           takeback_offer_by?: string | null
@@ -1248,6 +1266,7 @@ export type Database = {
           country: string | null
           created_at: string
           draws: number
+          email_notify_moves: boolean
           flag_reason: string | null
           flagged_for_review: boolean
           games_played: number
@@ -1264,6 +1283,9 @@ export type Database = {
           subscription_tier: Database["public"]["Enums"]["subscription_tier_enum"]
           suspended_until: string | null
           username: string
+          vacation_days_used: number
+          vacation_until: string | null
+          vacation_year: number | null
           wins: number
         }
         Insert: {
@@ -1273,6 +1295,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           draws?: number
+          email_notify_moves?: boolean
           flag_reason?: string | null
           flagged_for_review?: boolean
           games_played?: number
@@ -1289,6 +1312,9 @@ export type Database = {
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
           suspended_until?: string | null
           username: string
+          vacation_days_used?: number
+          vacation_until?: string | null
+          vacation_year?: number | null
           wins?: number
         }
         Update: {
@@ -1298,6 +1324,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           draws?: number
+          email_notify_moves?: boolean
           flag_reason?: string | null
           flagged_for_review?: boolean
           games_played?: number
@@ -1314,6 +1341,9 @@ export type Database = {
           subscription_tier?: Database["public"]["Enums"]["subscription_tier_enum"]
           suspended_until?: string | null
           username?: string
+          vacation_days_used?: number
+          vacation_until?: string | null
+          vacation_year?: number | null
           wins?: number
         }
         Relationships: []
@@ -1526,6 +1556,121 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      study_boards: {
+        Row: {
+          annotations: Json
+          collaborators: string[]
+          created_at: string
+          current_fen: string
+          current_pgn: string
+          id: string
+          owner_id: string
+          shapes: Json
+          start_fen: string
+          start_pgn: string | null
+          title: string
+          updated_at: string
+          visibility: string
+        }
+        Insert: {
+          annotations?: Json
+          collaborators?: string[]
+          created_at?: string
+          current_fen?: string
+          current_pgn?: string
+          id?: string
+          owner_id: string
+          shapes?: Json
+          start_fen?: string
+          start_pgn?: string | null
+          title?: string
+          updated_at?: string
+          visibility?: string
+        }
+        Update: {
+          annotations?: Json
+          collaborators?: string[]
+          created_at?: string
+          current_fen?: string
+          current_pgn?: string
+          id?: string
+          owner_id?: string
+          shapes?: Json
+          start_fen?: string
+          start_pgn?: string | null
+          title?: string
+          updated_at?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
+      study_chat: {
+        Row: {
+          board_id: string
+          content: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          board_id: string
+          content: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          board_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_chat_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "study_boards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_snapshots: {
+        Row: {
+          board_id: string
+          created_at: string
+          created_by: string
+          data: Json
+          id: string
+          name: string
+        }
+        Insert: {
+          board_id: string
+          created_at?: string
+          created_by: string
+          data?: Json
+          id?: string
+          name: string
+        }
+        Update: {
+          board_id?: string
+          created_at?: string
+          created_by?: string
+          data?: Json
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_snapshots_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "study_boards"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_endgame_progress: {
         Row: {
@@ -1903,6 +2048,14 @@ export type Database = {
           p_white: string
         }
         Returns: undefined
+      }
+      can_edit_study: {
+        Args: { _board_id: string; _user_id: string }
+        Returns: boolean
+      }
+      can_view_study: {
+        Args: { _board_id: string; _user_id: string }
+        Returns: boolean
       }
       current_admin_role: {
         Args: never
