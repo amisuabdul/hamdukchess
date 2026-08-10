@@ -146,13 +146,25 @@ export async function withApiKey(
     return json({ error: "forbidden", message: `Missing required scope: ${scope}` }, 403);
   }
 
-  const quota = await checkQuota(ctx);
+  let quota: Awaited<ReturnType<typeof checkQuota>>;
+  try {
+    quota = await checkQuota(ctx);
+  } catch (err) {
+    console.error(`[api] ${endpoint} quota check failed`, err);
+    await logUsage(ctx, endpoint, method, 503).catch(() => {});
+    return json(
+      { error: "service_unavailable", message: "Rate limiter unavailable, please retry" },
+      503,
+      { "retry-after": "5" },
+    );
+  }
   if (!quota.ok) {
     await logUsage(ctx, endpoint, method, 429);
     return json({ error: "rate_limited", message: quota.reason }, 429, {
       "x-ratelimit-limit": String(ctx.monthlyLimit),
     });
   }
+
 
   let response: Response;
   try {
