@@ -50,24 +50,36 @@ function monthStamp(d = new Date()) {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
+/** INCR that self-heals a corrupted (non-numeric) counter value. */
+async function safeIncr(key: string): Promise<number> {
+  try {
+    return await redis.incr(key);
+  } catch (err) {
+    console.error(`[api] corrupted counter at ${key}, resetting`, err);
+    await redis.del(key);
+    return await redis.incr(key);
+  }
+}
+
 /** Monthly quota + per-minute burst protection, both in Redis. */
 async function checkQuota(ctx: ApiKeyContext) {
   const monthKey = `apiq:${ctx.keyId}:${monthStamp()}`;
   const burstKey = `apib:${ctx.keyId}:${Math.floor(Date.now() / 60_000)}`;
 
-  const burst = await redis.incr(burstKey);
+  const burst = await safeIncr(burstKey);
   if (burst === 1) await redis.expire(burstKey, 70);
   if (burst > BURST_PER_MINUTE) {
     return { ok: false as const, reason: "Burst limit exceeded (120 requests/minute)", used: 0 };
   }
 
-  const used = await redis.incr(monthKey);
+  const used = await safeIncr(monthKey);
   if (used === 1) await redis.expire(monthKey, 60 * 60 * 24 * 35);
   if (used > ctx.monthlyLimit) {
     return { ok: false as const, reason: "Monthly call limit exceeded", used };
   }
   return { ok: true as const, used };
 }
+
 
 async function logUsage(ctx: ApiKeyContext, endpoint: string, method: string, status: number) {
   await supabaseAdmin.from("api_usage").insert({
@@ -146,13 +158,25 @@ export async function withApiKey(
     return json({ error: "forbidden", message: `Missing required scope: ${scope}` }, 403);
   }
 
-  const quota = await checkQuota(ctx);
+  let quota: Awaited<ReturnType<typeof checkQuota>>;
+  try {
+    quota = await checkQuota(ctx);
+  } catch (err) {
+    console.error(`[api] ${endpoint} quota check failed`, err);
+    await logUsage(ctx, endpoint, method, 503).catch(() => {});
+    return json(
+      { error: "service_unavailable", message: "Rate limiter unavailable, please retry" },
+      503,
+      { "retry-after": "5" },
+    );
+  }
   if (!quota.ok) {
     await logUsage(ctx, endpoint, method, 429);
     return json({ error: "rate_limited", message: quota.reason }, 429, {
       "x-ratelimit-limit": String(ctx.monthlyLimit),
     });
   }
+
 
   let response: Response;
   try {
