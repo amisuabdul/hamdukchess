@@ -113,16 +113,14 @@ export const updateStudyState = createServerFn({ method: "POST" })
       }
     }
 
-    const patch: Record<string, unknown> = {
-      current_pgn: chess.pgn(),
-      current_fen: chess.fen(),
-    };
-    if (data.annotations) patch.annotations = data.annotations;
-    if (data.shapes) patch.shapes = data.shapes;
-
     const { error } = await supabaseAdmin
       .from("study_boards")
-      .update(patch)
+      .update({
+        current_pgn: chess.pgn(),
+        current_fen: chess.fen(),
+        ...(data.annotations ? { annotations: data.annotations } : {}),
+        ...(data.shapes ? { shapes: data.shapes } : {}),
+      })
       .eq("id", data.studyId);
     if (error) throw new Error(error.message);
     return { ok: true, fen: chess.fen(), pgn: chess.pgn() };
